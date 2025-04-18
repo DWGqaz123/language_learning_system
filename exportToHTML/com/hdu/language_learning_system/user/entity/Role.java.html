@@ -1,0 +1,88 @@
+<html>
+<head>
+<title>Role.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+.s3 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Role.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.hdu.language_learning_system.user.entity</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">jakarta.persistence.*</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">lombok.Data</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">java.util.Set</span><span class="s0">;</span>
+
+<span class="s1">@Entity</span>
+<span class="s1">@Table(name = </span><span class="s2">&quot;roles&quot;</span><span class="s1">)</span>
+<span class="s1">@Data</span>
+<span class="s0">public class </span><span class="s1">Role {</span>
+
+    <span class="s1">@Id</span>
+    <span class="s1">@GeneratedValue(strategy = GenerationType.IDENTITY)</span>
+    <span class="s1">@Column(name = </span><span class="s2">&quot;role_id&quot;</span><span class="s1">)</span>
+    <span class="s0">private </span><span class="s1">Integer roleId</span><span class="s0">;</span>
+
+    <span class="s1">@Column(nullable = </span><span class="s0">false</span><span class="s1">)</span>
+    <span class="s0">private </span><span class="s1">String roleName</span><span class="s0">;</span>
+
+    <span class="s1">@Column</span>
+    <span class="s0">private </span><span class="s1">String permissions</span><span class="s0">;</span>
+
+    <span class="s3">// 可选：一个角色可能对应多个用户</span>
+    <span class="s1">@OneToMany(mappedBy = </span><span class="s2">&quot;role&quot;</span><span class="s1">)</span>
+    <span class="s0">private </span><span class="s1">Set&lt;User&gt; users</span><span class="s0">;</span>
+
+    <span class="s3">// 构造方法</span>
+    <span class="s0">public </span><span class="s1">Role() {}</span>
+
+    <span class="s0">public </span><span class="s1">Role(String roleName</span><span class="s0">, </span><span class="s1">String permissions) {</span>
+        <span class="s0">this</span><span class="s1">.roleName = roleName</span><span class="s0">;</span>
+        <span class="s0">this</span><span class="s1">.permissions = permissions</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s3">// Getter 和 Setter</span>
+    <span class="s0">public </span><span class="s1">Integer getRoleId() {</span>
+        <span class="s0">return </span><span class="s1">roleId</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">setRoleId(Integer roleId) {</span>
+        <span class="s0">this</span><span class="s1">.roleId = roleId</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public </span><span class="s1">String getRoleName() {</span>
+        <span class="s0">return </span><span class="s1">roleName</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">setRoleName(String roleName) {</span>
+        <span class="s0">this</span><span class="s1">.roleName = roleName</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public </span><span class="s1">String getPermissions() {</span>
+        <span class="s0">return </span><span class="s1">permissions</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">setPermissions(String permissions) {</span>
+        <span class="s0">this</span><span class="s1">.permissions = permissions</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public </span><span class="s1">Set&lt;User&gt; getUsers() {</span>
+        <span class="s0">return </span><span class="s1">users</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">setUsers(Set&lt;User&gt; users) {</span>
+        <span class="s0">this</span><span class="s1">.users = users</span><span class="s0">;</span>
+    <span class="s1">}</span>
+<span class="s1">}</span>
+</pre>
+</body>
+</html>

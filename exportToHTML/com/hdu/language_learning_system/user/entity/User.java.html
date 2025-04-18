@@ -1,0 +1,84 @@
+<html>
+<head>
+<title>User.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+.s3 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+User.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.hdu.language_learning_system.user.entity</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">jakarta.persistence.*</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">lombok.Data</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.sql.Timestamp</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.fasterxml.jackson.annotation.JsonIgnore</span><span class="s0">;</span>
+<span class="s1">@Entity</span>
+<span class="s1">@Table(name = </span><span class="s2">&quot;users&quot;</span><span class="s1">)</span>
+<span class="s1">@Data</span>
+<span class="s0">public class </span><span class="s1">User {</span>
+
+    <span class="s1">@Id</span>
+    <span class="s1">@GeneratedValue(strategy = GenerationType.IDENTITY)</span>
+    <span class="s0">private </span><span class="s1">Integer userId</span><span class="s0">;</span>
+
+    <span class="s0">private </span><span class="s1">String username</span><span class="s0">;</span>
+
+    <span class="s1">@Column(unique = </span><span class="s0">true</span><span class="s1">)</span>
+    <span class="s0">private </span><span class="s1">String phoneNumber</span><span class="s0">;</span>
+
+    <span class="s0">private </span><span class="s1">String password</span><span class="s0">;</span>
+
+    <span class="s0">private </span><span class="s1">Boolean accountStatus</span><span class="s0">;</span>
+
+    <span class="s0">private </span><span class="s1">String description</span><span class="s0">;</span>
+
+    <span class="s1">@Column(name = </span><span class="s2">&quot;lesson_hours&quot;</span><span class="s1">)</span>
+    <span class="s0">private </span><span class="s1">Integer lessonHours</span><span class="s0">; </span><span class="s3">// 记录学员拥有的1对1课时</span>
+
+    <span class="s1">@Column(name = </span><span class="s2">&quot;created_at&quot;</span><span class="s0">, </span><span class="s1">updatable = </span><span class="s0">false</span><span class="s1">)</span>
+    <span class="s0">private </span><span class="s1">Timestamp createdAt</span><span class="s0">;</span>
+
+    <span class="s1">@Column(name = </span><span class="s2">&quot;updated_at&quot;</span><span class="s1">)</span>
+    <span class="s0">private </span><span class="s1">Timestamp updatedAt</span><span class="s0">;</span>
+
+    <span class="s3">// Role实体外键映射</span>
+    <span class="s1">@ManyToOne(fetch = FetchType.LAZY) </span><span class="s3">//懒加载，提升性能</span>
+    <span class="s1">@JoinColumn(name = </span><span class="s2">&quot;role_id&quot;</span><span class="s0">, </span><span class="s1">referencedColumnName = </span><span class="s2">&quot;role_id&quot;</span><span class="s1">)</span>
+    <span class="s1">@JsonIgnore</span>
+    <span class="s0">private </span><span class="s1">Role role</span><span class="s0">;</span>
+    <span class="s1">@PrePersist</span>
+    <span class="s0">protected void </span><span class="s1">onCreate() {</span>
+        <span class="s1">createdAt = </span><span class="s0">new </span><span class="s1">Timestamp(System.currentTimeMillis())</span><span class="s0">;</span>
+        <span class="s1">updatedAt = createdAt</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@PreUpdate</span>
+    <span class="s0">protected void </span><span class="s1">onUpdate() {</span>
+        <span class="s1">updatedAt = </span><span class="s0">new </span><span class="s1">Timestamp(System.currentTimeMillis())</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+
+
+<span class="s3">//    public String getUsername() {//debug</span>
+<span class="s3">//        return username;</span>
+<span class="s3">//    }</span>
+
+
+    <span class="s3">// 暂存用户修改请求</span>
+    <span class="s1">@Column(name = </span><span class="s2">&quot;pending_update&quot;</span><span class="s0">, </span><span class="s1">columnDefinition = </span><span class="s2">&quot;TEXT&quot;</span><span class="s1">)</span>
+    <span class="s0">private </span><span class="s1">String pendingUpdateJson</span><span class="s0">;</span>
+
+
+<span class="s1">}</span>
+</pre>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<html>
+<head>
+<title>NotificationServiceImpl.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+.s3 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+NotificationServiceImpl.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.hdu.language_learning_system.notification.service.impl</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.course.entity.Schedule</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.course.repository.ScheduleRepository</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.notification.entity.Notification</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.notification.repository.NotificationRepository</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.notification.service.NotificationService</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.user.entity.User</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.user.repository.UserRepository</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.course.repository.StudentScheduleRecordRepository</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">org.springframework.beans.factory.annotation.Autowired</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">org.springframework.stereotype.Service</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">java.sql.Timestamp</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.List</span><span class="s0">;</span>
+
+<span class="s1">@Service</span>
+<span class="s0">public class </span><span class="s1">NotificationServiceImpl </span><span class="s0">implements </span><span class="s1">NotificationService {</span>
+
+    <span class="s0">private static final </span><span class="s1">String NOTIFICATION_TYPE_CLASS = </span><span class="s2">&quot;课堂通知&quot;</span><span class="s0">;</span>
+
+    <span class="s1">@Autowired</span>
+    <span class="s0">private </span><span class="s1">NotificationRepository notificationRepository</span><span class="s0">;</span>
+
+    <span class="s1">@Autowired</span>
+    <span class="s0">private </span><span class="s1">ScheduleRepository scheduleRepository</span><span class="s0">;</span>
+
+    <span class="s1">@Autowired</span>
+    <span class="s0">private </span><span class="s1">UserRepository userRepository</span><span class="s0">;</span>
+
+    <span class="s1">@Autowired</span>
+    <span class="s0">private </span><span class="s1">StudentScheduleRecordRepository studentScheduleRecordRepository</span><span class="s0">;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">sendClassNotification(Integer scheduleId) {</span>
+        <span class="s1">Schedule schedule = scheduleRepository.findById(scheduleId)</span>
+                <span class="s1">.orElseThrow(() -&gt; </span><span class="s0">new </span><span class="s1">RuntimeException(</span><span class="s2">&quot;未找到对应课程安排&quot;</span><span class="s1">))</span><span class="s0">;</span>
+
+        <span class="s3">// 教师通知</span>
+        <span class="s1">Notification teacherNotice = </span><span class="s0">new </span><span class="s1">Notification()</span><span class="s0">;</span>
+        <span class="s1">teacherNotice.setReceiver(schedule.getTeacher())</span><span class="s0">;</span>
+        <span class="s1">teacherNotice.setNotificationType(NOTIFICATION_TYPE_CLASS)</span><span class="s0">;</span>
+        <span class="s1">teacherNotice.setRefTargetId(scheduleId)</span><span class="s0">;</span>
+        <span class="s1">teacherNotice.setRefTargetType(</span><span class="s2">&quot;Schedule&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">teacherNotice.setContent(</span><span class="s2">&quot;您将于 &quot; </span><span class="s1">+ schedule.getClassTime() + </span><span class="s2">&quot; 上课，请准时到场！&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">teacherNotice.setSentTime(</span><span class="s0">new </span><span class="s1">Timestamp(System.currentTimeMillis()))</span><span class="s0">;</span>
+        <span class="s1">teacherNotice.setStatus(</span><span class="s2">&quot;未读&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">notificationRepository.save(teacherNotice)</span><span class="s0">;</span>
+
+        <span class="s3">// 学员通知</span>
+        <span class="s1">List&lt;User&gt; students = studentScheduleRecordRepository.findStudentsByScheduleId(scheduleId)</span><span class="s0">;</span>
+        <span class="s0">for </span><span class="s1">(User student : students) {</span>
+            <span class="s1">Notification studentNotice = </span><span class="s0">new </span><span class="s1">Notification()</span><span class="s0">;</span>
+            <span class="s1">studentNotice.setReceiver(student)</span><span class="s0">;</span>
+            <span class="s1">studentNotice.setNotificationType(NOTIFICATION_TYPE_CLASS)</span><span class="s0">;</span>
+            <span class="s1">studentNotice.setRefTargetId(scheduleId)</span><span class="s0">;</span>
+            <span class="s1">studentNotice.setRefTargetType(</span><span class="s2">&quot;Schedule&quot;</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">studentNotice.setContent(</span><span class="s2">&quot;您将于 &quot; </span><span class="s1">+ schedule.getClassTime() + </span><span class="s2">&quot; 上课，请准时到场！&quot;</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">studentNotice.setSentTime(</span><span class="s0">new </span><span class="s1">Timestamp(System.currentTimeMillis()))</span><span class="s0">;</span>
+            <span class="s1">studentNotice.setStatus(</span><span class="s2">&quot;未读&quot;</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">notificationRepository.save(studentNotice)</span><span class="s0">;</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+<span class="s1">}</span>
+</pre>
+</body>
+</html>

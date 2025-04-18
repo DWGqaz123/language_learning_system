@@ -1,0 +1,212 @@
+<html>
+<head>
+<title>UserServiceImpl.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #808080;}
+.s3 { color: #6897bb;}
+.s4 { color: #6a8759;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+UserServiceImpl.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.hdu.language_learning_system.user.service.impl</span><span class="s0">;</span>
+<span class="s2">//初始化</span>
+<span class="s0">import </span><span class="s1">com.fasterxml.jackson.core.JsonProcessingException</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.fasterxml.jackson.databind.ObjectMapper</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">org.springframework.beans.factory.annotation.Autowired</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">org.springframework.stereotype.Service</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.user.repository.UserRepository</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.user.service.UserService</span><span class="s0">;</span>
+<span class="s2">//DTO</span>
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.user.dto.UserDTO</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.user.dto.EmployeeImportDTO</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.user.dto.StudentRegisterDTO</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.user.dto.UpdateUserRoleDTO</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.user.dto.UserActivationDTO</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.user.dto.UpdateUserInfoDTO</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.user.dto.UserUpdateAuditDTO</span><span class="s0">;</span>
+<span class="s2">//实体</span>
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.user.entity.User</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.user.entity.Role</span><span class="s0">;</span>
+<span class="s2">//其他</span>
+<span class="s0">import </span><span class="s1">java.util.List</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.stream.Collectors</span><span class="s0">;</span>
+
+
+<span class="s1">@Service</span>
+<span class="s0">public class </span><span class="s1">UserServiceImpl </span><span class="s0">implements </span><span class="s1">UserService {</span>
+
+    <span class="s0">private final </span><span class="s1">UserRepository userRepository</span><span class="s0">;</span>
+
+    <span class="s1">@Autowired</span>
+    <span class="s0">public </span><span class="s1">UserServiceImpl(UserRepository userRepository) {</span>
+        <span class="s0">this</span><span class="s1">.userRepository = userRepository</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s2">// 私有转换方法</span>
+    <span class="s0">private </span><span class="s1">UserDTO convertToDTO(User user) {</span>
+        <span class="s0">if </span><span class="s1">(user == </span><span class="s0">null</span><span class="s1">) {</span>
+            <span class="s0">return null;</span>
+        <span class="s1">}</span>
+
+        <span class="s1">UserDTO dto = </span><span class="s0">new </span><span class="s1">UserDTO()</span><span class="s0">;</span>
+        <span class="s1">dto.setUserId(user.getUserId())</span><span class="s0">;</span>
+        <span class="s1">dto.setUsername(user.getUsername())</span><span class="s0">;</span>
+        <span class="s1">dto.setPhoneNumber(user.getPhoneNumber())</span><span class="s0">;</span>
+        <span class="s1">dto.setAccountStatus(user.getAccountStatus())</span><span class="s0">;</span>
+        <span class="s1">dto.setDescription(user.getDescription())</span><span class="s0">;</span>
+        <span class="s1">dto.setCreatedAt(user.getCreatedAt())</span><span class="s0">;</span>
+        <span class="s1">dto.setUpdatedAt(user.getUpdatedAt())</span><span class="s0">;</span>
+
+        <span class="s0">if </span><span class="s1">(user.getRole() != </span><span class="s0">null</span><span class="s1">) {</span>
+            <span class="s1">dto.setRoleId(user.getRole().getRoleId())</span><span class="s0">;</span>
+            <span class="s1">dto.setRoleName(user.getRole().getRoleName())</span><span class="s0">;</span>
+        <span class="s1">}</span>
+
+        <span class="s0">return </span><span class="s1">dto</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s2">// 通过手机号查找用户</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public </span><span class="s1">UserDTO findByPhoneNumber(String phoneNumber) {</span>
+        <span class="s1">User user = userRepository.findByPhoneNumber(phoneNumber)</span><span class="s0">;</span>
+        <span class="s0">return </span><span class="s1">convertToDTO(user)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s2">// 查询所有用户</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public </span><span class="s1">List&lt;UserDTO&gt; findAllUsers() {</span>
+        <span class="s0">return </span><span class="s1">userRepository.findAll().stream()</span>
+                <span class="s1">.map(</span><span class="s0">this</span><span class="s1">::convertToDTO)</span>
+                <span class="s1">.collect(Collectors.toList())</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s2">// 员工信息导入（管理员导入教师和助教信息）</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">importEmployee(EmployeeImportDTO dto) {</span>
+        <span class="s1">User user = </span><span class="s0">new </span><span class="s1">User()</span><span class="s0">;</span>
+        <span class="s1">user.setUsername(dto.getUsername())</span><span class="s0">;</span>
+        <span class="s1">user.setPhoneNumber(dto.getPhoneNumber())</span><span class="s0">;</span>
+        <span class="s1">user.setPassword(dto.getPassword())</span><span class="s0">;</span>
+        <span class="s1">user.setAccountStatus(dto.getAccountStatus())</span><span class="s0">;</span>
+        <span class="s1">user.setDescription(dto.getDescription())</span><span class="s0">;</span>
+
+        <span class="s2">// 设置角色</span>
+        <span class="s1">Role role = </span><span class="s0">new </span><span class="s1">Role()</span><span class="s0">;</span>
+        <span class="s1">role.setRoleId(dto.getRoleId())</span><span class="s0">;</span>
+        <span class="s1">user.setRole(role)</span><span class="s0">;</span>
+        <span class="s1">userRepository.save(user)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s2">// 学员信息导入</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">registerStudent(StudentRegisterDTO dto) {</span>
+        <span class="s1">User user = </span><span class="s0">new </span><span class="s1">User()</span><span class="s0">;</span>
+        <span class="s1">user.setUsername(dto.getUsername())</span><span class="s0">;</span>
+        <span class="s1">user.setPhoneNumber(dto.getPhoneNumber())</span><span class="s0">;</span>
+        <span class="s1">user.setPassword(dto.getPassword())</span><span class="s0">;</span>
+        <span class="s1">user.setAccountStatus(</span><span class="s0">false</span><span class="s1">)</span><span class="s0">; </span><span class="s2">// 默认关闭状态</span>
+        <span class="s1">user.setDescription(dto.getDescription())</span><span class="s0">;</span>
+
+        <span class="s2">// 设置默认角色为学员（role_id = 1）</span>
+        <span class="s1">Role role = </span><span class="s0">new </span><span class="s1">Role()</span><span class="s0">;</span>
+        <span class="s1">role.setRoleId(</span><span class="s3">1</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">user.setRole(role)</span><span class="s0">;</span>
+
+        <span class="s1">userRepository.save(user)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s2">// 用户权限分配</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">updateUserRole(UpdateUserRoleDTO dto) {</span>
+        <span class="s2">// 获取操作人</span>
+        <span class="s1">User operator = userRepository.findById(dto.getOperatorUserId())</span>
+                <span class="s1">.orElseThrow(() -&gt; </span><span class="s0">new </span><span class="s1">RuntimeException(</span><span class="s4">&quot;操作用户不存在&quot;</span><span class="s1">))</span><span class="s0">;</span>
+
+        <span class="s2">// 判断操作人角色是否为“管理员”</span>
+        <span class="s0">if </span><span class="s1">(operator.getRole().getRoleId() != </span><span class="s3">4</span><span class="s1">) { </span><span class="s2">// 假设角色ID 4 为管理员</span>
+            <span class="s0">throw new </span><span class="s1">RuntimeException(</span><span class="s4">&quot;只有管理员可以修改用户角色&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">}</span>
+
+        <span class="s2">// 修改目标用户角色</span>
+        <span class="s1">User user = userRepository.findById(dto.getUserId())</span>
+                <span class="s1">.orElseThrow(() -&gt; </span><span class="s0">new </span><span class="s1">RuntimeException(</span><span class="s4">&quot;目标用户不存在&quot;</span><span class="s1">))</span><span class="s0">;</span>
+
+        <span class="s1">Role newRole = </span><span class="s0">new </span><span class="s1">Role()</span><span class="s0">;</span>
+        <span class="s1">newRole.setRoleId(dto.getRoleId())</span><span class="s0">;</span>
+        <span class="s1">user.setRole(newRole)</span><span class="s0">;</span>
+
+        <span class="s1">userRepository.save(user)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s2">// 账号激活</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">activateUser(UserActivationDTO dto) {</span>
+        <span class="s1">User user = userRepository.findById(dto.getUserId())</span>
+                <span class="s1">.orElseThrow(() -&gt; </span><span class="s0">new </span><span class="s1">RuntimeException(</span><span class="s4">&quot;用户不存在&quot;</span><span class="s1">))</span><span class="s0">;</span>
+
+        <span class="s1">user.setPassword(dto.getNewPassword())</span><span class="s0">;</span>
+        <span class="s1">user.setAccountStatus(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">; </span><span class="s2">// 设置为已激活</span>
+        <span class="s1">userRepository.save(user)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s2">//用户信息修改</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">updateUserInfo(UpdateUserInfoDTO dto) {</span>
+        <span class="s1">User user = userRepository.findById(dto.getUserId())</span>
+                <span class="s1">.orElseThrow(() -&gt; </span><span class="s0">new </span><span class="s1">RuntimeException(</span><span class="s4">&quot;用户不存在&quot;</span><span class="s1">))</span><span class="s0">;</span>
+
+        <span class="s1">user.setUsername(dto.getUsername())</span><span class="s0">;</span>
+        <span class="s1">user.setPhoneNumber(dto.getPhoneNumber())</span><span class="s0">;</span>
+        <span class="s1">user.setDescription(dto.getDescription())</span><span class="s0">;</span>
+        <span class="s1">userRepository.save(user)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s2">//用户提交修改请求</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">submitUserUpdateRequest(UserUpdateAuditDTO dto) {</span>
+        <span class="s1">User user = userRepository.findById(dto.getUserId())</span>
+                <span class="s1">.orElseThrow(() -&gt; </span><span class="s0">new </span><span class="s1">RuntimeException(</span><span class="s4">&quot;用户不存在&quot;</span><span class="s1">))</span><span class="s0">;</span>
+
+        <span class="s0">try </span><span class="s1">{</span>
+            <span class="s1">ObjectMapper objectMapper = </span><span class="s0">new </span><span class="s1">ObjectMapper()</span><span class="s0">;</span>
+            <span class="s1">String pendingJson = objectMapper.writeValueAsString(dto)</span><span class="s0">;</span>
+            <span class="s1">user.setPendingUpdateJson(pendingJson)</span><span class="s0">;</span>
+            <span class="s1">userRepository.save(user)</span><span class="s0">;</span>
+        <span class="s1">} </span><span class="s0">catch </span><span class="s1">(JsonProcessingException e) {</span>
+            <span class="s0">throw new </span><span class="s1">RuntimeException(</span><span class="s4">&quot;数据序列化失败&quot;</span><span class="s0">, </span><span class="s1">e)</span><span class="s0">;</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+    <span class="s2">//管理员审核用户信息修改请求</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">reviewUserUpdateRequest(UserUpdateAuditDTO dto) {</span>
+        <span class="s1">User user = userRepository.findById(dto.getUserId())</span>
+                <span class="s1">.orElseThrow(() -&gt; </span><span class="s0">new </span><span class="s1">RuntimeException(</span><span class="s4">&quot;用户不存在&quot;</span><span class="s1">))</span><span class="s0">;</span>
+
+        <span class="s0">if </span><span class="s1">(!Boolean.TRUE.equals(dto.getApproved())) {</span>
+            <span class="s1">user.setPendingUpdateJson(</span><span class="s0">null</span><span class="s1">)</span><span class="s0">; </span><span class="s2">// 审核不通过则清空</span>
+            <span class="s1">userRepository.save(user)</span><span class="s0">;</span>
+            <span class="s0">return;</span>
+        <span class="s1">}</span>
+
+        <span class="s2">// 审核通过：应用更改</span>
+        <span class="s1">user.setUsername(dto.getUsername())</span><span class="s0">;</span>
+        <span class="s1">user.setPhoneNumber(dto.getPhoneNumber())</span><span class="s0">;</span>
+        <span class="s1">user.setDescription(dto.getDescription())</span><span class="s0">;</span>
+        <span class="s1">user.setPendingUpdateJson(</span><span class="s0">null</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">userRepository.save(user)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+<span class="s1">}</span>
+</pre>
+</body>
+</html>

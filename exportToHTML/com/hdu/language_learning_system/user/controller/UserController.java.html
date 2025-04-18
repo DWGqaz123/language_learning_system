@@ -1,0 +1,101 @@
+<html>
+<head>
+<title>UserController.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+.s3 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+UserController.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.hdu.language_learning_system.user.controller</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.common.ApiResponse</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.user.dto.*</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.user.service.UserService</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">org.springframework.beans.factory.annotation.Autowired</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">org.springframework.http.ResponseEntity</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">org.springframework.web.bind.annotation.*</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">java.util.List</span><span class="s0">;</span>
+
+<span class="s1">@RestController</span>
+<span class="s1">@RequestMapping(</span><span class="s2">&quot;/api/users&quot;</span><span class="s1">)</span>
+<span class="s0">public class </span><span class="s1">UserController {</span>
+
+    <span class="s0">private final </span><span class="s1">UserService userService</span><span class="s0">;</span>
+
+    <span class="s1">@Autowired </span><span class="s3">// 自动注入 UserService</span>
+    <span class="s0">public </span><span class="s1">UserController(UserService userService) {</span>
+        <span class="s0">this</span><span class="s1">.userService = userService</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s3">// 1. 查询所有用户</span>
+    <span class="s1">@GetMapping</span>
+    <span class="s0">public </span><span class="s1">ResponseEntity&lt;ApiResponse&lt;List&lt;UserDTO&gt;&gt;&gt; getAllUsers() {</span>
+        <span class="s1">List&lt;UserDTO&gt; users = userService.findAllUsers()</span><span class="s0">;</span>
+        <span class="s0">return </span><span class="s1">ResponseEntity.ok(ApiResponse.success(users))</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s3">// 2. 通过手机号查询用户</span>
+    <span class="s1">@GetMapping(</span><span class="s2">&quot;/phone&quot;</span><span class="s1">)</span>
+    <span class="s0">public </span><span class="s1">ResponseEntity&lt;ApiResponse&lt;UserDTO&gt;&gt; getUserByPhoneNumber(@RequestParam String phoneNumber) {</span>
+        <span class="s1">UserDTO user = userService.findByPhoneNumber(phoneNumber)</span><span class="s0">;</span>
+        <span class="s0">return </span><span class="s1">ResponseEntity.ok(ApiResponse.success(user))</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s3">// 3. 导入员工信息</span>
+    <span class="s1">@PostMapping(</span><span class="s2">&quot;/import-employee&quot;</span><span class="s1">)</span>
+    <span class="s0">public </span><span class="s1">ResponseEntity&lt;ApiResponse&lt;Void&gt;&gt; importEmployee(@RequestBody EmployeeImportDTO dto) {</span>
+        <span class="s1">userService.importEmployee(dto)</span><span class="s0">;</span>
+        <span class="s0">return </span><span class="s1">ResponseEntity.ok(ApiResponse.success(</span><span class="s2">&quot;员工导入成功&quot;</span><span class="s0">, null</span><span class="s1">))</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s3">// 4. 录入学员信息</span>
+    <span class="s1">@PostMapping(</span><span class="s2">&quot;/register-student&quot;</span><span class="s1">)</span>
+    <span class="s0">public </span><span class="s1">ResponseEntity&lt;ApiResponse&lt;Void&gt;&gt; registerStudent(@RequestBody StudentRegisterDTO dto) {</span>
+        <span class="s1">userService.registerStudent(dto)</span><span class="s0">;</span>
+        <span class="s0">return </span><span class="s1">ResponseEntity.ok(ApiResponse.success(</span><span class="s2">&quot;学员录入成功&quot;</span><span class="s0">, null</span><span class="s1">))</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s3">// 5. 用户权限分配</span>
+    <span class="s1">@PutMapping(</span><span class="s2">&quot;/update-role&quot;</span><span class="s1">)</span>
+    <span class="s0">public </span><span class="s1">ResponseEntity&lt;ApiResponse&lt;Void&gt;&gt; updateUserRole(@RequestBody UpdateUserRoleDTO dto) {</span>
+        <span class="s1">userService.updateUserRole(dto)</span><span class="s0">;</span>
+        <span class="s0">return </span><span class="s1">ResponseEntity.ok(ApiResponse.success(</span><span class="s2">&quot;用户权限更新成功&quot;</span><span class="s0">, null</span><span class="s1">))</span><span class="s0">;</span>
+    <span class="s1">}</span>
+    <span class="s3">// 6. 用户账号激活</span>
+    <span class="s1">@PostMapping(</span><span class="s2">&quot;/activate-account&quot;</span><span class="s1">)</span>
+    <span class="s0">public </span><span class="s1">ResponseEntity&lt;ApiResponse&lt;Void&gt;&gt; activateUser(@RequestBody UserActivationDTO dto) {</span>
+        <span class="s1">userService.activateUser(dto)</span><span class="s0">;</span>
+        <span class="s0">return </span><span class="s1">ResponseEntity.ok(ApiResponse.success(</span><span class="s2">&quot;账号激活成功&quot;</span><span class="s0">, null</span><span class="s1">))</span><span class="s0">;</span>
+    <span class="s1">}</span>
+    <span class="s3">// 7. 用户信息修改</span>
+    <span class="s1">@PutMapping(</span><span class="s2">&quot;/update-info&quot;</span><span class="s1">)</span>
+    <span class="s0">public </span><span class="s1">ResponseEntity&lt;ApiResponse&lt;Void&gt;&gt; updateUserInfo(@RequestBody UpdateUserInfoDTO dto) {</span>
+        <span class="s1">userService.updateUserInfo(dto)</span><span class="s0">;</span>
+        <span class="s0">return </span><span class="s1">ResponseEntity.ok(ApiResponse.success(</span><span class="s2">&quot;用户信息更新成功&quot;</span><span class="s0">, null</span><span class="s1">))</span><span class="s0">;</span>
+    <span class="s1">}</span>
+    <span class="s3">// 8. 用户信息修改请求</span>
+    <span class="s1">@PostMapping(</span><span class="s2">&quot;/update-request&quot;</span><span class="s1">)</span>
+    <span class="s0">public </span><span class="s1">ResponseEntity&lt;ApiResponse&lt;Void&gt;&gt; submitUpdateRequest(@RequestBody UserUpdateAuditDTO dto) {</span>
+        <span class="s1">userService.submitUserUpdateRequest(dto)</span><span class="s0">;</span>
+        <span class="s0">return </span><span class="s1">ResponseEntity.ok(ApiResponse.success(</span><span class="s2">&quot;修改申请提交成功&quot;</span><span class="s0">, null</span><span class="s1">))</span><span class="s0">;</span>
+    <span class="s1">}</span>
+    <span class="s3">// 9. 管理员审核用户信息修改</span>
+    <span class="s1">@PutMapping(</span><span class="s2">&quot;/review-update&quot;</span><span class="s1">)</span>
+    <span class="s0">public </span><span class="s1">ResponseEntity&lt;ApiResponse&lt;Void&gt;&gt; reviewUpdateRequest(@RequestBody UserUpdateAuditDTO dto) {</span>
+        <span class="s1">userService.reviewUserUpdateRequest(dto)</span><span class="s0">;</span>
+        <span class="s0">return </span><span class="s1">ResponseEntity.ok(ApiResponse.success(</span><span class="s2">&quot;审核处理完成&quot;</span><span class="s0">, null</span><span class="s1">))</span><span class="s0">;</span>
+    <span class="s1">}</span>
+<span class="s1">}</span>
+</pre>
+</body>
+</html>

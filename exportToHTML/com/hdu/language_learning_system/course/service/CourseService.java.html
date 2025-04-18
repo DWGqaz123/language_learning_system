@@ -1,0 +1,29 @@
+<html>
+<head>
+<title>CourseService.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+CourseService.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.hdu.language_learning_system.course.service</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.course.dto.CourseCreateDTO</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.course.dto.AddStudentsToCourseDTO</span><span class="s0">;</span>
+<span class="s0">public interface </span><span class="s1">CourseService {</span>
+    <span class="s0">void </span><span class="s1">createCourse(CourseCreateDTO dto)</span><span class="s0">;</span>
+
+    <span class="s0">void </span><span class="s1">addStudentsToClassCourse(AddStudentsToCourseDTO dto)</span><span class="s0">;</span>
+
+    <span class="s0">void </span><span class="s1">generateStudentRecords(Integer scheduleId)</span><span class="s0">;</span>
+
+<span class="s1">}</span></pre>
+</body>
+</html>

@@ -1,0 +1,11 @@
+package com.hdu.language_learning_system.user.dto;
+
+import lombok.Data;
+
+@Data
+public class StudentRegisterDTO {
+    private String username;
+    private String phoneNumber;
+    private String password;
+    private String description; // 可填写学员备注信息，如报名课程
+}

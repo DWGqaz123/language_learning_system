@@ -1,0 +1,55 @@
+<html>
+<head>
+<title>Schedule.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+.s3 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Schedule.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.hdu.language_learning_system.course.entity</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.studyRoom.entity.StudyRoom</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.user.entity.User</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">jakarta.persistence.*</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">lombok.Data</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">java.sql.Timestamp</span><span class="s0">;</span>
+
+<span class="s1">@Entity</span>
+<span class="s1">@Table(name = </span><span class="s2">&quot;schedules&quot;</span><span class="s1">)</span>
+<span class="s1">@Data</span>
+<span class="s0">public class </span><span class="s1">Schedule {</span>
+
+    <span class="s1">@Id</span>
+    <span class="s1">@GeneratedValue(strategy = GenerationType.IDENTITY)</span>
+    <span class="s0">private </span><span class="s1">Integer scheduleId</span><span class="s0">;</span>
+
+    <span class="s1">@ManyToOne</span>
+    <span class="s1">@JoinColumn(name = </span><span class="s2">&quot;course_id&quot;</span><span class="s1">)</span>
+    <span class="s0">private </span><span class="s1">Course course</span><span class="s0">;</span>
+
+    <span class="s1">@ManyToOne</span>
+    <span class="s1">@JoinColumn(name = </span><span class="s2">&quot;teacher_id&quot;</span><span class="s1">)</span>
+    <span class="s0">private </span><span class="s1">User teacher</span><span class="s0">;</span>
+
+    <span class="s1">@ManyToOne</span>
+    <span class="s1">@JoinColumn(name = </span><span class="s2">&quot;assistant_id&quot;</span><span class="s1">)</span>
+    <span class="s0">private </span><span class="s1">User assistant</span><span class="s0">; </span><span class="s3">//</span>
+
+    <span class="s1">@ManyToOne</span>
+    <span class="s1">@JoinColumn(name = </span><span class="s2">&quot;room_id&quot;</span><span class="s1">)</span>
+    <span class="s0">private </span><span class="s1">StudyRoom room</span><span class="s0">;</span>
+
+    <span class="s0">private </span><span class="s1">Timestamp classTime</span><span class="s0">;</span>
+<span class="s1">}</span></pre>
+</body>
+</html>

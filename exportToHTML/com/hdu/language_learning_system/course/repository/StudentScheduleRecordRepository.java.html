@@ -1,0 +1,43 @@
+<html>
+<head>
+<title>StudentScheduleRecordRepository.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #808080;}
+.s3 { color: #6a8759;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+StudentScheduleRecordRepository.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.hdu.language_learning_system.course.repository</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.course.entity.StudentScheduleRecord</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">org.springframework.data.jpa.repository.JpaRepository</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">org.springframework.data.jpa.repository.Query</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.hdu.language_learning_system.user.entity.User</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">org.springframework.data.repository.query.Param</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">java.util.List</span><span class="s0">;</span>
+
+<span class="s0">public interface </span><span class="s1">StudentScheduleRecordRepository </span><span class="s0">extends </span><span class="s1">JpaRepository&lt;StudentScheduleRecord</span><span class="s0">, </span><span class="s1">Integer&gt; {</span>
+
+    <span class="s2">// 查询 schedule_id 为 null 且 student 属于该 course 的记录</span>
+    <span class="s1">@Query(</span><span class="s3">&quot;SELECT r FROM StudentScheduleRecord r &quot; </span><span class="s1">+</span>
+            <span class="s3">&quot;WHERE r.schedule IS NULL &quot; </span><span class="s1">+</span>
+            <span class="s3">&quot;AND r.student.userId IN (&quot; </span><span class="s1">+</span>
+            <span class="s3">&quot;   SELECT c.student.userId FROM Course c WHERE c.courseId = :courseId)&quot;</span><span class="s1">)</span>
+    <span class="s1">List&lt;StudentScheduleRecord&gt; findAllByScheduleIsNullAndCourse_CourseId(Integer courseId)</span><span class="s0">;</span>
+
+    <span class="s1">@Query(</span><span class="s3">&quot;SELECT ssr.student FROM StudentScheduleRecord ssr WHERE ssr.schedule.scheduleId = :scheduleId&quot;</span><span class="s1">)</span>
+    <span class="s1">List&lt;User&gt; findStudentsByScheduleId(@Param(</span><span class="s3">&quot;scheduleId&quot;</span><span class="s1">) Integer scheduleId)</span><span class="s0">;</span>
+
+<span class="s1">}</span></pre>
+</body>
+</html>
