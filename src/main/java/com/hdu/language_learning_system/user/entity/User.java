@@ -13,6 +13,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId;
 
+    @Column(name = "username")
     private String username;
 
     @Column(unique = true)
@@ -34,7 +35,7 @@ public class User {
     private Timestamp updatedAt;
 
     // Role实体外键映射
-    @ManyToOne(fetch = FetchType.LAZY) //懒加载，提升性能
+    @ManyToOne(fetch = FetchType.EAGER) //懒加载，提升性能
     @JoinColumn(name = "role_id", referencedColumnName = "role_id")
     @JsonIgnore
     private Role role;

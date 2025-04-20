@@ -7,9 +7,18 @@ import lombok.Data;
 @Table(name = "study_rooms")
 @Data
 public class StudyRoom {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer roomId;
 
+    @Column(name = "room_name")
     private String name;
+
+    private Integer capacity;
+
+    private String location;
+
+    @Column(name = "current_status")
+    private String currentStatus;
 }

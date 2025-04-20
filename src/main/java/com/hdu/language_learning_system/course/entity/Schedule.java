@@ -26,7 +26,7 @@ public class Schedule {
 
     @ManyToOne
     @JoinColumn(name = "assistant_id")
-    private User assistant; //
+    private User assistant;
 
     @ManyToOne
     @JoinColumn(name = "room_id")

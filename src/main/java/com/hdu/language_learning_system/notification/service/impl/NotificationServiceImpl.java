@@ -1,64 +1,131 @@
 package com.hdu.language_learning_system.notification.service.impl;
 
+import com.hdu.language_learning_system.course.entity.Course;
 import com.hdu.language_learning_system.course.entity.Schedule;
+import com.hdu.language_learning_system.course.entity.StudentScheduleRecord;
+import com.hdu.language_learning_system.course.repository.CourseRepository;
 import com.hdu.language_learning_system.course.repository.ScheduleRepository;
+import com.hdu.language_learning_system.course.repository.StudentScheduleRecordRepository;
+import com.hdu.language_learning_system.notification.dto.BatchCourseNotificationDTO;
+import com.hdu.language_learning_system.notification.dto.NotificationDTO;
+import com.hdu.language_learning_system.notification.dto.NotificationQueryDTO;
 import com.hdu.language_learning_system.notification.entity.Notification;
 import com.hdu.language_learning_system.notification.repository.NotificationRepository;
 import com.hdu.language_learning_system.notification.service.NotificationService;
 import com.hdu.language_learning_system.user.entity.User;
 import com.hdu.language_learning_system.user.repository.UserRepository;
-import com.hdu.language_learning_system.course.repository.StudentScheduleRecordRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.transaction.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
-    private static final String NOTIFICATION_TYPE_CLASS = "课堂通知";
+    private final NotificationRepository notificationRepository;
+    private final UserRepository userRepository;
+    private final CourseRepository courseRepository;
+    private final ScheduleRepository scheduleRepository;
+    private final StudentScheduleRecordRepository studentScheduleRecordRepository;
 
-    @Autowired
-    private NotificationRepository notificationRepository;
+    public NotificationServiceImpl(NotificationRepository notificationRepository,
+                                   UserRepository userRepository,
+                                   CourseRepository courseRepository,
+                                   ScheduleRepository scheduleRepository,
+                                   StudentScheduleRecordRepository studentScheduleRecordRepository) {
+        this.notificationRepository = notificationRepository;
+        this.userRepository = userRepository;
+        this.courseRepository = courseRepository;
+        this.scheduleRepository = scheduleRepository;
+        this.studentScheduleRecordRepository = studentScheduleRecordRepository;
+    }
 
-    @Autowired
-    private ScheduleRepository scheduleRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private StudentScheduleRecordRepository studentScheduleRecordRepository;
-
+    // 普通通知发送
     @Override
-    public void sendClassNotification(Integer scheduleId) {
-        Schedule schedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> new RuntimeException("未找到对应课程安排"));
+    public void sendNotification(NotificationDTO dto) {
+        User receiver = userRepository.findById(dto.getReceiverId())
+                .orElseThrow(() -> new RuntimeException("接收人不存在"));
 
-        // 教师通知
-        Notification teacherNotice = new Notification();
-        teacherNotice.setReceiver(schedule.getTeacher());
-        teacherNotice.setNotificationType(NOTIFICATION_TYPE_CLASS);
-        teacherNotice.setRefTargetId(scheduleId);
-        teacherNotice.setRefTargetType("Schedule");
-        teacherNotice.setContent("您将于 " + schedule.getClassTime() + " 上课，请准时到场！");
-        teacherNotice.setSentTime(new Timestamp(System.currentTimeMillis()));
-        teacherNotice.setStatus("未读");
-        notificationRepository.save(teacherNotice);
+        Notification notification = new Notification();
+        notification.setReceiver(receiver);
+        notification.setNotificationType(dto.getNotificationType());
+        notification.setRefTargetId(dto.getRefTargetId());
+        notification.setRefTargetType(dto.getRefTargetType());
+        notification.setContent(dto.getContent());
+        notification.setSentTime(new Timestamp(System.currentTimeMillis()));
+        notification.setStatus("未读");
 
-        // 学员通知
-        List<User> students = studentScheduleRecordRepository.findStudentsByScheduleId(scheduleId);
-        for (User student : students) {
-            Notification studentNotice = new Notification();
-            studentNotice.setReceiver(student);
-            studentNotice.setNotificationType(NOTIFICATION_TYPE_CLASS);
-            studentNotice.setRefTargetId(scheduleId);
-            studentNotice.setRefTargetType("Schedule");
-            studentNotice.setContent("您将于 " + schedule.getClassTime() + " 上课，请准时到场！");
-            studentNotice.setSentTime(new Timestamp(System.currentTimeMillis()));
-            studentNotice.setStatus("未读");
-            notificationRepository.save(studentNotice);
+        notificationRepository.save(notification);
+    }
+
+    // 批量发送通知给班级学员、教师和助教
+    @Override
+    @Transactional
+    public void sendBatchCourseNotifications(BatchCourseNotificationDTO dto) {
+        List<User> receivers = new ArrayList<>();
+
+        // 获取该课程所有学生
+        receivers.addAll(studentScheduleRecordRepository.findDistinctStudentsByCourseId(dto.getCourseId()));
+
+        // 如果 scheduleId 存在，查找 schedule 中的教师和助教
+        if (dto.getRefTargetId() != null) {
+            Schedule schedule = scheduleRepository.findById(dto.getRefTargetId())
+                    .orElseThrow(() -> new RuntimeException("课表不存在"));
+
+            if (schedule.getTeacher() != null) {
+                receivers.add(schedule.getTeacher());
+            }
+
+            if (schedule.getAssistant() != null) {
+                receivers.add(schedule.getAssistant());
+            }
+        }
+
+        for (User receiver : receivers) {
+            Notification notification = new Notification();
+            notification.setReceiver(receiver);
+            notification.setNotificationType(dto.getNotificationType());
+            notification.setContent(dto.getContent());
+            notification.setRefTargetId(dto.getRefTargetId());
+            notification.setRefTargetType(dto.getRefTargetType());
+            notification.setSentTime(new Timestamp(System.currentTimeMillis()));
+            notification.setStatus("未读");
+            notificationRepository.save(notification);
         }
     }
+
+    //通知查看
+    @Override
+    public List<Notification> getNotificationsByReceiver(NotificationQueryDTO dto) {
+        Pageable pageable = PageRequest.of(dto.getPage(), dto.getSize(), Sort.by(Sort.Direction.DESC, "sentTime"));
+
+        if (dto.getNotificationType() != null && !dto.getNotificationType().isEmpty()) {
+            return notificationRepository
+                    .findByReceiver_UserIdAndNotificationType(dto.getReceiverId(), dto.getNotificationType(), pageable)
+                    .getContent();
+        } else {
+            return notificationRepository
+                    .findByReceiver_UserId(dto.getReceiverId(), pageable)
+                    .getContent();
+        }
+    }
+
+    //通知确认
+    @Override
+    @Transactional
+    public void markAsRead(Integer notificationId) {
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new RuntimeException("通知不存在"));
+
+        notification.setStatus("已读");
+        notificationRepository.save(notification);
+    }
+
 }

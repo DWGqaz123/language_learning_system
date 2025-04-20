@@ -27,5 +27,15 @@ public class StudentScheduleRecord {
     private Course course;
 
     private Timestamp joinTime;
+
+    @Column(name = "attend_status")
     private String attendStatus;
+
+    @Column(name = "leave_reason")
+    private String leaveReason;
+
+    @Column(name = "performance_eval")
+    private String PerformanceEval;
+
+
 }

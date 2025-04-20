@@ -1,27 +1,40 @@
 package com.hdu.language_learning_system.notification.entity;
 
+import com.hdu.language_learning_system.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Data;
-import com.hdu.language_learning_system.user.entity.User;
 
 import java.sql.Timestamp;
 
+@Data
 @Entity
 @Table(name = "notification")
-@Data
 public class Notification {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "notification_id")
     private Integer notificationId;
 
+    // 接收人
     @ManyToOne
     @JoinColumn(name = "receiver_id")
     private User receiver;
 
-    private String notificationType;  // 例如：CLASS_NOTICE
-    private Integer refTargetId;      // 关联的 schedule_id
-    private String refTargetType;     // 一般为 "schedule"
+    @Column(name = "notification_type")
+    private String notificationType;
+
+    @Column(name = "ref_target_id")
+    private Integer refTargetId;
+
+    @Column(name = "ref_target_type")
+    private String refTargetType;
+
+    @Column(columnDefinition = "TEXT")
     private String content;
+
+    @Column(name = "sent_time")
     private Timestamp sentTime;
-    private String status;            // 如 "未读"、"已读"
+
+    private String status;
 }
