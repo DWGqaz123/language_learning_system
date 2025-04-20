@@ -37,4 +37,15 @@ public class Notification {
     private Timestamp sentTime;
 
     private String status;
+    public Notification(Notification other) {
+        this.notificationType = other.notificationType;
+        this.refTargetId = other.refTargetId;
+        this.refTargetType = other.refTargetType;
+        this.content = other.content;
+        this.sentTime = other.sentTime;
+        this.status = other.status;
+    }
+    public Notification() {} // 保留默认构造器
+
 }
+

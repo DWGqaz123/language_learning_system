@@ -28,4 +28,7 @@ public interface CourseService {
     List<StudentAttendancePerformanceDTO> getStudentAttendancePerformance(Integer studentId);
 
     List<UserCourseDTO> getCoursesByUserId(Integer userId);
+
+    void reviewLeaveRequest(LeaveReviewDTO dto);
+
 }

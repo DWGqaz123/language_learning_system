@@ -114,4 +114,10 @@ public class CourseController {
         List<UserCourseDTO> courses = courseService.getCoursesByUserId(userId);
         return ApiResponse.success(courses);
     }
+    //审核学员请假
+    @PostMapping("/review-leave")
+    public ApiResponse<String> reviewLeave(@RequestBody LeaveReviewDTO dto) {
+        courseService.reviewLeaveRequest(dto);
+        return ApiResponse.success("审核处理完成");
+    }
 }

@@ -37,5 +37,8 @@ public class StudentScheduleRecord {
     @Column(name = "performance_eval")
     private String PerformanceEval;
 
+    @Column(name = "review_comment")
+    private String reviewComment;  // 审核意见，由助教填写
+
 
 }

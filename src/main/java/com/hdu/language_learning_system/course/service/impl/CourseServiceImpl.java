@@ -336,5 +336,25 @@ public class CourseServiceImpl implements CourseService {
                     return dto;
                 }).collect(Collectors.toList());
     }
+    //学员请假审批
+    @Override
+    public void reviewLeaveRequest(LeaveReviewDTO dto) {
+        StudentScheduleRecord record = studentScheduleRecordRepository.findById(dto.getSsrId())
+                .orElseThrow(() -> new RuntimeException("未找到学生课程记录"));
+
+        if ("请假".equals(record.getAttendStatus())) {
+            if (Boolean.TRUE.equals(dto.getApproved())) {
+                // 审核通过，维持“请假”状态
+                record.setReviewComment(dto.getReviewComment());
+            } else {
+                // 审核不通过，设为“未开始”
+                record.setAttendStatus("未开始");
+                record.setReviewComment(dto.getReviewComment());
+            }
+            studentScheduleRecordRepository.save(record);
+        } else {
+            throw new RuntimeException("当前记录不处于请假状态，无法审核");
+        }
+    }
 
 }

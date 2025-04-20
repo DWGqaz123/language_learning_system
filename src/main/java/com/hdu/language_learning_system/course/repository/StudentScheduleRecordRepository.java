@@ -46,4 +46,7 @@ public interface StudentScheduleRecordRepository extends JpaRepository<StudentSc
 
     List<StudentScheduleRecord> findByStudent_UserId(Integer userId);
 
+    @Query("SELECT ssr.student FROM StudentScheduleRecord ssr WHERE ssr.schedule.scheduleId = :scheduleId")
+    List<User> findStudentsByScheduleId(@Param("scheduleId") Integer scheduleId);
+
 }
