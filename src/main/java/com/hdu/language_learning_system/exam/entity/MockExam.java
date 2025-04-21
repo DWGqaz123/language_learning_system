@@ -13,11 +13,14 @@ public class MockExam {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "exam_id")
     private Integer examId;
 
-    private String examName;
-
+    @Column(name = "exam_time")
     private Timestamp examTime;
+
+    @Column(name = "exam_name")
+    private String examName;
 
     @ManyToOne
     @JoinColumn(name = "standard_paper_id")

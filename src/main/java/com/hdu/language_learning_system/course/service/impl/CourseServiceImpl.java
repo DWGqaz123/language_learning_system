@@ -195,10 +195,10 @@ public class CourseServiceImpl implements CourseService {
             if (s.getRoom() == null) {
                 System.out.println("room is null for scheduleId: " + s.getScheduleId());
             } else {
-                System.out.println("room is NOT null, room name: " + s.getRoom().getName());
+                System.out.println("room is NOT null, room name: " + s.getRoom().getRoomName());
             }
 
-            dto.setRoomName(s.getRoom() != null ? s.getRoom().getName() : null);
+            dto.setRoomName(s.getRoom() != null ? s.getRoom().getRoomName() : null);
 
             if (s.getTeacher() != null) {
                 dto.setTeacherId(s.getTeacher().getUserId());
@@ -244,7 +244,7 @@ public class CourseServiceImpl implements CourseService {
                 dto.setAssistantName(s.getAssistant().getUsername());
             }
             if (s.getRoom() != null) {
-                dto.setRoomName(s.getRoom().getName());
+                dto.setRoomName(s.getRoom().getRoomName());
             }
             result.add(dto);
         }
@@ -427,7 +427,7 @@ public class CourseServiceImpl implements CourseService {
             dto.setAssistantName(s.getAssistant().getUsername());
         }
         if (s.getRoom() != null) {
-            dto.setRoomName(s.getRoom().getName());
+            dto.setRoomName(s.getRoom().getRoomName());
         }
 
         return dto;

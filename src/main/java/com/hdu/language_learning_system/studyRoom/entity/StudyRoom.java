@@ -13,7 +13,7 @@ public class StudyRoom {
     private Integer roomId;
 
     @Column(name = "room_name")
-    private String name;
+    private String roomName;
 
     private Integer capacity;
 
