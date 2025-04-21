@@ -31,4 +31,13 @@ public interface CourseService {
 
     void reviewLeaveRequest(LeaveReviewDTO dto);
 
+    void updateCourse(CourseUpdateDTO dto);
+
+    void deleteCourse(Integer courseId);
+
+    void removeStudentFromCourse(Integer courseId, Integer studentId);
+
+    CourseScheduleDetailDTO getScheduleDetailById(Integer scheduleId);
+
+    List<LeaveRequestDTO> getLeaveRequestsByCourseAndSchedule(Integer courseId, Integer scheduleId);
 }

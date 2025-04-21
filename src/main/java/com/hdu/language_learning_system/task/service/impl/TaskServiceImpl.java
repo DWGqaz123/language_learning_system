@@ -5,11 +5,9 @@ import com.hdu.language_learning_system.course.entity.Schedule;
 import com.hdu.language_learning_system.course.repository.StudentScheduleRecordRepository;
 import com.hdu.language_learning_system.course.repository.ScheduleRepository;
 import com.hdu.language_learning_system.notification.entity.Notification;
-import com.hdu.language_learning_system.task.dto.TaskDetailDTO;
-import com.hdu.language_learning_system.task.dto.TaskPublishDTO;
 import com.hdu.language_learning_system.task.entity.Task;
 import com.hdu.language_learning_system.task.entity.TaskAssignment;
-import com.hdu.language_learning_system.task.dto.TaskListDTO;
+import com.hdu.language_learning_system.task.dto.*;
 import com.hdu.language_learning_system.notification.repository.NotificationRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -193,5 +191,32 @@ public class TaskServiceImpl implements TaskService {
         }
 
         return result;
+    }
+
+    //修改发布的任务
+    @Override
+    public void updateTask(TaskUpdateDTO dto) {
+        Task task = taskRepository.findById(dto.getTaskId())
+                .orElseThrow(() -> new RuntimeException("任务不存在"));
+
+        if (dto.getTaskContent() != null) {
+            task.setTaskContent(dto.getTaskContent());
+        }
+        if (dto.getDeadline() != null) {
+            task.setDeadline(dto.getDeadline());
+        }
+
+        taskRepository.save(task);
+    }
+
+    //删除已发布的任务
+
+    @Override
+    public void deleteTask(Integer taskId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("任务不存在"));
+
+        // 删除任务本体
+        taskRepository.delete(task);
     }
 }

@@ -4,4 +4,5 @@ import com.hdu.language_learning_system.course.entity.Course;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CourseRepository extends JpaRepository<Course, Integer> {
+    void deleteById(Integer courseId);
 }

@@ -33,6 +33,7 @@ public class CourseController {
         courseService.addStudentsToClassCourse(dto);
         return ResponseEntity.ok(ApiResponse.success("班级学员添加成功", null));
     }
+
     //创建学员上课记录
     @PostMapping("/student-records/generate")
     public ResponseEntity<ApiResponse<Void>> generateStudentScheduleRecords(@RequestBody GenerateStudentRecordsDTO dto) {
@@ -114,10 +115,52 @@ public class CourseController {
         List<UserCourseDTO> courses = courseService.getCoursesByUserId(userId);
         return ApiResponse.success(courses);
     }
+
     //审核学员请假
     @PostMapping("/review-leave")
     public ApiResponse<String> reviewLeave(@RequestBody LeaveReviewDTO dto) {
         courseService.reviewLeaveRequest(dto);
         return ApiResponse.success("审核处理完成");
+    }
+
+    //修改课程信息
+    @PutMapping("/update")
+    public ApiResponse<String> updateCourse(@RequestBody CourseUpdateDTO dto) {
+        courseService.updateCourse(dto);
+        return ApiResponse.success("课程信息更新成功");
+    }
+
+    //删除课程
+    @DeleteMapping("/{courseId}")
+    public ApiResponse<String> deleteCourse(@PathVariable Integer courseId) {
+        courseService.deleteCourse(courseId);
+        return ApiResponse.success("课程删除成功");
+    }
+
+    //移除班级学员
+    @DeleteMapping("/remove-student")
+    public ApiResponse<String> removeStudentFromCourse(
+            @RequestParam Integer courseId,
+            @RequestParam Integer studentId
+    ) {
+        courseService.removeStudentFromCourse(courseId, studentId);
+        return ApiResponse.success("已成功移除该学员");
+    }
+
+    //查询排课详情
+    @GetMapping("/schedules/{scheduleId}")
+    public ApiResponse<CourseScheduleDetailDTO> getScheduleDetail(@PathVariable Integer scheduleId) {
+        CourseScheduleDetailDTO detail = courseService.getScheduleDetailById(scheduleId);
+        return ApiResponse.success(detail);
+    }
+
+    //查询某课程某课表下的请假申请
+    @GetMapping("/{courseId}/schedule/{scheduleId}/leave-requests")
+    public ApiResponse<List<LeaveRequestDTO>> getLeaveRequestsByCourseAndSchedule(
+            @PathVariable Integer courseId,
+            @PathVariable Integer scheduleId
+    ) {
+        List<LeaveRequestDTO> list = courseService.getLeaveRequestsByCourseAndSchedule(courseId, scheduleId);
+        return ApiResponse.success(list);
     }
 }

@@ -52,4 +52,18 @@ public class TaskController {
         return ApiResponse.success(list);
     }
 
+    //助教修改已发布的任务
+    @PutMapping("/update")
+    public ApiResponse<String> updateTask(@RequestBody TaskUpdateDTO dto) {
+        taskService.updateTask(dto);
+        return ApiResponse.success("任务更新成功");
+    }
+
+    //助教删除已发布的任务
+    @DeleteMapping("/{taskId}")
+    public ApiResponse<String> deleteTask(@PathVariable Integer taskId) {
+        taskService.deleteTask(taskId);
+        return ApiResponse.success("任务删除成功");
+    }
+
 }

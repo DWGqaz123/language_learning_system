@@ -14,7 +14,6 @@ import com.hdu.language_learning_system.course.dto.PerformanceEvalDTO;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -357,4 +356,102 @@ public class CourseServiceImpl implements CourseService {
         }
     }
 
+    //修改课程信息
+    @Override
+    public void updateCourse(CourseUpdateDTO dto) {
+        Course course = courseRepository.findById(dto.getCourseId())
+                .orElseThrow(() -> new RuntimeException("课程不存在"));
+
+        course.setCourseName(dto.getCourseName());
+        course.setCourseType(dto.getCourseType());
+        course.setCourseContent(dto.getCourseContent());
+        course.setClassGroupCode(dto.getClassGroupCode());
+
+        if ("1对1".equals(dto.getCourseType())) {
+            if (dto.getStudentId() != null) {
+                User student = userRepository.findById(dto.getStudentId())
+                        .orElseThrow(() -> new RuntimeException("学生不存在"));
+                course.setStudent(student);
+            }
+            course.setTotalHours(dto.getTotalHours());
+        } else {
+            course.setStudent(null);
+            course.setTotalHours(null);
+        }
+
+        courseRepository.save(course);
+    }
+
+    //删除课程
+    @Override
+    public void deleteCourse(Integer courseId) {
+        if (!courseRepository.existsById(courseId)) {
+            throw new RuntimeException("课程不存在，无法删除");
+        }
+        courseRepository.deleteById(courseId);
+    }
+
+    //移除班级学员
+    @Transactional
+    @Override
+    public void removeStudentFromCourse(Integer courseId, Integer studentId) {
+        if (!courseRepository.existsById(courseId)) {
+            throw new RuntimeException("课程不存在");
+        }
+        if (!userRepository.existsById(studentId)) {
+            throw new RuntimeException("学员不存在");
+        }
+
+        studentScheduleRecordRepository.deleteByCourse_CourseIdAndStudent_UserId(courseId, studentId);
+    }
+
+    //查询排课详情
+    // CourseServiceImpl.java
+    @Override
+    public CourseScheduleDetailDTO getScheduleDetailById(Integer scheduleId) {
+        Schedule s = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new RuntimeException("排课不存在"));
+
+        CourseScheduleDetailDTO dto = new CourseScheduleDetailDTO();
+        dto.setScheduleId(s.getScheduleId());
+        dto.setClassTime(s.getClassTime());
+        dto.setCourseName(s.getCourse().getCourseName());
+        dto.setCourseType(s.getCourse().getCourseType());
+
+        if (s.getTeacher() != null) {
+            dto.setTeacherId(s.getTeacher().getUserId());
+            dto.setTeacherName(s.getTeacher().getUsername());
+        }
+        if (s.getAssistant() != null) {
+            dto.setAssistantId(s.getAssistant().getUserId());
+            dto.setAssistantName(s.getAssistant().getUsername());
+        }
+        if (s.getRoom() != null) {
+            dto.setRoomName(s.getRoom().getName());
+        }
+
+        return dto;
+    }
+
+    //查询某课程某课表下的请假申请
+    @Override
+    public List<LeaveRequestDTO> getLeaveRequestsByCourseAndSchedule(Integer courseId, Integer scheduleId) {
+        List<StudentScheduleRecord> records = studentScheduleRecordRepository
+                .findByCourse_CourseIdAndSchedule_ScheduleIdAndAttendStatus(courseId, scheduleId, "请假");
+
+        List<LeaveRequestDTO> result = new ArrayList<>();
+        for (StudentScheduleRecord r : records) {
+            LeaveRequestDTO dto = new LeaveRequestDTO();
+            dto.setSsrId(r.getSsrId());
+            dto.setStudentId(r.getStudent().getUserId());
+            dto.setStudentName(r.getStudent().getUsername());
+            dto.setCourseId(r.getCourse().getCourseId());
+            dto.setCourseName(r.getCourse().getCourseName());
+            dto.setScheduleId(r.getSchedule().getScheduleId());
+            dto.setClassTime(r.getSchedule().getClassTime());
+            dto.setLeaveReason(r.getLeaveReason());
+            result.add(dto);
+        }
+        return result;
+    }
 }

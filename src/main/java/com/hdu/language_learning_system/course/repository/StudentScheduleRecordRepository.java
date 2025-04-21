@@ -49,4 +49,11 @@ public interface StudentScheduleRecordRepository extends JpaRepository<StudentSc
     @Query("SELECT ssr.student FROM StudentScheduleRecord ssr WHERE ssr.schedule.scheduleId = :scheduleId")
     List<User> findStudentsByScheduleId(@Param("scheduleId") Integer scheduleId);
 
+    void deleteByCourse_CourseIdAndStudent_UserId(Integer courseId, Integer studentId);
+
+    List<StudentScheduleRecord> findBySchedule_ScheduleId(Integer scheduleId);
+
+    List<StudentScheduleRecord> findByCourse_CourseIdAndSchedule_ScheduleIdAndAttendStatus(
+            Integer courseId, Integer scheduleId, String attendStatus);
+
 }
