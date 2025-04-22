@@ -2,15 +2,12 @@ package com.hdu.language_learning_system.task.controller;
 
 import com.hdu.language_learning_system.common.ApiResponse;
 import com.hdu.language_learning_system.task.dto.*;
-import com.hdu.language_learning_system.task.entity.*;
 import java.util.List;
 
 import com.hdu.language_learning_system.task.service.TaskAssignmentService;
 import com.hdu.language_learning_system.task.service.TaskService;
 import jakarta.annotation.Resource;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/tasks")

@@ -21,4 +21,12 @@ public interface MockExamService {
     void autoGradeObjectiveQuestions(Integer examId, Integer studentId);
 
     void deleteMockExamById(Integer examId);
+
+    void gradeSubjectiveQuestion(SubjectiveScoreDTO dto);
+
+    StudentExamDetailDTO getStudentExamDetail(Integer examId, Integer studentId);
+
+    void submitAssistantComment(AssistantCommentDTO dto);
+
+    ExamReportDTO getExamReport(Integer examId, Integer studentId);
 }

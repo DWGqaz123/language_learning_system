@@ -4,6 +4,8 @@ import com.hdu.language_learning_system.course.entity.Schedule;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
@@ -19,5 +21,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
     @Query("SELECT s FROM Schedule s JOIN StudentScheduleRecord ssr ON s.scheduleId = ssr.schedule.scheduleId WHERE ssr.student.userId = :studentId")
     List<Schedule> findSchedulesByStudentId(Integer studentId);
 
+    List<Schedule> findByClassTimeBetween(LocalDateTime start, LocalDateTime end);
 
 }

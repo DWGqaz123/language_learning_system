@@ -96,6 +96,29 @@ public class MockExamController {
             return ApiResponse.error("批改失败：" + e.getMessage());
         }
     }
+    //教师批改主观题
+    @PostMapping("/grade-subjective")
+    public ApiResponse<String> gradeSubjectiveQuestion(@RequestBody SubjectiveScoreDTO dto) {
+        try {
+            mockExamService.gradeSubjectiveQuestion(dto);
+            return ApiResponse.success("主观题批改成功", null);
+        } catch (Exception e) {
+            return ApiResponse.error("主观题批改失败：" + e.getMessage());
+        }
+    }
+    //查看学员答卷
+    @GetMapping("/student-detail")
+    public ApiResponse<StudentExamDetailDTO> getStudentExamDetail(
+            @RequestParam Integer examId,
+            @RequestParam Integer studentId) {
+        try {
+            StudentExamDetailDTO dto = mockExamService.getStudentExamDetail(examId, studentId);
+            return ApiResponse.success(dto);
+        } catch (Exception e) {
+            return ApiResponse.error("获取考试答卷详情失败：" + e.getMessage());
+        }
+    }
+
     // 删除模拟考试
     @DeleteMapping("/{examId}")
     public ApiResponse<String> deleteMockExam(@PathVariable Integer examId) {
@@ -104,6 +127,29 @@ public class MockExamController {
             return ApiResponse.success("删除成功", null);
         } catch (RuntimeException e) {
             return ApiResponse.error("删除失败：" + e.getMessage());
+        }
+    }
+
+    //助教评价考试
+    @PostMapping("/assistant-comment")
+    public ApiResponse<String> submitAssistantComment(@RequestBody AssistantCommentDTO dto) {
+        try {
+            mockExamService.submitAssistantComment(dto);
+            return ApiResponse.success("助教总结提交成功");
+        } catch (Exception e) {
+            return ApiResponse.error("提交失败：" + e.getMessage());
+        }
+    }
+
+    //查看考试成绩报告
+    @GetMapping("/exam-report")
+    public ApiResponse<ExamReportDTO> getExamReport(@RequestParam Integer examId,
+                                                    @RequestParam Integer studentId) {
+        try {
+            ExamReportDTO dto = mockExamService.getExamReport(examId, studentId);
+            return ApiResponse.success(dto);
+        } catch (Exception e) {
+            return ApiResponse.error("获取成绩报告失败：" + e.getMessage());
         }
     }
 }

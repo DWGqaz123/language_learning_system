@@ -60,5 +60,24 @@
 6. GET /api/mock-exams/paper — 学员查看试卷
 7. POST /api/mock-exams/submit-answers — 学员提交考试答题信息
 8. POST /api/mock-exams/auto-grade-objective — 系统自动批改客观题
-9. DELETE /api/mock-exams/{examId} — 删除模拟考试
-10. POST /api/exams/papers/create — 创建标准试卷
+9. POST /api/mock-exams/grade-subjective — 教师批改主观题
+10. GET /api/mock-exams/student-detail — 查看学员答卷
+11. DELETE /api/mock-exams/{examId} — 删除模拟考试
+12. POST /api/mock-exams/assistant-comment — 助教评价考试
+13. GET /api/mock-exams/exam-report — 查看考试成绩报告
+14. POST /api/exams/papers/create — 创建标准试卷
+15. GET /api/exams/papers/standard-papers — 获取所有试卷列表
+
+### 自习室模块
+1. POST /api/study-rooms — 管理员录入自习室
+2. GET /api/study-rooms — 查看自习室列表
+3. GET /api/study-rooms/reservations — 获取自习室预约信息（默认展示明天）
+4. POST /api/study-rooms/reserve — 学员提交预约申请
+5. PUT /api/study-rooms/review — 管理员审核自习室预约
+6. GET /api/study-rooms/reservations/pending — 查看待审核预约申请列表
+7. GET /api/study-rooms/my-reservations — 学员查看自己的预约记录
+8. DELETE /api/study-rooms/cancel-reservation — 学员删除自己的预约申请
+9. GET /api/study-rooms/reservations/all — 管理员查看所有预约记录（按日期）
+10. POST /api/study-rooms/sign — 学员签到自习室
+11. GET /api/study-rooms/usage-stats — 自习室使用统计
+12. GET /api/study-rooms/usage-statistics/{studentId} — 学员自习室使用统计

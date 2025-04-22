@@ -8,6 +8,8 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class StandardExamPaperServiceImpl implements StandardExamPaperService {
@@ -22,10 +24,26 @@ public class StandardExamPaperServiceImpl implements StandardExamPaperService {
         paper.setPaperName(dto.getPaperName());
         paper.setExamType(dto.getExamType());
         paper.setCreatedTime(new Timestamp(System.currentTimeMillis()));
-
-		paper.setPaperContent(dto.getPaperContentJson());
-		paper.setObjectiveAnswersJson(dto.getObjectiveAnswersJson());
+// 不需要返回试卷具体内容和答案
+//		paper.setPaperContent(dto.getPaperContentJson());
+//		paper.setObjectiveAnswersJson(dto.getObjectiveAnswersJson());
 
         standardExamPaperRepository.save(paper);
     }
+
+    //查询所有试卷列表
+    @Override
+    public List<StandardExamPaperDTO> getAllStandardExamPapers() {
+        List<StandardExamPaper> papers = standardExamPaperRepository.findAll();
+
+        return papers.stream().map(paper -> {
+            StandardExamPaperDTO dto = new StandardExamPaperDTO();
+            dto.setPaperId(paper.getPaperId());
+            dto.setPaperName(paper.getPaperName());
+            dto.setExamType(paper.getExamType());
+            dto.setCreatedTime(paper.getCreatedTime());
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
 }

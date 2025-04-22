@@ -269,6 +269,52 @@ public class MockExamServiceImpl implements MockExamService {
             throw new RuntimeException("客观题批改失败：" + e.getMessage(), e);
         }
     }
+    //教师批改主观题
+    @Override
+    @Transactional
+    public void gradeSubjectiveQuestion(SubjectiveScoreDTO dto) {
+        StudentExamRecord record = studentExamRecordRepository
+                .findByStudent_UserIdAndExam_ExamId(dto.getStudentId(), dto.getExamId())
+                .orElseThrow(() -> new RuntimeException("未找到考试记录"));
+
+        record.setSubjectiveScore(dto.getSubjectiveScore());
+        record.setTeacherComment(dto.getTeacherComment());
+
+        //计算总分
+        Integer objScore = record.getObjectiveScore() != null ? record.getObjectiveScore() : 0;
+        Integer subjScore = dto.getSubjectiveScore() != null ? dto.getSubjectiveScore() : 0;
+        record.setTotalScore(objScore + subjScore);
+        studentExamRecordRepository.save(record);
+    }
+
+    //查看学员答卷详情
+    @Override
+    public StudentExamDetailDTO getStudentExamDetail(Integer examId, Integer studentId) {
+        StudentExamRecord record = studentExamRecordRepository
+                .findByStudent_UserIdAndExam_ExamId(studentId, examId)
+                .orElseThrow(() -> new RuntimeException("未找到考试记录"));
+
+        MockExam exam = record.getExam();
+        StandardExamPaper paper = exam.getStandardPaper();
+
+        StudentExamDetailDTO dto = new StudentExamDetailDTO();
+        dto.setExamId(examId);
+        dto.setStudentId(studentId);
+        dto.setExamName(exam.getExamName());
+        dto.setExamType(paper.getExamType());
+        dto.setExamTime(exam.getExamTime());
+
+        dto.setAnswersJson(record.getAnswersJson());
+        dto.setObjectiveScore(record.getObjectiveScore());
+        dto.setSubjectiveScore(record.getSubjectiveScore());
+        dto.setTotalScore(record.getTotalScore());
+        dto.setTeacherComment(record.getTeacherComment());
+        dto.setAssistantComment(record.getAssistantComment());
+        dto.setCompletedTime(record.getCompletedTime());
+
+        return dto;
+    }
+
 
     //删除模拟考试
     @Override
@@ -287,4 +333,55 @@ public class MockExamServiceImpl implements MockExamService {
         mockExamRepository.deleteById(examId);
     }
 
+    //助教评价考试
+    @Override
+    @Transactional
+    public void submitAssistantComment(AssistantCommentDTO dto) {
+        StudentExamRecord record = studentExamRecordRepository
+                .findByStudent_UserIdAndExam_ExamId(dto.getStudentId(), dto.getExamId())
+                .orElseThrow(() -> new RuntimeException("考试记录不存在"));
+
+        record.setAssistantComment(dto.getAssistantComment());
+        record.setExamStatus("ended");
+        studentExamRecordRepository.save(record);
+    }
+
+    //查看考试成绩报告
+    @Override
+    public ExamReportDTO getExamReport(Integer examId, Integer studentId) {
+        StudentExamRecord record = studentExamRecordRepository
+                .findByStudent_UserIdAndExam_ExamId(studentId, examId)
+                .orElseThrow(() -> new RuntimeException("未找到考试记录"));
+
+        MockExam exam = record.getExam();
+        StandardExamPaper paper = exam.getStandardPaper();
+
+        ExamReportDTO dto = new ExamReportDTO();
+        dto.setExamId(examId);
+        dto.setExamName(exam.getExamName());
+        dto.setExamTime(exam.getExamTime());
+        dto.setPaperName(paper.getPaperName());
+        dto.setExamRoomName(exam.getExamRoom().getRoomName());
+
+        dto.setObjectiveScore(record.getObjectiveScore());
+        dto.setSubjectiveScore(record.getSubjectiveScore());
+        dto.setTotalScore(record.getTotalScore());
+        dto.setTeacherComment(record.getTeacherComment());
+        dto.setAssistantComment(record.getAssistantComment());
+        dto.setCompletedTime(record.getCompletedTime());
+
+        // 解析 answers_json
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            List<StudentAnswerDTO> answers = objectMapper.readValue(
+                    record.getAnswersJson(),
+                    new com.fasterxml.jackson.core.type.TypeReference<List<StudentAnswerDTO>>() {}
+            );
+            dto.setAnswers(answers);
+        } catch (Exception e) {
+            throw new RuntimeException("解析答题信息失败：" + e.getMessage());
+        }
+
+        return dto;
+    }
 }
