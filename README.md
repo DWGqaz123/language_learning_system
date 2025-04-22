@@ -81,3 +81,18 @@
 10. POST /api/study-rooms/sign — 学员签到自习室
 11. GET /api/study-rooms/usage-stats — 自习室使用统计
 12. GET /api/study-rooms/usage-statistics/{studentId} — 学员自习室使用统计
+
+### 资源管理模块
+1. POST /api/resource-categories — 新增资源类目
+2. GET /api/resource-categories — 查看资源类目
+3. PUT /api/resource-categories/{categoryId} — 修改资源类目
+4. DELETE /api/resource-categories/{categoryId} — 删除资源类目
+5. POST /api/resource-categories/upload — 上传资源
+6. GET /api/resource-categories/pending — 获取待审核资源列表（管理员）
+7. POST /api/resource-categories/audit — 审核资源
+8. GET /api/resource-categories/published — 查看已发布教学资源（可选类目筛选）
+9. GET /api/resource-categories/download/{resourceId} — 下载资源
+
+### 学习分析模块
+
+To do ...
