@@ -3,10 +3,7 @@ package com.hdu.language_learning_system.user.dto;
 import lombok.Data;
 
 @Data
-public class UpdateUserInfoDTO {
-    private Integer userId;
-    private String username;
+public class LoginDTO {
     private String phoneNumber;
-    private String description;
     private String password;
 }

@@ -1,13 +1,10 @@
 package com.hdu.language_learning_system.user.service;
 
-import com.hdu.language_learning_system.user.dto.StudentRegisterDTO;
-import com.hdu.language_learning_system.user.dto.UserDTO;
-import com.hdu.language_learning_system.user.dto.EmployeeImportDTO;
-import com.hdu.language_learning_system.user.dto.UpdateUserRoleDTO;
-import com.hdu.language_learning_system.user.dto.UserActivationDTO;
-import com.hdu.language_learning_system.user.dto.UpdateUserInfoDTO;
-import com.hdu.language_learning_system.user.dto.UserUpdateAuditDTO;
+import com.hdu.language_learning_system.common.ApiResponse;
+import com.hdu.language_learning_system.user.dto.*;
+
 import java.util.List;
+import java.util.Map;
 
 public interface UserService {
 
@@ -21,7 +18,7 @@ public interface UserService {
     void importEmployee(EmployeeImportDTO employeeDTO);
 
     // 学员录入（助教把新学员录入系统）
-    void registerStudent(StudentRegisterDTO dto);
+    ApiResponse<Map<String, Integer>> registerStudent(StudentRegisterDTO dto);
 
     // 用户权限更改（角色更改）后续可以继续升级完成细粒度的权限分配的功能
     // 接口 UserService 中修改：
@@ -39,4 +36,7 @@ public interface UserService {
     // 管理员审核申请
     void reviewUserUpdateRequest(UserUpdateAuditDTO dto);
 
+    LoginResponseDTO login(LoginDTO dto);
+
+    List<PendingUpdateUserDTO> getPendingUpdateRequests();
 }

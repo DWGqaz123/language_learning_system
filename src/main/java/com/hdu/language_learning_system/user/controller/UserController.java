@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -43,9 +44,8 @@ public class UserController {
 
     // 4. 录入学员信息
     @PostMapping("/register-student")
-    public ResponseEntity<ApiResponse<Void>> registerStudent(@RequestBody StudentRegisterDTO dto) {
-        userService.registerStudent(dto);
-        return ResponseEntity.ok(ApiResponse.success("学员录入成功", null));
+    public ApiResponse<Map<String, Integer>> registerStudent(@RequestBody StudentRegisterDTO dto) {
+        return userService.registerStudent(dto);
     }
 
     // 5. 用户权限分配
@@ -72,10 +72,34 @@ public class UserController {
         userService.submitUserUpdateRequest(dto);
         return ResponseEntity.ok(ApiResponse.success("修改申请提交成功", null));
     }
+
     // 9. 管理员审核用户信息修改
     @PutMapping("/review-update")
     public ResponseEntity<ApiResponse<Void>> reviewUpdateRequest(@RequestBody UserUpdateAuditDTO dto) {
         userService.reviewUserUpdateRequest(dto);
         return ResponseEntity.ok(ApiResponse.success("审核处理完成", null));
+    }
+    //用户登陆
+    @PostMapping("/login")
+    public ApiResponse<LoginResponseDTO> login(@RequestBody LoginDTO dto) {
+        try {
+            LoginResponseDTO userInfo = userService.login(dto);
+            return ApiResponse.success(userInfo);
+        } catch (Exception e) {
+            return ApiResponse.error("登录失败：" + e.getMessage());
+        }
+    }
+
+    //测试
+    @GetMapping("/test")
+    public String test() {
+        return "proxy success";
+    }
+
+    //查询待审核用户信息修改列表
+    @GetMapping("/pending-update-requests")
+    public ApiResponse<List<PendingUpdateUserDTO>> getPendingUpdateRequests() {
+        List<PendingUpdateUserDTO> list = userService.getPendingUpdateRequests();
+        return ApiResponse.success(list);
     }
 }

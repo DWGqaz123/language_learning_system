@@ -2,23 +2,21 @@ package com.hdu.language_learning_system.user.service.impl;
 //初始化
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hdu.language_learning_system.common.ApiResponse;
+import com.hdu.language_learning_system.user.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.hdu.language_learning_system.user.repository.UserRepository;
 import com.hdu.language_learning_system.user.service.UserService;
 //DTO
-import com.hdu.language_learning_system.user.dto.UserDTO;
-import com.hdu.language_learning_system.user.dto.EmployeeImportDTO;
-import com.hdu.language_learning_system.user.dto.StudentRegisterDTO;
-import com.hdu.language_learning_system.user.dto.UpdateUserRoleDTO;
-import com.hdu.language_learning_system.user.dto.UserActivationDTO;
-import com.hdu.language_learning_system.user.dto.UpdateUserInfoDTO;
-import com.hdu.language_learning_system.user.dto.UserUpdateAuditDTO;
 //实体
 import com.hdu.language_learning_system.user.entity.User;
 import com.hdu.language_learning_system.user.entity.Role;
 //其他
+import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -89,20 +87,25 @@ public class UserServiceImpl implements UserService {
 
     // 学员信息导入
     @Override
-    public void registerStudent(StudentRegisterDTO dto) {
+    public ApiResponse<Map<String, Integer>> registerStudent(StudentRegisterDTO dto) {
         User user = new User();
         user.setUsername(dto.getUsername());
         user.setPhoneNumber(dto.getPhoneNumber());
-        user.setPassword(dto.getPassword());
-        user.setAccountStatus(false); // 默认关闭状态
+        user.setPassword("123456");
+        user.setAccountStatus(false);
         user.setDescription(dto.getDescription());
+        user.setLessonHours(dto.getLessonHours() != null ? dto.getLessonHours() : 0);
 
-        // 设置默认角色为学员（role_id = 1）
         Role role = new Role();
-        role.setRoleId(1);
+        role.setRoleId(1); // 学员
         user.setRole(role);
 
         userRepository.save(user);
+
+        Map<String, Integer> data = new HashMap<>();
+        data.put("userId", user.getUserId());
+
+        return ApiResponse.success("学员录入成功", data);
     }
 
     // 用户权限分配
@@ -133,7 +136,6 @@ public class UserServiceImpl implements UserService {
     public void activateUser(UserActivationDTO dto) {
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new RuntimeException("用户不存在"));
-
         user.setPassword(dto.getNewPassword());
         user.setAccountStatus(true); // 设置为已激活
         userRepository.save(user);
@@ -148,6 +150,7 @@ public class UserServiceImpl implements UserService {
         user.setUsername(dto.getUsername());
         user.setPhoneNumber(dto.getPhoneNumber());
         user.setDescription(dto.getDescription());
+        user.setPassword(dto.getPassword());
         userRepository.save(user);
     }
 
@@ -184,8 +187,45 @@ public class UserServiceImpl implements UserService {
         user.setUsername(dto.getUsername());
         user.setPhoneNumber(dto.getPhoneNumber());
         user.setDescription(dto.getDescription());
+        user.setPassword(dto.getPassword());
         user.setPendingUpdateJson(null);
         userRepository.save(user);
     }
 
+    //用户登陆
+    @Override
+    public LoginResponseDTO login(LoginDTO dto) {
+        User user = userRepository.findByPhoneNumber(dto.getPhoneNumber());
+        if (user == null || !user.getPassword().equals(dto.getPassword())) {
+            throw new RuntimeException("登录失败：手机号或密码错误");
+        }
+
+        // ✅ 显式更新 updatedAt 字段
+        user.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+        userRepository.save(user);
+
+        LoginResponseDTO response = new LoginResponseDTO();
+        response.setUserId(user.getUserId());
+        response.setUsername(user.getUsername());
+        response.setPhoneNumber(user.getPhoneNumber());
+        response.setRoleName(user.getRole().getRoleName());
+        response.setAccountStatus(user.getAccountStatus());
+        return response;
+    }
+
+    //查询待审核用户信息修改列表
+    @Override
+    public List<PendingUpdateUserDTO> getPendingUpdateRequests() {
+        List<User> users = userRepository.findByPendingUpdateJsonIsNotNull();
+
+        return users.stream().map(user -> {
+            PendingUpdateUserDTO dto = new PendingUpdateUserDTO();
+            dto.setUserId(user.getUserId());
+            dto.setUsername(user.getUsername());
+            dto.setPhoneNumber(user.getPhoneNumber());
+            dto.setRoleName(user.getRole().getRoleName());
+            dto.setPendingUpdateJson(user.getPendingUpdateJson());
+            return dto;
+        }).collect(Collectors.toList());
+    }
 }

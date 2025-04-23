@@ -9,4 +9,5 @@ public class UserUpdateAuditDTO {
     private String phoneNumber;
     private String description;
     private Boolean approved; // 审核是否通过
+    private String password;
 }

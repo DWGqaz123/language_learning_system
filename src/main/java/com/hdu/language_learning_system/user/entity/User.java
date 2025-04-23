@@ -4,7 +4,11 @@ import jakarta.persistence.*;
 import lombok.Data;
 import java.sql.Timestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "users")
 @Data
 public class User {
@@ -31,6 +35,8 @@ public class User {
     @Column(name = "created_at", updatable = false)
     private Timestamp createdAt;
 
+
+    @LastModifiedDate
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
@@ -51,15 +57,7 @@ public class User {
     }
 
 
-
-//    public String getUsername() {//debug
-//        return username;
-//    }
-
-
     // 暂存用户修改请求
     @Column(name = "pending_update", columnDefinition = "TEXT")
     private String pendingUpdateJson;
-
-
 }
