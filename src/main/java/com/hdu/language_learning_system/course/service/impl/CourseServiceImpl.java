@@ -41,6 +41,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     //创建课程
+    // 创建课程
     @Override
     public void createCourse(CourseCreateDTO dto) {
         Course course = new Course();
@@ -49,26 +50,24 @@ public class CourseServiceImpl implements CourseService {
         course.setCourseContent(dto.getCourseContent());
         course.setClassGroupCode(dto.getClassGroupCode());
         course.setTotalHours(dto.getTotalHours());
+        course.setRemainingHours(dto.getTotalHours()); // 设置初始剩余课时
 
         if ("1对1".equals(dto.getCourseType()) && dto.getStudentId() != null) {
             User student = userRepository.findById(dto.getStudentId())
                     .orElseThrow(() -> new RuntimeException("学员不存在"));
-            course.setStudent(student);
-        } else {
-            course.setStudent(null);
-        }
-
-        if ("1对1".equals(course.getCourseType())) {
-            User student = userRepository.findById(dto.getStudentId())
-                    .orElseThrow(() -> new RuntimeException("学员不存在"));
 
             int currentHours = student.getLessonHours();
-            if (currentHours < course.getTotalHours()) {
+            if (currentHours < dto.getTotalHours()) {
                 throw new RuntimeException("学员课时不足");
             }
 
-            student.setLessonHours(currentHours - course.getTotalHours());
+            // 扣除学员课时
+            student.setLessonHours(currentHours - dto.getTotalHours());
             userRepository.save(student);
+
+            course.setStudent(student);
+        } else {
+            course.setStudent(null);
         }
 
         courseRepository.save(course);

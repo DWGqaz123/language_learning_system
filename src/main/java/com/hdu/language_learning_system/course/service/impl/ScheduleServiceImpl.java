@@ -34,6 +34,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Resource
     private  StudentScheduleRecordRepository studentScheduleRecordRepository;
 
+    // 创建课表
     @Override
     public void createSchedule(ScheduleCreateDTO dto) {
         Schedule schedule = new Schedule();
@@ -56,16 +57,29 @@ public class ScheduleServiceImpl implements ScheduleService {
         schedule.setRoom(room);
         schedule.setClassTime(dto.getClassTime());
 
-        // 检查教师角色是否为“教师”
         if (teacher.getRole().getRoleId() != 2) {
             throw new RuntimeException("指定的用户不是教师");
         }
 
-        // 检查助教角色是否为“助教”
-        if (assistant.getRole().getRoleId() != 3) {
+        if (assistant != null && assistant.getRole().getRoleId() != 3) {
             throw new RuntimeException("指定的用户不是助教");
         }
 
+        // 按课程类型扣除课时
+        int remain = course.getRemainingHours();
+        if ("班级".equals(course.getCourseType())) {
+            if (remain < 2) {
+                throw new RuntimeException("课程剩余课时不足，无法创建班级课课表");
+            }
+            course.setRemainingHours(remain - 2);
+        } else if ("1对1".equals(course.getCourseType())) {
+            if (remain < 1) {
+                throw new RuntimeException("课程剩余课时不足，无法创建1对1课课表");
+            }
+            course.setRemainingHours(remain - 1);
+        }
+
+        courseRepository.save(course);
         scheduleRepository.save(schedule);
     }
 

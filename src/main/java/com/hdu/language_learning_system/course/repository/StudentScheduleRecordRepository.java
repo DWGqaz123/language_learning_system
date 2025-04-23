@@ -56,4 +56,6 @@ public interface StudentScheduleRecordRepository extends JpaRepository<StudentSc
     List<StudentScheduleRecord> findByCourse_CourseIdAndSchedule_ScheduleIdAndAttendStatus(
             Integer courseId, Integer scheduleId, String attendStatus);
 
+    List<StudentScheduleRecord> findByStudent(User student);
+
 }

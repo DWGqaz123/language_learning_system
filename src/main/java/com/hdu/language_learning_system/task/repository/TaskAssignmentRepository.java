@@ -22,4 +22,5 @@ public interface TaskAssignmentRepository extends JpaRepository<TaskAssignment, 
 
     @Query("SELECT COUNT(ta) FROM TaskAssignment ta WHERE ta.student.userId = :studentId AND ta.completionStatus = '未完成'")
     Long countIncompleteByStudentId(Integer studentId);
+
 }

@@ -94,5 +94,7 @@
 9. GET /api/resource-categories/download/{resourceId} — 下载资源
 
 ### 学习分析模块
-
-To do ...
+1. GET /api/analysis/course-progress — 课程进度统计
+2. GET /api/analysis/attendance-stats — 课程考勤统计
+3. GET /api/analysis/task-statistics/{studentId} — 任务数据统计（完成率、平均分）
+4. GET /api/analysis/mock-exams/statistics/{studentId} — 模拟考试统计
