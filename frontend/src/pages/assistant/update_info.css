@@ -1,0 +1,91 @@
+* {
+    box-sizing: border-box;
+  }
+  
+  .update-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    background-color: #f0f2f5;
+    min-height: 100vh;
+  }
+  
+  .update-card {
+    width: 420px;
+    background-color: #fff;
+    padding: 28px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  
+  .update-card h2 {
+    text-align: center;
+    color: #1890ff;
+    margin-top: 0;
+  }
+  
+  .update-card input,
+  .update-card textarea {
+    width: 100%;
+    margin-bottom: 14px;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+  
+  .update-card textarea {
+    resize: vertical;
+    min-height: 60px;
+  }
+  
+  .back-button {
+    width: 100px;
+    background-color: #f0f2f5;
+    border: 1px solid #d9d9d9;
+    color: #1890ff;
+    font-size: 14px;
+    margin-bottom: 12px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-align: center;
+    cursor: pointer;
+  }
+  
+  .back-button:hover {
+    background-color: #e6f7ff;
+    border-color: #91d5ff;
+  }
+  
+  .submit-button {
+    width: 100%;
+    background-color: #1890ff;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    cursor: pointer;
+  }
+  
+  .success {
+    color: green;
+    text-align: center;
+  }
+  
+  .error {
+    color: red;
+    text-align: center;
+  }
+
+  .gray {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 12px;
+  }
+  
+  .readonly {
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    color: #666;
+  }
