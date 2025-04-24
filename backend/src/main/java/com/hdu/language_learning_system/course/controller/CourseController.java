@@ -27,11 +27,24 @@ public class CourseController {
         return ResponseEntity.ok(ApiResponse.success("课程创建成功", null));
     }
 
-    //添加新学员到班级
-    @PostMapping("/add-students-to-class")
-    public ResponseEntity<ApiResponse<Void>> addStudentsToClassCourse(@RequestBody AddStudentsToCourseDTO dto) {
-        courseService.addStudentsToClassCourse(dto);
-        return ResponseEntity.ok(ApiResponse.success("班级学员添加成功", null));
+    //添加学员到班级
+    @PostMapping("/add-class-student")
+    public ApiResponse<Void> addClassStudent(@RequestBody ClassStudentOperationDTO dto) {
+        courseService.addClassStudent(dto);
+        return ApiResponse.success("添加班级学员成功", null);
+    }
+
+    //删除班级里的学员
+    @DeleteMapping("/remove-class-student")
+    public ApiResponse<Void> removeClassStudent(@RequestBody ClassStudentOperationDTO dto) {
+        courseService.removeClassStudent(dto);
+        return ApiResponse.success("移除班级学员成功", null);
+    }
+
+    //查询课程的班级学员列表
+    @GetMapping("/get-class-students")
+    public ApiResponse<List<ClassStudentInfoDTO>> getClassStudents(@RequestParam Integer courseId) {
+        return ApiResponse.success(courseService.getClassStudentList(courseId));
     }
 
     //创建学员上课记录
@@ -137,15 +150,6 @@ public class CourseController {
         return ApiResponse.success("课程删除成功");
     }
 
-    //移除班级学员
-    @DeleteMapping("/remove-student")
-    public ApiResponse<String> removeStudentFromCourse(
-            @RequestParam Integer courseId,
-            @RequestParam Integer studentId
-    ) {
-        courseService.removeStudentFromCourse(courseId, studentId);
-        return ApiResponse.success("已成功移除该学员");
-    }
 
     //查询排课详情
     @GetMapping("/schedules/{scheduleId}")
@@ -161,6 +165,12 @@ public class CourseController {
             @PathVariable Integer scheduleId
     ) {
         List<LeaveRequestDTO> list = courseService.getLeaveRequestsByCourseAndSchedule(courseId, scheduleId);
+        return ApiResponse.success(list);
+    }
+    //查看所有课程列表
+    @GetMapping("/all")
+    public ApiResponse<List<CourseListDTO>> getAllCourses() {
+        List<CourseListDTO> list = courseService.getAllCourses();
         return ApiResponse.success(list);
     }
 }

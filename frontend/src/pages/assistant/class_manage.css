@@ -1,0 +1,102 @@
+.class-manage-wrapper {
+    padding: 24px;
+    background-color: #f5f6fa;
+    min-height: 100vh;
+  }
+  
+  .back-button {
+    background-color: #1890ff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    margin-bottom: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .back-button:hover {
+    background-color: #40a9ff;
+  }
+  
+  .title {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 24px;
+  }
+  
+  .course-block {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  .course-block h3 {
+    margin-bottom: 12px;
+    font-size: 18px;
+  }
+  
+  .student-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  
+  .student-table th,
+  .student-table td {
+    padding: 10px;
+    border: 1px solid #eee;
+    text-align: center;
+  }
+  
+  .delete {
+    background-color: #ff4d4f;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .delete:hover {
+    background-color: #ff7875;
+  }
+  
+  .add-form {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .add-form input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .add-form button {
+    background-color: #52c41a;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .add-form button:hover {
+    background-color: #73d13d;
+  }
+  
+  .error {
+    color: red;
+    margin-top: 8px;
+  }
+  
+  .success {
+    color: green;
+    margin-top: 8px;
+  }

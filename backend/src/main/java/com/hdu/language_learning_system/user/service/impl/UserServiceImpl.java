@@ -74,8 +74,8 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setUsername(dto.getUsername());
         user.setPhoneNumber(dto.getPhoneNumber());
-        user.setPassword(dto.getPassword());
-        user.setAccountStatus(dto.getAccountStatus());
+        user.setPassword("123456");
+        user.setAccountStatus(false);
         user.setDescription(dto.getDescription());
 
         // 设置角色

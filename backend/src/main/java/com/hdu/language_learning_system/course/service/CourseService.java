@@ -7,8 +7,6 @@ import java.util.List;
 public interface CourseService {
     void createCourse(CourseCreateDTO dto);
 
-    void addStudentsToClassCourse(AddStudentsToCourseDTO dto);
-
     void generateStudentRecords(Integer scheduleId);
 
     void submitLeaveRequest(LeaveRequestDTO dto);
@@ -35,9 +33,16 @@ public interface CourseService {
 
     void deleteCourse(Integer courseId);
 
-    void removeStudentFromCourse(Integer courseId, Integer studentId);
-
     CourseScheduleDetailDTO getScheduleDetailById(Integer scheduleId);
 
     List<LeaveRequestDTO> getLeaveRequestsByCourseAndSchedule(Integer courseId, Integer scheduleId);
+
+    List<CourseListDTO> getAllCourses();
+
+
+    void addClassStudent(ClassStudentOperationDTO dto);
+
+    void removeClassStudent(ClassStudentOperationDTO dto);
+
+    List<ClassStudentInfoDTO> getClassStudentList(Integer courseId);
 }

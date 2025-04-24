@@ -61,8 +61,8 @@ const AdminUser = () => {
               <Link to="/admin/register-employee">立即进入</Link>
             </div>
             <div className="card">
-              <h3>用户角色变更</h3>
-              <p>变更用户的权限角色（如学生/助教/教师）。</p>
+              <h3>用户列表查看</h3>
+              <p>查看所有系统用户</p>
               <Link to="/admin/role-management">立即进入</Link>
             </div>
           </div>

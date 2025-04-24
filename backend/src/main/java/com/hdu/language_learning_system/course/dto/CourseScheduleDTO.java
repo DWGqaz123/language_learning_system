@@ -10,6 +10,7 @@ public class CourseScheduleDTO {
     private Timestamp classTime;
     private String courseName;
     private String roomName;
+    private Integer roomId;
     private Integer teacherId;
     private String teacherName;
     private Integer assistantId;

@@ -9,13 +9,6 @@ import java.util.Optional;
 import java.util.List;
 
 public interface StudentScheduleRecordRepository extends JpaRepository<StudentScheduleRecord, Integer> {
-    // 在StudentScheduleRecordRepository中添加
-    @Query(value = "SELECT * FROM student_schedule_records WHERE schedule_id IS NULL AND course_id = :courseId",
-            nativeQuery = true)
-    List<StudentScheduleRecord> findNullScheduleRecordsByCourseIdNative(@Param("courseId") Integer courseId);
-
-    @Query("SELECT DISTINCT ssr.student FROM StudentScheduleRecord ssr WHERE ssr.course.courseId = :courseId")
-    List<User> findDistinctStudentsByCourseId(@Param("courseId") Integer courseId);
 
     @Query("SELECT ssr FROM StudentScheduleRecord ssr WHERE ssr.student.userId = :studentId AND ssr.schedule.scheduleId = :scheduleId")
     Optional<StudentScheduleRecord> findByStudentIdAndScheduleId(@Param("studentId") Integer studentId,
@@ -49,13 +42,15 @@ public interface StudentScheduleRecordRepository extends JpaRepository<StudentSc
     @Query("SELECT ssr.student FROM StudentScheduleRecord ssr WHERE ssr.schedule.scheduleId = :scheduleId")
     List<User> findStudentsByScheduleId(@Param("scheduleId") Integer scheduleId);
 
-    void deleteByCourse_CourseIdAndStudent_UserId(Integer courseId, Integer studentId);
 
     List<StudentScheduleRecord> findBySchedule_ScheduleId(Integer scheduleId);
 
-    List<StudentScheduleRecord> findByCourse_CourseIdAndSchedule_ScheduleIdAndAttendStatus(
-            Integer courseId, Integer scheduleId, String attendStatus);
-
     List<StudentScheduleRecord> findByStudent(User student);
+
+
+    void deleteBySchedule_ScheduleId(Integer scheduleId);
+
+    List<StudentScheduleRecord> findBySchedule_ScheduleIdAndAttendStatus(Integer scheduleId, String attendStatus);
+
 
 }

@@ -49,7 +49,7 @@ const RegisterStudent = () => {
     return (
         <div className="register-wrapper">
             <div className="register-card">
-                <button className="back-button" onClick={() => navigate('/assistant-user')}>← 返回</button>
+                <button className="back-button" onClick={() => navigate('/assistant/assistant-user')}>← 返回</button>
                 <h2>录入学员信息</h2>
                 <input
                     type="text"

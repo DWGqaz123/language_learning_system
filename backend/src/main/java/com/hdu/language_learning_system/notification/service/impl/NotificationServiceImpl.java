@@ -1,8 +1,10 @@
 package com.hdu.language_learning_system.notification.service.impl;
 
+import com.hdu.language_learning_system.course.entity.ClassStudent;
 import com.hdu.language_learning_system.course.entity.Course;
 import com.hdu.language_learning_system.course.entity.Schedule;
 import com.hdu.language_learning_system.course.entity.StudentScheduleRecord;
+import com.hdu.language_learning_system.course.repository.ClassStudentRepository;
 import com.hdu.language_learning_system.course.repository.CourseRepository;
 import com.hdu.language_learning_system.course.repository.ScheduleRepository;
 import com.hdu.language_learning_system.course.repository.StudentScheduleRecordRepository;
@@ -33,18 +35,18 @@ public class NotificationServiceImpl implements NotificationService {
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
     private final ScheduleRepository scheduleRepository;
-    private final StudentScheduleRecordRepository studentScheduleRecordRepository;
+    private final ClassStudentRepository classStudentRepository;
 
     public NotificationServiceImpl(NotificationRepository notificationRepository,
                                    UserRepository userRepository,
                                    CourseRepository courseRepository,
                                    ScheduleRepository scheduleRepository,
-                                   StudentScheduleRecordRepository studentScheduleRecordRepository) {
+                                   ClassStudentRepository classStudentRepository) {
         this.notificationRepository = notificationRepository;
         this.userRepository = userRepository;
         this.courseRepository = courseRepository;
         this.scheduleRepository = scheduleRepository;
-        this.studentScheduleRecordRepository = studentScheduleRecordRepository;
+        this.classStudentRepository = classStudentRepository;
     }
 
     // 普通通知发送
@@ -69,26 +71,42 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     @Transactional
     public void sendBatchCourseNotifications(BatchCourseNotificationDTO dto) {
-        List<User> receivers = new ArrayList<>();
+        Set<Integer> userIds = new HashSet<>();
 
-        // 获取该课程所有学生
-        receivers.addAll(studentScheduleRecordRepository.findDistinctStudentsByCourseId(dto.getCourseId()));
+        // 添加班级课程下的所有学员ID（使用 class_student 表）
+        Course course = courseRepository.findById(dto.getCourseId())
+                .orElseThrow(() -> new RuntimeException("课程不存在"));
 
-        // 如果 scheduleId 存在，查找 schedule 中的教师和助教
+        if ("班级".equals(course.getCourseType())) {
+            List<ClassStudent> classStudents = classStudentRepository.findByCourse_CourseId(dto.getCourseId());
+            for (ClassStudent cs : classStudents) {
+                userIds.add(cs.getStudent().getUserId());
+            }
+        }
+
+        // 加入教师、助教、1对1学员
         if (dto.getRefTargetId() != null) {
             Schedule schedule = scheduleRepository.findById(dto.getRefTargetId())
                     .orElseThrow(() -> new RuntimeException("课表不存在"));
 
             if (schedule.getTeacher() != null) {
-                receivers.add(schedule.getTeacher());
+                userIds.add(schedule.getTeacher().getUserId());
             }
 
             if (schedule.getAssistant() != null) {
-                receivers.add(schedule.getAssistant());
+                userIds.add(schedule.getAssistant().getUserId());
+            }
+
+            if ("1对1".equals(course.getCourseType()) && course.getStudent() != null) {
+                userIds.add(course.getStudent().getUserId());
             }
         }
 
-        for (User receiver : receivers) {
+        // 发送通知
+        for (Integer userId : userIds) {
+            User receiver = userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("接收人不存在"));
+
             Notification notification = new Notification();
             notification.setReceiver(receiver);
             notification.setNotificationType(dto.getNotificationType());
@@ -97,6 +115,7 @@ public class NotificationServiceImpl implements NotificationService {
             notification.setRefTargetType(dto.getRefTargetType());
             notification.setSentTime(new Timestamp(System.currentTimeMillis()));
             notification.setStatus("未读");
+
             notificationRepository.save(notification);
         }
     }

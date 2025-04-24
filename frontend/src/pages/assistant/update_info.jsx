@@ -45,7 +45,7 @@ const UpdateInfo = () => {
   return (
     <div className="update-wrapper">
       <div className="update-card">
-        <button className="back-button" onClick={() => navigate('/assistant-user')}>← 返回</button>
+        <button className="back-button" onClick={() => navigate('/assistant/assistant-user')}>← 返回</button>
         <h2>修改个人信息</h2>
         <p className="gray">用户ID：{storedUser.userId}</p>
 

@@ -13,4 +13,5 @@ public class LeaveRequestDTO {
     private Integer courseId;
     private String courseName;
     private Timestamp classTime;
+    private String attendStatus;
 }

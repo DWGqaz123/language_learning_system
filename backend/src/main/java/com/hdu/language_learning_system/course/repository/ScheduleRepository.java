@@ -4,7 +4,9 @@ import com.hdu.language_learning_system.course.entity.Schedule;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,4 +25,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
 
     List<Schedule> findByClassTimeBetween(LocalDateTime start, LocalDateTime end);
 
+    @Query("SELECT s FROM Schedule s WHERE s.room.roomId = :roomId AND DATE(s.classTime) = DATE(:classTime)")
+    List<Schedule> findByRoomIdAndDate(@Param("roomId") Integer roomId, @Param("classTime") Timestamp classTime);
 }

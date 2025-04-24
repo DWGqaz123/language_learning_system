@@ -15,4 +15,5 @@ public class CourseScheduleDetailDTO {
     private String assistantName;
     private Integer assistantId;
     private String roomName;
+    private Integer roomId;
 }

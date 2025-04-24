@@ -31,16 +31,16 @@ const AssistantUser = () => {
           <div className="label">用户Id: {userInfo ? userInfo.userId : '...'}</div>
           <div className="label">账号: {userInfo ? userInfo.phoneNumber : '...'}</div>
         </div>
-        <ul className="menu">
-          <li className="active">用户管理</li>
-          <li>课程管理</li>
-          <li>课后任务管理</li>
-          <li>模拟考试管理</li>
-          <li>自习室管理</li>
-          <li>资源管理</li>
-          <li>学习分析</li>
-          <li>退出系统</li>
-        </ul>
+          <ul className="menu">
+            <li><Link to="/assistant/assistant-user" className="active">用户管理</Link></li>
+            <li><Link to="/assistant/assistant-course" >课程管理</Link></li>
+            <li><Link to="/assistant/task">课后任务管理</Link></li>
+            <li><Link to="/assistant/mock-exam">模拟考试管理</Link></li>
+            <li><Link to="/assistant/study-room">自习室管理</Link></li>
+            <li><Link to="/assistant/resource">资源管理</Link></li>
+            <li><Link to="/assistant/analytics">学习分析</Link></li>
+            <li><Link to="/" onClick={() => localStorage.clear()}>退出系统</Link></li>
+          </ul>
       </aside>
 
       {/* 主内容 */}

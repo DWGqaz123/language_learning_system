@@ -44,7 +44,7 @@ const ReviewUpdatePage = () => {
 
     return (
         <div className="review-wrapper">
-            <button className="back-button" onClick={() => navigate('/admin-user')}>← 返回</button>
+            <button className="back-button" onClick={() => navigate('/admin/admin-user')}>← 返回</button>
             <h2>用户信息修改审核</h2>
 
             {error && <p className="error">{error}</p>}
