@@ -1,23 +1,31 @@
 package com.hdu.language_learning_system.analysis.service.impl;
 
 import com.hdu.language_learning_system.analysis.dto.*;
+import com.hdu.language_learning_system.analysis.entity.StudentPerformanceReport;
+import com.hdu.language_learning_system.analysis.repository.StudentPerformanceReportRepository;
 import com.hdu.language_learning_system.course.entity.Course;
 import com.hdu.language_learning_system.course.entity.StudentScheduleRecord;
 import com.hdu.language_learning_system.course.repository.CourseRepository;
 import com.hdu.language_learning_system.course.repository.StudentScheduleRecordRepository;
 import com.hdu.language_learning_system.exam.entity.StudentExamRecord;
 import com.hdu.language_learning_system.exam.repository.StudentExamRecordRepository;
+import com.hdu.language_learning_system.studyRoom.entity.StudyRoomReservation;
+import com.hdu.language_learning_system.studyRoom.repository.StudyRoomReservationRepository;
 import com.hdu.language_learning_system.task.entity.TaskAssignment;
 import com.hdu.language_learning_system.task.repository.TaskAssignmentRepository;
 import com.hdu.language_learning_system.user.entity.User;
 import com.hdu.language_learning_system.user.repository.UserRepository;
 import com.hdu.language_learning_system.analysis.service.AnalysisService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class AnalysisServiceImpl implements AnalysisService {
@@ -39,6 +47,25 @@ public class AnalysisServiceImpl implements AnalysisService {
 
     @Autowired
     private StudentExamRecordRepository studentExamRecordRepository;
+
+    @Autowired
+    private StudentPerformanceReportRepository studentPerformanceReportRepository;
+
+    @Autowired
+    private StudyRoomReservationRepository studyRoomReservationRepository;
+    private StudentPerformanceReportDTO convertToDTO(StudentPerformanceReport report) {
+        StudentPerformanceReportDTO dto = new StudentPerformanceReportDTO();
+        dto.setReportId(report.getReportId());
+        dto.setStudentId(report.getStudent().getUserId());
+        dto.setAttendanceSummary(report.getAttendanceSummary());
+        dto.setTaskSummary(report.getTaskSummary());
+        dto.setExamSummary(report.getExamSummary());
+        dto.setStudyRoomSummary(report.getStudyRoomSummary());
+        dto.setOverallScore(report.getOverallScore());
+        dto.setAssistantComment(report.getAssistantComment());
+        dto.setGeneratedTime(report.getGeneratedTime());
+        return dto;
+    }
     @Override
     public CourseProgressDTO getCourseProgress(Integer studentId) {
         User student = userRepository.findById(studentId)
@@ -146,5 +173,135 @@ public class AnalysisServiceImpl implements AnalysisService {
         dto.setAverageScore(Math.round(average * 10.0) / 10.0); // 保留1位小数
 
         return dto;
+    }
+
+
+    //更新助教点评
+    @Override
+    public void updateAssistantComment(PerformanceCommentDTO dto) {
+        StudentPerformanceReport report = studentPerformanceReportRepository.findById(dto.getReportId())
+                .orElseThrow(() -> new RuntimeException("报告不存在"));
+
+        report.setAssistantComment(dto.getAssistantComment());
+        studentPerformanceReportRepository.save(report);
+    }
+
+    //查看学员报告
+    @Override
+    public StudentPerformanceReportDTO getReportById(Integer reportId) {
+        StudentPerformanceReport report = studentPerformanceReportRepository.findById(reportId)
+                .orElseThrow(() -> new RuntimeException("报告不存在"));
+        return convertToDTO(report);
+    }
+
+
+    //获取所有报告
+    @Override
+    public List<StudentPerformanceReportDTO> getAllReports() {
+        return studentPerformanceReportRepository.findAll()
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    //产生报告
+    @Override
+    @Transactional
+    public void generatePerformanceReport(GenerateReportRequestDTO request) {
+        Integer studentId = request.getStudentId();
+        if (studentId == null) {
+            throw new RuntimeException("学员ID不能为空");
+        }
+
+        User student = userRepository.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("学员不存在，ID：" + studentId));
+
+        // ---------- 出勤情况 ----------
+        List<StudentScheduleRecord> records = studentScheduleRecordRepository.findByStudent_UserId(studentId);
+        int total = records.size(), attend = 0, absent = 0, leave = 0;
+        for (StudentScheduleRecord r : records) {
+            String status = r.getAttendStatus();
+            if (status == null) continue; // 防止null
+            switch (status) {
+                case "出勤" -> attend++;
+                case "缺勤" -> absent++;
+                case "请假" -> leave++;
+            }
+        }
+        String attendanceSummary = String.format("共 %d 次记录，出勤 %d 次，缺勤 %d 次，请假 %d 次。",
+                total, attend, absent, leave);
+
+        // ---------- 任务完成情况 ----------
+        List<TaskAssignment> tasks = taskAssignmentRepository.findByStudent_UserId(studentId);
+        int totalTasks = tasks.size(), submitted = 0;
+        double scoreSum = 0;
+        int scoredCount = 0;
+        for (TaskAssignment t : tasks) {
+            if (t.getSubmitTime() != null) submitted++;
+            if (t.getScore() != null) {
+                scoreSum += t.getScore();
+                scoredCount++;
+            }
+        }
+        String taskSummary = String.format("共 %d 项任务，提交 %d 项，完成率 %.1f%%，平均分 %s。",
+                totalTasks, submitted,
+                totalTasks == 0 ? 0.0 : submitted * 100.0 / totalTasks,
+                scoredCount == 0 ? "暂无" : String.format("%.1f", scoreSum / scoredCount));
+
+        // ---------- 模拟考试情况 ----------
+        List<StudentExamRecord> exams = studentExamRecordRepository.findByStudent_UserId(studentId);
+        double avg = exams.stream()
+                .map(StudentExamRecord::getTotalScore)
+                .filter(Objects::nonNull)
+                .mapToDouble(Integer::doubleValue)
+                .average()
+                .orElse(0.0);
+        String examSummary = String.format("共参加 %d 次考试，平均得分 %.1f 分。", exams.size(), avg);
+
+        // ---------- 自习室使用情况 ----------
+        List<StudyRoomReservation> reservations = studyRoomReservationRepository.findByStudent_UserId(studentId);
+        int totalUsage = 0, morning = 0, afternoon = 0, evening = 0;
+        for (StudyRoomReservation r : reservations) {
+            if (!"通过".equals(r.getReviewStatus())) continue;
+            if (r.getSignInTime() == null && r.getSignOutTime() == null) continue;
+
+            totalUsage++;
+            String slot = r.getTimeSlot();
+            if (slot == null) continue; // 防止null
+            switch (slot) {
+                case "上午" -> morning++;
+                case "下午" -> afternoon++;
+                case "晚上" -> evening++;
+            }
+        }
+        String studyRoomSummary = String.format("共使用 %d 次自习室，上午 %d 次，下午 %d 次，晚上 %d 次。",
+                totalUsage, morning, afternoon, evening);
+
+        // ---------- 构建报告 ----------
+        StudentPerformanceReport report = new StudentPerformanceReport();
+        report.setStudent(student);
+        report.setAttendanceSummary(attendanceSummary);
+        report.setTaskSummary(taskSummary);
+        report.setExamSummary(examSummary);
+        report.setStudyRoomSummary(studyRoomSummary);
+
+        // 设置综合评分（可允许为空，数据库字段请确认允许null，否则赋默认值0）
+        if (request.getOverallScore() != null) {
+            report.setOverallScore(request.getOverallScore());
+        } else {
+            report.setOverallScore(0); // 或者根据需求选择抛异常
+        }
+
+        report.setGeneratedTime(new Timestamp(System.currentTimeMillis()));
+
+        studentPerformanceReportRepository.save(report);
+    }
+
+    //查询某学员的所有报告
+    @Override
+    public List<StudentPerformanceReportDTO> getReportsByStudentId(Integer studentId) {
+        List<StudentPerformanceReport> reports = studentPerformanceReportRepository.findByStudent_UserId(studentId);
+
+        return reports.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 }

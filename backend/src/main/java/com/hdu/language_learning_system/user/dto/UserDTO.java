@@ -15,4 +15,5 @@ public class UserDTO {
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private Integer roleId;
+    private Integer lessonHours;
 }

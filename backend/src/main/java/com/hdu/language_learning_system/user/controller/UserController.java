@@ -90,6 +90,20 @@ public class UserController {
         }
     }
 
+    //查找学员列表
+    @GetMapping("/all-students")
+    public ResponseEntity<ApiResponse<List<StudentSimpleInfoDTO>>> getAllStudents() {
+        List<StudentSimpleInfoDTO> students = userService.getAllStudents();
+        return ResponseEntity.ok(ApiResponse.success(students));
+    }
+
+    // 根据用户ID查询用户信息
+    @GetMapping("/get-by-id")
+    public ApiResponse<UserDTO> getUserById(@RequestParam Integer userId) {
+        UserDTO dto = userService.getUserById(userId);
+        return ApiResponse.success(dto);
+    }
+
     //测试
     @GetMapping("/test")
     public String test() {
@@ -102,4 +116,5 @@ public class UserController {
         List<PendingUpdateUserDTO> list = userService.getPendingUpdateRequests();
         return ApiResponse.success(list);
     }
+
 }

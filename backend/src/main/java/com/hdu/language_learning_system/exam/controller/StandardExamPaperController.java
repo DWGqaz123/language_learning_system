@@ -4,6 +4,7 @@ import com.hdu.language_learning_system.common.ApiResponse;
 import com.hdu.language_learning_system.exam.dto.*;
 import com.hdu.language_learning_system.exam.service.StandardExamPaperService;
 import jakarta.annotation.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class StandardExamPaperController {
     private StandardExamPaperService standardExamPaperService;
 
 
+    //创建试卷
     @PostMapping("/create")
     public ApiResponse<String> createPaper(@RequestBody StandardExamPaperDTO dto) {
         standardExamPaperService.createStandardExamPaper(dto);
@@ -31,5 +33,24 @@ public class StandardExamPaperController {
         } catch (Exception e) {
             return ApiResponse.error("获取试卷列表失败：" + e.getMessage());
         }
+    }
+    // 编辑试卷
+    @PutMapping("/editPaper")
+    public ResponseEntity<ApiResponse<Void>> updateExamPaper(@RequestBody StandardExamPaperDTO dto) {
+        standardExamPaperService.updateStandardExamPaper(dto);
+        return ResponseEntity.ok(ApiResponse.success("试卷更新成功", null));
+    }
+
+    // 删除试卷
+    @DeleteMapping("/{paperId}")
+    public ResponseEntity<ApiResponse<Void>> deleteExamPaper(@PathVariable Integer paperId) {
+        standardExamPaperService.deleteStandardExamPaper(paperId);
+        return ResponseEntity.ok(ApiResponse.success("试卷删除成功", null));
+    }
+
+    // 查看试卷详情
+    @GetMapping("/{paperId}")
+    public ResponseEntity<ApiResponse<StandardExamPaperDTO>> getExamPaper(@PathVariable Integer paperId) {
+        return ResponseEntity.ok(ApiResponse.success(standardExamPaperService.getStandardExamPaperById(paperId)));
     }
 }

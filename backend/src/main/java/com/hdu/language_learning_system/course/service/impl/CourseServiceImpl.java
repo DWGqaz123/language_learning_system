@@ -11,6 +11,7 @@ import com.hdu.language_learning_system.course.repository.ScheduleRepository;
 import com.hdu.language_learning_system.course.repository.StudentScheduleRecordRepository;
 import com.hdu.language_learning_system.course.service.CourseService;
 import com.hdu.language_learning_system.notification.dto.BatchCourseNotificationDTO;
+import com.hdu.language_learning_system.user.entity.Role;
 import com.hdu.language_learning_system.user.entity.User;
 import com.hdu.language_learning_system.user.repository.UserRepository;
 import com.hdu.language_learning_system.course.dto.PerformanceEvalDTO;
@@ -86,6 +87,7 @@ public class CourseServiceImpl implements CourseService {
         courseRepository.save(course);
     }
 
+    //添加班级学员
     @Override
     @Transactional
     public void addClassStudent(ClassStudentOperationDTO dto) {
@@ -133,8 +135,8 @@ public class CourseServiceImpl implements CourseService {
             return dto;
         }).toList();
     }
-    //产生学员课堂记录
 
+    //产生学员课堂记录
     @Override
     @Transactional
     public void generateStudentRecords(Integer scheduleId) {
@@ -276,17 +278,25 @@ public class CourseServiceImpl implements CourseService {
     }
 
     //分角色查看课表
+
     @Override
     public List<CourseScheduleDTO> getSchedulesByUserId(Integer userId) {
-        User user = userRepository.findById(userId).orElseThrow();
-        String role = user.getRole().getRoleName();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("用户不存在"));
+
+        Role role = user.getRole();
+        if (role == null || role.getRoleId() == null) {
+            throw new RuntimeException("用户未分配角色");
+        }
+
+        int roleId = role.getRoleId();
         List<Schedule> schedules;
 
-        switch (role) {
-            case "教师" -> schedules = scheduleRepository.findByTeacher_UserId(userId);
-            case "助教" -> schedules = scheduleRepository.findByAssistant_UserId(userId);
-            case "学员" -> schedules = scheduleRepository.findSchedulesByStudentId(userId);
-            default -> throw new RuntimeException("无效角色");
+        switch (roleId) {
+            case 2 -> schedules = scheduleRepository.findByTeacher_UserId(userId); // 教师
+            case 3 -> schedules = scheduleRepository.findByAssistant_UserId(userId); // 助教
+            case 1 -> schedules = scheduleRepository.findSchedulesByStudentId(userId); // 学员
+            default -> throw new RuntimeException("无效角色ID：" + roleId);
         }
 
         List<CourseScheduleDTO> result = new ArrayList<>();
@@ -307,8 +317,10 @@ public class CourseServiceImpl implements CourseService {
             if (s.getRoom() != null) {
                 dto.setRoomName(s.getRoom().getRoomName());
             }
+
             result.add(dto);
         }
+
         return result;
     }
 
@@ -360,11 +372,11 @@ public class CourseServiceImpl implements CourseService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("用户不存在"));
 
-        String role = user.getRole().getRoleName();
+        Integer roleId = user.getRole().getRoleId();
         Set<Course> courses = new HashSet<>();
 
-        switch (role) {
-            case "教师" -> {
+        switch (roleId) {
+            case 2 -> { // 教师
                 List<Schedule> teacherSchedules = scheduleRepository.findByTeacher_UserId(userId);
                 for (Schedule s : teacherSchedules) {
                     if (s.getCourse() != null) {
@@ -372,7 +384,7 @@ public class CourseServiceImpl implements CourseService {
                     }
                 }
             }
-            case "助教" -> {
+            case 3 -> { // 助教
                 List<Schedule> assistantSchedules = scheduleRepository.findByAssistant_UserId(userId);
                 for (Schedule s : assistantSchedules) {
                     if (s.getCourse() != null) {
@@ -380,8 +392,7 @@ public class CourseServiceImpl implements CourseService {
                     }
                 }
             }
-            case "学员" -> {
-                // 学员仅通过 class_students 表查询所参与课程（无论是否排课）
+            case 1 -> { // 学员
                 List<ClassStudent> classStudents = classStudentRepository.findByStudent_UserId(userId);
                 for (ClassStudent cs : classStudents) {
                     if (cs.getCourse() != null) {
@@ -389,7 +400,6 @@ public class CourseServiceImpl implements CourseService {
                     }
                 }
 
-                // 1对1课程（直接绑定在 course 表）
                 List<Course> oneOnOneCourses = courseRepository.findByStudent_UserId(userId);
                 courses.addAll(oneOnOneCourses);
             }

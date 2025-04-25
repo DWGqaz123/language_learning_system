@@ -20,16 +20,22 @@
   .leave-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   }
   
   .leave-table th,
   .leave-table td {
     padding: 10px;
-    border: 1px solid #eee;
+    border: 1px solid #ddd;
     text-align: center;
   }
-  
+
+  .leave-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+    color: #555;
+}
   button.approve {
     background-color: #52c41a;
     color: white;

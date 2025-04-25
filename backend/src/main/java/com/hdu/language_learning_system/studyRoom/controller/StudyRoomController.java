@@ -29,7 +29,7 @@ public class StudyRoomController {
     }
 
     //查看自习室列表
-    @GetMapping
+    @GetMapping("/all")
     public ApiResponse<List<StudyRoomListDTO>> getAllStudyRooms() {
         try {
             List<StudyRoomListDTO> list = studyRoomService.getAllRooms();

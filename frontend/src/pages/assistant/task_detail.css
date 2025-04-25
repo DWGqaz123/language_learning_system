@@ -1,0 +1,192 @@
+.task-detail-wrapper {
+  padding: 30px;
+  max-width: 1500px; 
+  margin: auto;
+  font-family: 'Arial', sans-serif;
+}
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.task-table,
+.submission-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* ⭐ 美观的边框阴影 */
+}
+
+.task-table th,
+.task-table td,
+.submission-table th,
+.submission-table td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+
+}
+
+.task-table th,
+.submission-table th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+  color: #555;
+}
+
+.task-table,
+.submission-tabletr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.task-table button,
+.submission-table button {
+  margin: 2px;
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+}
+
+.task-table button:hover,
+.submission-table button:hover {
+  background-color: #45a049;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-box {
+  background: white;
+  padding: 30px;
+  width: 90%;
+  max-width: 1000px;
+  border-radius: 6px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+.modal-box {
+  background: white;
+  padding: 30px;
+  width: 90%;
+  max-width: 1200px; /* 放宽最大宽度 */
+  border-radius: 6px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+
+}
+#submissionModal{
+  width: 100%;
+}
+
+.submission-table {
+  width: 100%;
+  overflow-x: auto;
+  display: block; /* 表格包裹容器 */
+}
+
+.submission-table th,
+.submission-table td {
+  white-space: nowrap; /* 防止换行 */
+  text-align: center;
+}
+
+.modal-box h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.close-button {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  background: #e53935;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.close-button:hover {
+  background: #d32f2f;
+}
+
+.grading-box {
+  margin-top: 20px;
+  border-top: 1px solid #ddd;
+  padding-top: 15px;
+}
+
+.grading-box h4 {
+  margin-bottom: 10px;
+}
+
+.grading-box input {
+  margin-right: 10px;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.modal-buttons {
+  margin-top: 20px;
+}
+
+.modal-buttons button {
+  margin-right: 10px;
+  padding: 8px 16px;
+  font-size: 14px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+}
+
+.modal-buttons button:hover {
+  background-color: #1565c0;
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.edit-form label {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.edit-form input,
+.edit-form textarea {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.edit-form textarea {
+  min-height: 80px;
+  resize: vertical;
+}

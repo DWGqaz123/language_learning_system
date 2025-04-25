@@ -24,9 +24,8 @@ public class StandardExamPaperServiceImpl implements StandardExamPaperService {
         paper.setPaperName(dto.getPaperName());
         paper.setExamType(dto.getExamType());
         paper.setCreatedTime(new Timestamp(System.currentTimeMillis()));
-// 不需要返回试卷具体内容和答案
-//		paper.setPaperContent(dto.getPaperContentJson());
-//		paper.setObjectiveAnswersJson(dto.getObjectiveAnswersJson());
+		paper.setPaperContent(dto.getPaperContentJson());
+		paper.setObjectiveAnswersJson(dto.getObjectiveAnswersJson());
 
         standardExamPaperRepository.save(paper);
     }
@@ -44,6 +43,54 @@ public class StandardExamPaperServiceImpl implements StandardExamPaperService {
             dto.setCreatedTime(paper.getCreatedTime());
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    // 编辑试卷
+    @Override
+    public void updateStandardExamPaper(StandardExamPaperDTO dto) {
+        StandardExamPaper paper = standardExamPaperRepository.findById(dto.getPaperId())
+                .orElseThrow(() -> new RuntimeException("试卷不存在"));
+
+        if (dto.getPaperName() != null) {
+            paper.setPaperName(dto.getPaperName());
+        }
+        if (dto.getExamType() != null) {
+            paper.setExamType(dto.getExamType());
+        }
+        if (dto.getPaperContentJson() != null) {
+            paper.setPaperContent(dto.getPaperContentJson());
+        }
+        if (dto.getObjectiveAnswersJson() != null) {
+            paper.setObjectiveAnswersJson(dto.getObjectiveAnswersJson());
+        }
+
+        standardExamPaperRepository.save(paper);
+    }
+
+    // 删除试卷
+    @Override
+    public void deleteStandardExamPaper(Integer paperId) {
+        if (!standardExamPaperRepository.existsById(paperId)) {
+            throw new RuntimeException("试卷不存在，无法删除");
+        }
+        standardExamPaperRepository.deleteById(paperId);
+    }
+
+    // 查看试卷详情
+    @Override
+    public StandardExamPaperDTO getStandardExamPaperById(Integer paperId) {
+        StandardExamPaper paper = standardExamPaperRepository.findById(paperId)
+                .orElseThrow(() -> new RuntimeException("试卷不存在"));
+
+        StandardExamPaperDTO dto = new StandardExamPaperDTO();
+        dto.setPaperId(paper.getPaperId());
+        dto.setPaperName(paper.getPaperName());
+        dto.setExamType(paper.getExamType());
+        dto.setCreatedTime(paper.getCreatedTime());
+        dto.setPaperContentJson(paper.getPaperContent());
+        dto.setObjectiveAnswersJson(paper.getObjectiveAnswersJson());
+
+        return dto;
     }
 
 }

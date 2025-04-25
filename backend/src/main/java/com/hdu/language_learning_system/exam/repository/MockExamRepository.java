@@ -13,4 +13,6 @@ public interface MockExamRepository extends JpaRepository<MockExam, Integer> {
     List<MockExam> findByExamTimeBetween(LocalDateTime start, LocalDateTime end);
     @Query("SELECT m FROM MockExam m WHERE m.examRoom.roomId = :roomId AND DATE(m.examTime) = DATE(:examTime)")
     List<MockExam> findByRoomIdAndDate(@Param("roomId") Integer roomId, @Param("examTime") Timestamp examTime);
+
+    List<MockExam> findByExamRoom_RoomIdAndExamTimeBetween(Integer roomId, Timestamp start, Timestamp end);
 }

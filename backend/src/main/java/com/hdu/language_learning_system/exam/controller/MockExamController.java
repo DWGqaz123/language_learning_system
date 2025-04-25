@@ -7,6 +7,7 @@ import com.hdu.language_learning_system.exam.entity.StudentExamRecord;
 import com.hdu.language_learning_system.exam.repository.StudentExamRecordRepository;
 import com.hdu.language_learning_system.exam.service.*;
 import jakarta.annotation.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,9 +27,9 @@ public class MockExamController {
 
     //创建模拟考试
     @PostMapping("/create")
-    public ApiResponse<String> createMockExam(@RequestBody MockExamCreateDTO dto) {
-        mockExamService.createMockExam(dto);
-        return ApiResponse.success("模拟考试创建成功");
+    public ApiResponse<Integer> createMockExam(@RequestBody MockExamCreateDTO dto) {
+        Integer examId = mockExamService.createMockExam(dto);
+        return ApiResponse.success("模拟考试创建成功", examId);
     }
 
 
@@ -41,10 +42,10 @@ public class MockExamController {
 
     //助教查看所有考试列表
     @GetMapping("/all")
-    public List<MockExamBriefDTO> getAllMockExams() {
-        return mockExamService.getAllMockExams();
+    public ApiResponse<List<MockExamBriefDTO>> getAllMockExams() {
+        List<MockExamBriefDTO> list = mockExamService.getAllMockExams();
+        return ApiResponse.success(list);
     }
-
     //学员查看自己的考试列表
     @GetMapping("/my-list")
     public ApiResponse<List<StudentExamRecordDTO>> getMyExamList(@RequestParam Integer studentId) {
@@ -151,5 +152,23 @@ public class MockExamController {
         } catch (Exception e) {
             return ApiResponse.error("获取成绩报告失败：" + e.getMessage());
         }
+    }
+
+    //更新模拟考试
+    @PutMapping("/update")
+    public ResponseEntity<ApiResponse<Void>> updateMockExam(@RequestBody MockExamUpdateDTO dto) {
+        try {
+            mockExamService.updateMockExam(dto);
+            return ResponseEntity.ok(ApiResponse.success("模拟考试更新成功", null));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+        }
+    }
+
+    //查看某次考试的所有学员考试记录
+    @GetMapping("/records")
+    public ResponseEntity<ApiResponse<List<StudentExamRecordDTO>>> getExamRecordsByExamId(@RequestParam Integer examId) {
+        List<StudentExamRecordDTO> records = mockExamService.getRecordsByExamId(examId);
+        return ResponseEntity.ok(ApiResponse.success(records));
     }
 }

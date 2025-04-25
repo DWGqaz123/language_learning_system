@@ -45,7 +45,7 @@ public class TaskAssignmentController {
         List<TaskSubmissionDTO> list = taskAssignmentService.getSubmissionsByStudentId(studentId);
         return ApiResponse.success(list);
     }
-    //助教查看某个任务的所以提交记录
+    //助教查看某个任务的所有提交记录
     @GetMapping("/task/{taskId}/submissions")
     public ApiResponse<List<TaskSubmissionDTO>> getSubmissionsByTaskId(@PathVariable Integer taskId) {
         List<TaskSubmissionDTO> list = taskAssignmentService.getSubmissionsByTaskId(taskId);

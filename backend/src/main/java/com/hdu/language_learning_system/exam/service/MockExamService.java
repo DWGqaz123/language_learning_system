@@ -5,7 +5,7 @@ import com.hdu.language_learning_system.exam.dto.*;
 import java.util.List;
 
 public interface MockExamService {
-    void createMockExam(MockExamCreateDTO dto);
+    Integer createMockExam(MockExamCreateDTO dto);
 
     void addStudentsToExam(ExamStudentAddDTO dto);
 
@@ -29,4 +29,8 @@ public interface MockExamService {
     void submitAssistantComment(AssistantCommentDTO dto);
 
     ExamReportDTO getExamReport(Integer examId, Integer studentId);
+
+    void updateMockExam(MockExamUpdateDTO dto);
+
+    List<StudentExamRecordDTO> getRecordsByExamId(Integer examId);
 }

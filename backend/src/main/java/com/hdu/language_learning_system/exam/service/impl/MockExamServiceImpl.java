@@ -2,6 +2,8 @@ package com.hdu.language_learning_system.exam.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hdu.language_learning_system.course.entity.Schedule;
+import com.hdu.language_learning_system.course.repository.ScheduleRepository;
 import com.hdu.language_learning_system.exam.dto.*;
 import com.hdu.language_learning_system.exam.entity.MockExam;
 import com.hdu.language_learning_system.exam.entity.StandardExamPaper;
@@ -22,7 +24,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MockExamServiceImpl implements MockExamService {
@@ -45,26 +49,54 @@ public class MockExamServiceImpl implements MockExamService {
     @Resource
     private NotificationService notificationService;
 
+    @Resource
+    private ScheduleRepository scheduleRepository;
+
 
 
     //添加模拟考试
     @Override
-    public void createMockExam(MockExamCreateDTO dto) {
+    public Integer createMockExam(MockExamCreateDTO dto) {
+        Timestamp examTime = dto.getExamTime();
+
+        // 判断是否有课程或考试冲突
+        Integer roomId = dto.getExamRoomId();
+        LocalDate examDate = examTime.toLocalDateTime().toLocalDate();
+
+        List<Schedule> conflictingSchedules = scheduleRepository.findByRoom_RoomIdAndClassTimeBetween(
+                roomId,
+                Timestamp.valueOf(examDate.atStartOfDay()),
+                Timestamp.valueOf(examDate.plusDays(1).atStartOfDay())
+        );
+        if (!conflictingSchedules.isEmpty()) {
+            throw new RuntimeException("该考场当天已有课程安排，无法安排考试");
+        }
+
+        List<MockExam> conflictingExams = mockExamRepository.findByExamRoom_RoomIdAndExamTimeBetween(
+                roomId,
+                Timestamp.valueOf(examDate.atStartOfDay()),
+                Timestamp.valueOf(examDate.plusDays(1).atStartOfDay())
+        );
+        if (!conflictingExams.isEmpty()) {
+            throw new RuntimeException("该考场当天已有其他考试安排，无法安排考试");
+        }
+
+        // 无冲突，继续创建考试
         MockExam exam = new MockExam();
         exam.setExamName(dto.getExamName());
-        exam.setExamTime(dto.getExamTime());
+        exam.setExamTime(examTime);
 
-        // 绑定试卷
         StandardExamPaper paper = standardExamPaperRepository.findById(dto.getStandardPaperId())
                 .orElseThrow(() -> new RuntimeException("试卷不存在"));
         exam.setStandardPaper(paper);
 
-        // 绑定考场
-        StudyRoom room = studyRoomRepository.findById(dto.getExamRoomId())
+        StudyRoom room = studyRoomRepository.findById(roomId)
                 .orElseThrow(() -> new RuntimeException("考场不存在"));
         exam.setExamRoom(room);
 
-        mockExamRepository.save(exam);
+        // 保存并返回 examId
+        MockExam savedExam = mockExamRepository.save(exam);
+        return savedExam.getExamId();
     }
 
     //添加学员到模拟考试
@@ -333,6 +365,73 @@ public class MockExamServiceImpl implements MockExamService {
         mockExamRepository.deleteById(examId);
     }
 
+
+    //更新模拟考试
+    @Override
+    @Transactional
+    public void updateMockExam(MockExamUpdateDTO dto) {
+        MockExam exam = mockExamRepository.findById(dto.getExamId())
+                .orElseThrow(() -> new RuntimeException("模拟考试不存在"));
+
+        // 判断是否修改了考场或时间，才做冲突校验
+        boolean roomChanged = dto.getExamRoomId() != null && !dto.getExamRoomId().equals(exam.getExamRoom().getRoomId());
+        boolean timeChanged = dto.getExamTime() != null && !dto.getExamTime().equals(exam.getExamTime());
+
+        if (roomChanged || timeChanged) {
+            Integer newRoomId = dto.getExamRoomId() != null ? dto.getExamRoomId() : exam.getExamRoom().getRoomId();
+            Timestamp newExamTime = dto.getExamTime() != null ? dto.getExamTime() : exam.getExamTime();
+
+            LocalDate examDate = newExamTime.toLocalDateTime().toLocalDate();
+
+            // 检查课程冲突
+            List<Schedule> conflictingSchedules = scheduleRepository.findByRoom_RoomIdAndClassTimeBetween(
+                    newRoomId,
+                    Timestamp.valueOf(examDate.atStartOfDay()),
+                    Timestamp.valueOf(examDate.plusDays(1).atStartOfDay())
+            );
+            for (Schedule s : conflictingSchedules) {
+                if (!s.getScheduleId().equals(exam.getExamId())) {
+                    throw new RuntimeException("该考场当天已有课程安排，无法修改");
+                }
+            }
+
+            // 检查考试冲突（排除当前考试）
+            List<MockExam> conflictingExams = mockExamRepository.findByExamRoom_RoomIdAndExamTimeBetween(
+                    newRoomId,
+                    Timestamp.valueOf(examDate.atStartOfDay()),
+                    Timestamp.valueOf(examDate.plusDays(1).atStartOfDay())
+            );
+            for (MockExam e : conflictingExams) {
+                if (!e.getExamId().equals(dto.getExamId())) {
+                    throw new RuntimeException("该考场当天已有其他考试安排，无法修改");
+                }
+            }
+        }
+
+        // 更新字段
+        if (dto.getExamName() != null) {
+            exam.setExamName(dto.getExamName());
+        }
+
+        if (dto.getExamTime() != null) {
+            exam.setExamTime(dto.getExamTime());
+        }
+
+        if (dto.getStandardPaperId() != null) {
+            StandardExamPaper paper = standardExamPaperRepository.findById(dto.getStandardPaperId())
+                    .orElseThrow(() -> new RuntimeException("试卷不存在"));
+            exam.setStandardPaper(paper);
+        }
+
+        if (dto.getExamRoomId() != null) {
+            StudyRoom room = studyRoomRepository.findById(dto.getExamRoomId())
+                    .orElseThrow(() -> new RuntimeException("教室不存在"));
+            exam.setExamRoom(room);
+        }
+
+        mockExamRepository.save(exam);
+    }
+
     //助教评价考试
     @Override
     @Transactional
@@ -383,5 +482,26 @@ public class MockExamServiceImpl implements MockExamService {
         }
 
         return dto;
+    }
+
+    //查看某次考试下的所有学员考试记录
+    @Override
+    public List<StudentExamRecordDTO> getRecordsByExamId(Integer examId) {
+        List<StudentExamRecord> records = studentExamRecordRepository.findByExam_ExamId(examId);
+
+        return records.stream().map(record -> {
+            StudentExamRecordDTO dto = new StudentExamRecordDTO();
+            dto.setStudentId(record.getStudent().getUserId());
+            dto.setExamId(record.getExam().getExamId());
+            dto.setTotalScore(record.getTotalScore());
+            dto.setSubjectiveScore(record.getSubjectiveScore());
+            dto.setTeacherComment(record.getTeacherComment());
+            dto.setAssistantComment(record.getAssistantComment());
+            dto.setCompletedTime(record.getCompletedTime());
+            dto.setAnswers(record.getAnswersJson()); // 如果是 Map 转 JSON 的字段则转为字符串
+            dto.setExamName(record.getExam().getExamName());
+            dto.setExamTime(record.getExam().getExamTime());
+            return dto;
+        }).collect(Collectors.toList());
     }
 }

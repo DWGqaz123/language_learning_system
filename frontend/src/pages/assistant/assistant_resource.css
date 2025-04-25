@@ -1,0 +1,84 @@
+.resource-wrapper {
+    padding: 30px;
+    max-width: 1000px;
+    margin: auto;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .resource-wrapper h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+  }
+  
+  .resource-form {
+    margin-bottom: 30px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+  
+  .resource-form .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .resource-form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 6px;
+  }
+  
+  .resource-form input,
+  .resource-form select,
+  .resource-form textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .resource-form button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #3e8ed0;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .resource-form button:hover {
+    background-color: #2c76b5;
+  }
+  
+  .resource-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .resource-table th,
+  .resource-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .resource-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+    color: #555;
+  }
+  
+  .resource-table tr:nth-child(even) {
+    background-color: #fafafa;
+  }
+  
+  .filter-group {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }

@@ -45,7 +45,7 @@ const LoginPage = () => {
             window.location.href = '/teacher-home'
             break
           case 'assistant':
-            window.location.href = '/assistant-user'
+            window.location.href = '/assistant/assistant-user'
             break
           case 'admin':
             window.location.href = '/admin-user'

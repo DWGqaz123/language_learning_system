@@ -15,4 +15,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     List<User> findStudentsByCourseId(@Param("courseId") Integer courseId);
 
     List<User> findByPendingUpdateJsonIsNotNull();
+
+    @Query("SELECT u FROM User u WHERE u.role.roleId = 1")
+    List<User> findAllStudents();
 }

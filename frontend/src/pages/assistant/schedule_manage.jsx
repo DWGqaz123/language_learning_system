@@ -39,7 +39,7 @@ const ScheduleManage = () => {
 
   const fetchRooms = async () => {
     try {
-      const res = await axios.get('/api/study-rooms')
+      const res = await axios.get('/api/study-rooms/all')
       setRooms(res.data.data)
     } catch (err) {
       console.error('获取教室失败', err)

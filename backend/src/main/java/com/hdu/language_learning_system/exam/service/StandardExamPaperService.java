@@ -9,4 +9,8 @@ public interface StandardExamPaperService {
     void createStandardExamPaper(StandardExamPaperDTO dto);
 
     List<StandardExamPaperDTO> getAllStandardExamPapers();
+
+    void updateStandardExamPaper(StandardExamPaperDTO dto);
+    void deleteStandardExamPaper(Integer paperId);
+    StandardExamPaperDTO getStandardExamPaperById(Integer paperId);
 }

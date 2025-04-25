@@ -228,4 +228,34 @@ public class UserServiceImpl implements UserService {
             return dto;
         }).collect(Collectors.toList());
     }
+
+    //查找学员列表
+    @Override
+    public List<StudentSimpleInfoDTO> getAllStudents() {
+        List<User> students = userRepository.findAllStudents();
+
+        return students.stream().map(user -> {
+            StudentSimpleInfoDTO dto = new StudentSimpleInfoDTO();
+            dto.setUserId(user.getUserId());
+            dto.setUsername(user.getUsername());
+            dto.setPhoneNumber(user.getPhoneNumber());
+            return dto;
+        }).toList();
+    }
+    //根据userId查询用户
+    @Override
+    public UserDTO getUserById(Integer userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("用户不存在"));
+
+        UserDTO dto = new UserDTO();
+        dto.setUserId(user.getUserId());
+        dto.setUsername(user.getUsername());
+        dto.setPhoneNumber(user.getPhoneNumber());
+        dto.setRoleName(user.getRole() != null ? user.getRole().getRoleName() : null);
+        dto.setAccountStatus(user.getAccountStatus());
+        dto.setDescription(user.getDescription());
+        dto.setLessonHours(user.getLessonHours());
+        return dto;
+    }
 }

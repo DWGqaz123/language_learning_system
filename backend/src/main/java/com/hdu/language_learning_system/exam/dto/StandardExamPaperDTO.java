@@ -9,7 +9,7 @@ public class StandardExamPaperDTO {
     private Integer paperId;
     private String paperName;
     private String examType;
-//    private String paperContentJson;
-//    private String objectiveAnswersJson;
+    private String paperContentJson;
+    private String objectiveAnswersJson;
     private Timestamp createdTime;
 }

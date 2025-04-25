@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 const AssistantUser = () => {
   const phone = localStorage.getItem('phone') || ''
   const [userInfo, setUserInfo] = useState(null)
-  console.log('读取手机号用于查询用户:', phone)
+  // console.log('读取手机号用于查询用户:', phone)
   useEffect(() => {
     if (phone) {
       axios.get(`/api/users/phone`, { params: { phoneNumber: phone } })
@@ -34,11 +34,11 @@ const AssistantUser = () => {
           <ul className="menu">
             <li><Link to="/assistant/assistant-user" className="active">用户管理</Link></li>
             <li><Link to="/assistant/assistant-course" >课程管理</Link></li>
-            <li><Link to="/assistant/task">课后任务管理</Link></li>
-            <li><Link to="/assistant/mock-exam">模拟考试管理</Link></li>
-            <li><Link to="/assistant/study-room">自习室管理</Link></li>
-            <li><Link to="/assistant/resource">资源管理</Link></li>
-            <li><Link to="/assistant/analytics">学习分析</Link></li>
+            <li><Link to="/assistant/assistant-task">课后任务管理</Link></li>
+            <li><Link to="/assistant/assistant-exam">模拟考试管理</Link></li>
+            <li><Link to="/assistant/assistant-study-room">自习室管理</Link></li>
+            <li><Link to="/assistant/assistant-resource">资源管理</Link></li>
+            <li><Link to="/assistant/assistant-analytics">学习分析</Link></li>
             <li><Link to="/" onClick={() => localStorage.clear()}>退出系统</Link></li>
           </ul>
       </aside>

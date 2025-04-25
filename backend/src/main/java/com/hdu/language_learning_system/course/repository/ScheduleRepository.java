@@ -27,4 +27,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
 
     @Query("SELECT s FROM Schedule s WHERE s.room.roomId = :roomId AND DATE(s.classTime) = DATE(:classTime)")
     List<Schedule> findByRoomIdAndDate(@Param("roomId") Integer roomId, @Param("classTime") Timestamp classTime);
+
+    List<Schedule> findByRoom_RoomIdAndClassTimeBetween(Integer roomId, Timestamp start, Timestamp end);
 }

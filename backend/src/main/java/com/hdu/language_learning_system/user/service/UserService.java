@@ -39,4 +39,8 @@ public interface UserService {
     LoginResponseDTO login(LoginDTO dto);
 
     List<PendingUpdateUserDTO> getPendingUpdateRequests();
+
+    List<StudentSimpleInfoDTO> getAllStudents();
+
+    UserDTO getUserById(Integer userId);
 }

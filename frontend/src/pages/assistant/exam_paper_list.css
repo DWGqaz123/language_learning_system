@@ -1,0 +1,150 @@
+.exam-paper-list-wrapper {
+    padding: 30px;
+    max-width: 1000px;
+    /* ⭐ 控制整个页面区域最大宽度，表格宽度受其影响 */
+    margin: auto;
+    font-family: 'Arial', sans-serif;
+}
+
+.exam-paper-list-wrapper h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+.button-group {
+    margin-bottom: 15px;
+}
+
+.button-group button {
+    padding: 6px 14px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #4071f4;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+}
+
+.exam-paper-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.exam-paper-table th,
+.exam-paper-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.exam-paper-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+    color: #555;
+}
+
+.exam-paper-table tr:nth-child(even) {
+    background-color: #fafafa;
+  }
+
+.exam-paper-table td button {
+    margin: 2px;
+    padding: 4px 10px;
+    background-color: #5589f0;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+}
+
+.exam-paper-table td button:hover {
+    background-color: #416de2;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.modal-box {
+    background: white;
+    padding: 25px;
+    width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.modal-box h3 {
+    margin-top: 0;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 6px 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.modal-buttons button {
+    padding: 6px 12px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.modal-buttons button:first-child {
+    background-color: #4caf50;
+    color: white;
+}
+
+.modal-buttons button:last-child {
+    background-color: #ccc;
+}
+
+.detail-json {
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    padding: 12px;
+    font-family: monospace;
+    font-size: 13px;
+    white-space: pre-wrap;
+    max-height: 400px;
+    overflow-y: auto;
+    border-radius: 4px;
+}
+
+.title {
+    text-align: center;
+}
