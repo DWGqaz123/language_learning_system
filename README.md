@@ -1,36 +1,44 @@
 ## 接口文档(简单版)
 ### 用户管理模块
-1. GET /api/users — 获取所有用户列表
+1. GET /api/users — 查询所有用户
 2. GET /api/users/phone — 通过手机号查询用户
-3. POST /api/users/import-employee — 员工信息导入（教师/助教）
-4. POST /api/users/register-student — 学员信息录入
-5. PUT /api/users/{userId}/update-role — 用户角色变更（管理员操作）
-6. POST /api/users/activate-account — 账号首次激活与密码设置
-7. POST /api/users/update-request — 提交用户信息修改请求
-8. PUT /api/users/review-update — 管理员审核并更新用户信息
+3. POST /api/users/import-employee — 导入员工信息
+4. POST /api/users/register-student — 录入学员信息
+5. PUT /api/users/update-role — 用户权限分配
+6. POST /api/users/activate-account — 用户账号激活
+7. PUT /api/users/update-info — 用户信息修改
+8. POST /api/users/update-request — 用户信息修改请求
+9. PUT /api/users/review-update — 管理员审核用户信息修改
+10. POST /api/users/login — 用户登录
+11. GET /api/users/all-students — 查询学员列表
+12. GET /api/users/get-by-id — 根据用户ID查询用户信息
+13. GET /api/users/test — 测试接口
+14. GET /api/users/pending-update-requests — 查询待审核用户信息修改列表
 
 ### 课程管理模块
 1. POST /api/courses/create — 创建课程
-2. POST /api/courses/add-students-to-class — 添加新学员到班级课程
-3. POST /api/courses/student-records/generate — 生成学员课程记录
-4. POST /api/courses/student/leave-request — 学员请假申请
-5. GET /api/courses/attendance-record — 查询课程考勤统计
-6. POST /api/courses/update-attendance-status — 更新考勤状态
-7. POST /api/courses/update-performance-eval — 更新课堂表现评价
-8. GET /api/courses/{courseId}/schedules — 查询课程排课列表
-9. GET /api/courses/my-schedules — 分角色查看课表
-10. GET /api/courses/schedule/{scheduleId}/students-status — 查看某次课学员状态
-11. GET /api/courses/student/attendance-performance — 学员查看个人考勤与表现
-12. GET /api/courses/my-courses — 根据用户查询课程列表
-13. POST /api/courses/review-leave — 审核学员请假
-14. PUT /api/courses/update — 修改课程信息
-15. DELETE /api/courses/{courseId} — 删除课程
-16. DELETE /api/courses/remove-student — 移除班级学员
-17. GET /api/courses/schedules/{scheduleId} — 查询排课详情
-18. GET /api/courses/{courseId}/schedule/{scheduleId}/leave-requests — 查询某课程某课表下的请假申请
-19. POST /api/schedules/create — 创建课程表
-20. PUT /api/schedules/update — 修改排课
-21. DELETE /api/schedules/{scheduleId}/delete — 删除排课
+2. POST /api/courses/add-class-student — 添加学员到班级
+3. DELETE /api/courses/remove-class-student — 删除班级里的学员
+4. GET /api/courses/get-class-students — 查询课程的班级学员列表
+5. POST /api/courses/student-records/generate — 创建学员上课记录
+6. POST /api/courses/student/leave-request — 学员请假
+7. GET /api/courses/attendance-record — 课程考勤记录查询
+8. POST /api/courses/update-attendance-status — 课堂考勤
+9. POST /api/courses/update-performance-eval — 教师课堂表现评价
+10. GET /api/courses/{courseId}/schedules — 查询课程课表
+11. GET /api/courses/my-schedules — 分角色查看课表
+12. GET /api/courses/schedule/{scheduleId}/students-status — 查看某次课考勤
+13. GET /api/courses/student/attendance-performance — 学员查看自己课堂表现
+14. GET /api/courses/my-courses — 根据用户查询课程
+15. POST /api/courses/review-leave — 审核学员请假
+16. PUT /api/courses/update — 修改课程信息
+17. DELETE /api/courses/{courseId} — 删除课程
+18. GET /api/courses/schedules/{scheduleId} — 查询排课详情
+19. GET /api/courses/{courseId}/schedule/{scheduleId}/leave-requests — 查询某课程某课表下的请假申请
+20. GET /api/courses/all — 查看所有课程列表
+21. POST /api/schedules/create — 创建课程表
+22. PUT /api/schedules/update — 修改排课
+23. DELETE /api/schedules/{scheduleId}/delete — 删除排课
 
 ### 通知模块
 1. POST /api/notifications/send — 单条通知发送
@@ -39,34 +47,39 @@
 4. POST /api/notifications/mark-as-read — 标记通知为已读
 
 ### 课后管理模块
-1. POST /api/task-assignments/submit — 学员提交课后任务
-2. GET /api/task-assignments/student/{studentId}/submissions — 助教查看某个学员的任务提交记录
-3. GET /api/task-assignments/task/{taskId}/submissions — 助教查看某个任务的所有提交记录
-4. POST /api/task-assignments/grade — 助教批改打分任务
-5. GET /api/task-assignments/student/{studentId}/stats — 获取学员任务统计数据
-6. POST /api/tasks/publish — 课后任务发布
-7. GET /api/tasks/student/{studentId}/list — 学员查看课后任务清单
-8. GET /api/tasks/{taskId}/details — 查看任务详情
-9. GET /api/tasks/published — 助教查看自己发布的任务
-10. PUT /api/tasks/update — 助教修改已发布的任务
-11. DELETE /api/tasks/{taskId} — 助教删除已发布的任务
+1. POST /api/tasks/publish — 课后任务发布
+2. GET /api/tasks/student/{studentId}/list — 学员查看课后任务清单
+3. GET /api/tasks/{taskId}/details — 查看任务详情
+4. GET /api/tasks/published — 助教查看自己发布的任务
+5. PUT /api/tasks/update — 助教修改已发布的任务
+6. DELETE /api/tasks/{taskId} — 助教删除已发布的任务
+7. POST /api/task-assignments/submit — 学员提交课后任务
+8. GET /api/task-assignments/student/{studentId}/submissions — 助教查看某个学员的任务提交记录
+9. GET /api/task-assignments/task/{taskId}/submissions — 助教查看某个任务的所有提交记录
+10. POST /api/task-assignments/grade — 助教批改打分任务
+11. GET /api/task-assignments/student/{studentId}/stats — 获取学员任务统计数据
 
 ### 模拟考试管理模块
-1. POST /api/mock-exams/create — 创建模拟考试
-2. POST /api/mock-exams/add-students — 添加学员并发送考试通知
-3. GET /api/mock-exams/all — 助教查看所有考试列表
-4. GET /api/mock-exams/my-list — 学员查看自己的考试列表
-5. GET /api/mock-exams/detail — 查看考试详情
-6. GET /api/mock-exams/paper — 学员查看试卷
-7. POST /api/mock-exams/submit-answers — 学员提交考试答题信息
-8. POST /api/mock-exams/auto-grade-objective — 系统自动批改客观题
-9. POST /api/mock-exams/grade-subjective — 教师批改主观题
-10. GET /api/mock-exams/student-detail — 查看学员答卷
-11. DELETE /api/mock-exams/{examId} — 删除模拟考试
-12. POST /api/mock-exams/assistant-comment — 助教评价考试
-13. GET /api/mock-exams/exam-report — 查看考试成绩报告
-14. POST /api/exams/papers/create — 创建标准试卷
-15. GET /api/exams/papers/standard-papers — 获取所有试卷列表
+1. POST /api/exams/papers/create — 创建试卷
+2. GET /api/exams/papers/standard-papers — 获取所有试卷列表
+3. PUT /api/exams/papers/editPaper — 编辑试卷
+4. DELETE /api/exams/papers/{paperId} — 删除试卷
+5. GET /api/exams/papers/{paperId} — 查看试卷详情
+6. POST /api/mock-exams/create — 创建模拟考试（返回考试ID）
+7. PUT /api/mock-exams/update — 更新模拟考试
+8. POST /api/mock-exams/add-students — 添加学员并发送考试通知
+9. GET /api/mock-exams/all — 助教查看所有考试列表
+10. GET /api/mock-exams/my-list — 学员查看自己的考试列表
+11. GET /api/mock-exams/detail — 查看考试详情
+12. GET /api/mock-exams/paper — 学员查看试卷
+13. POST /api/mock-exams/submit-answers — 学员提交考试答题信息
+14. POST /api/mock-exams/auto-grade-objective — 系统自动批改客观题
+15. POST /api/mock-exams/grade-subjective — 教师批改主观题
+16. GET /api/mock-exams/student-detail — 查看学员答卷详情
+17. GET /api/mock-exams/records — 查看某次考试的所有学员考试记录
+18. DELETE /api/mock-exams/{examId} — 删除模拟考试
+19. POST /api/mock-exams/assistant-comment — 助教评价考试
+20. GET /api/mock-exams/exam-report — 查看考试成绩报告
 
 ### 自习室模块
 1. POST /api/study-rooms — 管理员录入自习室
@@ -98,3 +111,8 @@
 2. GET /api/analysis/attendance-stats — 课程考勤统计
 3. GET /api/analysis/task-statistics/{studentId} — 任务数据统计（完成率、平均分）
 4. GET /api/analysis/mock-exams/statistics/{studentId} — 模拟考试统计
+5. PUT /api/analysis/update-comment — 更新助教点评
+6. GET /api/analysis/report — 获取单个报告详情
+7. GET /api/analysis/all-reports — 获取所有报告列表
+8. POST /api/analysis/generate-report — 生成学员报告
+9. GET /api/analysis/student-reports — 查询某个学员的所有报告

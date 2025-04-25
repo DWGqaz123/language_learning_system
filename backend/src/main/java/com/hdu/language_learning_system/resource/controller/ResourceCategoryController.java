@@ -106,7 +106,6 @@ public class ResourceCategoryController {
         }
     }
 
-    //下载资源
     // 学员下载资源
     @GetMapping("/download/{resourceId}")
     public ApiResponse<String> downloadResource(@PathVariable Integer resourceId) {
