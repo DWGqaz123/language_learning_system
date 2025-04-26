@@ -20,10 +20,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -198,14 +195,15 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional
     public void submitLeaveRequest(LeaveRequestDTO dto) {
-        StudentScheduleRecord record = studentScheduleRecordRepository
-                .findByStudentIdAndScheduleId(dto.getStudentId(), dto.getScheduleId())
+        StudentScheduleRecord record = studentScheduleRecordRepository.findById(dto.getSsrId())
                 .orElseThrow(() -> new RuntimeException("未找到该学员的课程记录"));
 
-        // 设置状态为请假待批
+        if (!"未开始".equals(record.getAttendStatus())) {
+            throw new RuntimeException("当前状态不允许申请请假");
+        }
+
         record.setAttendStatus("请假待批");
         record.setLeaveReason(dto.getLeaveReason());
-
         studentScheduleRecordRepository.save(record);
     }
 
@@ -305,6 +303,7 @@ public class CourseServiceImpl implements CourseService {
             dto.setScheduleId(s.getScheduleId());
             dto.setClassTime(s.getClassTime());
             dto.setCourseName(s.getCourse().getCourseName());
+            dto.setCourseId(s.getCourse().getCourseId());
 
             if (s.getTeacher() != null) {
                 dto.setTeacherId(s.getTeacher().getUserId());
@@ -366,21 +365,22 @@ public class CourseServiceImpl implements CourseService {
         return result;
     }
 
-    //根据用户ID查询课程
+    // 根据用户ID查询课程
     @Override
     public List<UserCourseDTO> getCoursesByUserId(Integer userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("用户不存在"));
 
         Integer roleId = user.getRole().getRoleId();
-        Set<Course> courses = new HashSet<>();
+
+        List<Course> courseList = new ArrayList<>();
 
         switch (roleId) {
             case 2 -> { // 教师
                 List<Schedule> teacherSchedules = scheduleRepository.findByTeacher_UserId(userId);
                 for (Schedule s : teacherSchedules) {
                     if (s.getCourse() != null) {
-                        courses.add(s.getCourse());
+                        courseList.add(s.getCourse());
                     }
                 }
             }
@@ -388,7 +388,7 @@ public class CourseServiceImpl implements CourseService {
                 List<Schedule> assistantSchedules = scheduleRepository.findByAssistant_UserId(userId);
                 for (Schedule s : assistantSchedules) {
                     if (s.getCourse() != null) {
-                        courses.add(s.getCourse());
+                        courseList.add(s.getCourse());
                     }
                 }
             }
@@ -396,26 +396,29 @@ public class CourseServiceImpl implements CourseService {
                 List<ClassStudent> classStudents = classStudentRepository.findByStudent_UserId(userId);
                 for (ClassStudent cs : classStudents) {
                     if (cs.getCourse() != null) {
-                        courses.add(cs.getCourse());
+                        courseList.add(cs.getCourse());
                     }
                 }
-
                 List<Course> oneOnOneCourses = courseRepository.findByStudent_UserId(userId);
-                courses.addAll(oneOnOneCourses);
+                courseList.addAll(oneOnOneCourses);
             }
             default -> throw new RuntimeException("无效用户角色");
         }
 
-        return courses.stream()
-                .distinct()
+        // 直接映射为DTO
+        return courseList.stream()
+                .filter(Objects::nonNull)
                 .map(c -> {
                     UserCourseDTO dto = new UserCourseDTO();
                     dto.setCourseId(c.getCourseId());
                     dto.setCourseName(c.getCourseName());
                     dto.setCourseType(c.getCourseType());
                     dto.setClassGroupCode(c.getClassGroupCode());
+                    dto.setTotalHours(c.getTotalHours());
+                    dto.setRemainingHours(c.getRemainingHours());
                     return dto;
                 })
+                .distinct() // 防止重复
                 .collect(Collectors.toList());
     }
 
@@ -565,6 +568,65 @@ public class CourseServiceImpl implements CourseService {
             if ("1对1".equals(course.getCourseType()) && course.getStudent() != null) {
                 dto.setStudentName(course.getStudent().getUsername());
             }
+
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
+    //查询学员排课记录（简单）
+    @Override
+    public List<StudentScheduleRecordSimpleDTO> getStudentScheduleRecords(Integer studentId) {
+        List<StudentScheduleRecord> records = studentScheduleRecordRepository.findByStudent_UserId(studentId);
+
+        return records.stream().map(record -> {
+            StudentScheduleRecordSimpleDTO dto = new StudentScheduleRecordSimpleDTO();
+            dto.setSsrId(record.getSsrId());
+            if (record.getCourse() != null) {
+                dto.setCourseId(record.getCourse().getCourseId());
+                dto.setCourseName(record.getCourse().getCourseName());
+            }
+            if (record.getSchedule() != null) {
+                dto.setScheduleId(record.getSchedule().getScheduleId());
+                dto.setClassTime(record.getSchedule().getClassTime().toString());
+            }
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
+    //查询学员排课记录（完整）
+    @Override
+    public List<StudentScheduleRecordFullDTO> getStudentScheduleRecordsWithScheduleInfo(Integer studentId) {
+        List<StudentScheduleRecord> records = studentScheduleRecordRepository.findByStudent_UserId(studentId);
+
+        return records.stream().map(record -> {
+            StudentScheduleRecordFullDTO dto = new StudentScheduleRecordFullDTO();
+            dto.setSsrId(record.getSsrId());
+
+            if (record.getCourse() != null) {
+                dto.setCourseId(record.getCourse().getCourseId());
+                dto.setCourseName(record.getCourse().getCourseName());
+            }
+
+            if (record.getSchedule() != null) {
+                dto.setScheduleId(record.getSchedule().getScheduleId());
+                if (record.getSchedule().getClassTime() != null) {
+                    dto.setClassTime(record.getSchedule().getClassTime().toString());
+                }
+                if (record.getSchedule().getRoom() != null) {
+                    dto.setRoomName(record.getSchedule().getRoom().getRoomName());
+                }
+                if (record.getSchedule().getTeacher() != null) {
+                    dto.setTeacherId(record.getSchedule().getTeacher().getUserId());
+                    dto.setTeacherName(record.getSchedule().getTeacher().getUsername());
+                }
+                if (record.getSchedule().getAssistant() != null) {
+                    dto.setAssistantId(record.getSchedule().getAssistant().getUserId());
+                    dto.setAssistantName(record.getSchedule().getAssistant().getUsername());
+                }
+            }
+
+            dto.setAttendStatus(record.getAttendStatus());
+            dto.setPerformanceEval(record.getPerformanceEval());
 
             return dto;
         }).collect(Collectors.toList());

@@ -1,0 +1,89 @@
+.notification-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  
+  .notification-card {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    width: 300px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 14px;
+    transition: all 0.3s;
+  }
+  
+  .notification-card.unread {
+    border-left: 5px solid #409eff;
+  }
+  
+  .notification-card.read {
+    opacity: 0.6;
+  }
+  
+  .notif-top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+  
+  .notif-type {
+    color: #333;
+  }
+  
+  .notif-time {
+    color: #888;
+    font-size: 12px;
+  }
+  
+  .notif-content {
+    margin-bottom: 8px;
+    color: #555;
+    height: 40px;
+    overflow: hidden;
+  }
+  
+  .notif-actions {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .small-button {
+    background-color: #409eff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  
+  .small-button:hover {
+    background-color: #66b1ff;
+  }
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .modal-box {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+  }
+  
+  .modal-buttons {
+    margin-top: 20px;
+    text-align: right;
+  }

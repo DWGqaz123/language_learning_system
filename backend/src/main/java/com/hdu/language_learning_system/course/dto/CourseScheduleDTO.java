@@ -15,5 +15,5 @@ public class CourseScheduleDTO {
     private String teacherName;
     private Integer assistantId;
     private String assistantName;
-
+    private Integer courseId;
 }

@@ -1,0 +1,130 @@
+.schedule-wrapper {
+    padding: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  
+  .top-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .back-button {
+    margin-right: 20px;
+    padding: 8px 16px;
+    font-size: 14px;
+    background-color: #1890ff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .back-button:hover {
+    background-color: #1578d4;
+  }
+  
+  h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #333;
+  }
+  
+  .schedule-table-wrapper {
+    overflow-x: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .schedule-table th, .schedule-table td {
+    padding: 10px;
+    border: 1px solid #eee;
+    text-align: center;
+    font-size: 14px;
+  }
+  
+  .schedule-table th {
+    background-color: #f0f8ff;
+    font-weight: bold;
+  }
+  
+  .action-button {
+    padding: 6px 12px;
+    background-color: #3e8ed0;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  
+  .action-button:hover {
+    background-color: #2c76b5;
+  }
+  
+  .disabled-text {
+    color: #999;
+    font-size: 13px;
+  }
+  
+  .no-data {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+  }
+  
+  /* 请假模态框 */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+  }
+  
+  .modal-box {
+    background-color: white;
+    padding: 25px;
+    width: 400px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  }
+  
+  .modal-box h3 {
+    margin-top: 0;
+  }
+  
+  .modal-box textarea {
+    width: 100%;
+    height: 80px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  
+  .modal-buttons button {
+    padding: 8px 16px;
+    font-size: 14px;
+  }

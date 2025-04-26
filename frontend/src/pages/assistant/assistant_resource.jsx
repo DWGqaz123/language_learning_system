@@ -16,7 +16,7 @@ const AssistantResource = () => {
   })
   const [resourceList, setResourceList] = useState([])
 
-  const phone = localStorage.getItem('phone') || ''
+  const phone = sessionStorage.getItem('phone') || ''
 
   useEffect(() => {
     if (phone) {
@@ -82,7 +82,8 @@ const AssistantResource = () => {
           <li><Link to="/assistant/assistant-study-room">自习室管理</Link></li>
           <li className="active"><Link to="/assistant/assistant-resource">资源管理</Link></li>
           <li><Link to="/assistant/assistant-analytics">学习分析</Link></li>
-          <li><Link to="/" onClick={() => localStorage.clear()}>退出系统</Link></li>
+          <li><Link to="/assistant/assistant-notification">通知中心</Link></li>
+          <li><Link to="/" onClick={() => sessionStorage.clear()}>退出系统</Link></li>
         </ul>
       </aside>
 

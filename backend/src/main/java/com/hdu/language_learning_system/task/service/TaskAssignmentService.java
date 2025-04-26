@@ -16,4 +16,6 @@ public interface TaskAssignmentService {
     void gradeTask(TaskGradingDTO dto);
 
     TaskStatsDTO getStudentTaskStats(Integer studentId);
+
+    StudentTaskSubmissionDTO getStudentTaskSubmission(Integer taskId, Integer studentId);
 }

@@ -3,8 +3,8 @@ import axios from 'axios'
 import './activate.css'
 
 const ActivateAccount = () => {
-    const phoneNumber = localStorage.getItem('pendingPhone') || ''
-    const userId = localStorage.getItem('pendingUserId') || ''
+    const phoneNumber = sessionStorage.getItem('pendingPhone') || ''
+    const userId = sessionStorage.getItem('pendingUserId') || ''
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
     const [error, setError] = useState('')

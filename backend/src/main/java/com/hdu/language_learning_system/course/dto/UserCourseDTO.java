@@ -8,4 +8,6 @@ public class UserCourseDTO {
     private String courseName;
     private String courseType;
     private String classGroupCode;
+    private Integer totalHours;
+    private Integer remainingHours;
 }

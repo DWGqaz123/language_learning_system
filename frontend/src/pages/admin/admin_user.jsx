@@ -4,7 +4,7 @@ import './admin.css'
 import { Link } from 'react-router-dom'
 
 const AdminUser = () => {
-  const phone = localStorage.getItem('phone') || ''
+  const phone = sessionStorage.getItem('phone') || ''
   const [userInfo, setUserInfo] = useState(null)
 
   useEffect(() => {

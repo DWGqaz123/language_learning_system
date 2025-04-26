@@ -39,7 +39,7 @@ const RoleManagement = () => {
   }
 
   const handleRoleChange = (userId, roleId) => {
-    const operatorUserId = localStorage.getItem('userId')
+    const operatorUserId = sessionStorage.getItem('userId')
     axios.put('/api/users/update-role', {
       userId,
       roleId,

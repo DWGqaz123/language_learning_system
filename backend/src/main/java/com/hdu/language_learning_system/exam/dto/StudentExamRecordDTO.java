@@ -18,4 +18,5 @@ public class StudentExamRecordDTO {
     private String examName;
     private Timestamp examTime;
     private String answers;
+    private String examStatus;
 }

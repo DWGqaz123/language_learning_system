@@ -24,31 +24,31 @@ const LoginPage = () => {
 
         if (!accountStatus) {
           // 未激活，跳转激活页并携带手机号
-          localStorage.setItem('pendingPhone', phoneNumber)
-          localStorage.setItem('pendingUserId', userId)
+          sessionStorage.setItem('pendingPhone', phoneNumber)
+          sessionStorage.setItem('pendingUserId', userId)
           window.location.href = '/activate-account'
           return
         }
 
         // 已激活，正常登录流程
-        localStorage.setItem('phone', response.data.phoneNumber)
-        localStorage.setItem('username', response.data.username)
-        localStorage.setItem('userId', response.data.userId)
-        localStorage.setItem('userInfo', JSON.stringify(response.data))  
-        localStorage.setItem('roleName', response.data.roleName)
+        sessionStorage.setItem('phone', response.data.phoneNumber)
+        sessionStorage.setItem('username', response.data.username)
+        sessionStorage.setItem('userId', response.data.userId)
+        sessionStorage.setItem('userInfo', JSON.stringify(response.data))  
+        sessionStorage.setItem('roleName', response.data.roleName)
 
         switch (roleName) {
           case 'student':
-            window.location.href = '/student-home'
+            window.location.href = '/student/student-user'
             break
           case 'teacher':
-            window.location.href = '/teacher-home'
+            window.location.href = '/teacher/teacher-user'
             break
           case 'assistant':
             window.location.href = '/assistant/assistant-user'
             break
           case 'admin':
-            window.location.href = '/admin-user'
+            window.location.href = '/admin/admin-user'
             break
           default:
             alert('未知角色，无法跳转')

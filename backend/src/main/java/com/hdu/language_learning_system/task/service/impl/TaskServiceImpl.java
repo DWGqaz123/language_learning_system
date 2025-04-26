@@ -122,11 +122,13 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-    //学员课后任务清单查看
+    // 学员课后任务清单查看（动态判断是否过期）
     @Override
     public List<TaskListDTO> getTaskListByStudentId(Integer studentId) {
         List<TaskAssignment> assignments = taskAssignmentRepository.findByStudent_UserId(studentId);
         List<TaskListDTO> result = new ArrayList<>();
+
+        Timestamp now = new Timestamp(System.currentTimeMillis()); // 当前时间
 
         for (TaskAssignment a : assignments) {
             TaskListDTO dto = new TaskListDTO();
@@ -134,12 +136,17 @@ public class TaskServiceImpl implements TaskService {
             dto.setTaskType(a.getTask().getTaskType());
             dto.setTaskContent(a.getTask().getTaskContent());
             dto.setPublishTime(a.getTask().getPublishTime());
-            dto.setDeadline(a.getTask().getDeadline()); // 新增字段
-            dto.setCompletionStatus(a.getCompletionStatus());
-//            dto.setSubmitTime(a.getSubmitTime());
-//            dto.setAttachmentPath(a.getAttachmentPath());
-//            dto.setScore(a.getScore());
-//            dto.setGradeComment(a.getGradeComment());
+            dto.setDeadline(a.getTask().getDeadline());
+
+            // 动态判断是否过期
+            String completionStatus = a.getCompletionStatus();
+            Timestamp deadline = a.getTask().getDeadline();
+            if (deadline != null && now.after(deadline) && !"已完成".equals(completionStatus)) {
+                dto.setCompletionStatus("已过期");
+            } else {
+                dto.setCompletionStatus(completionStatus);
+            }
+
             result.add(dto);
         }
 

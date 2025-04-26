@@ -5,7 +5,7 @@ import './update_info.css'
 
 const UpdateInfo = () => {
   const navigate = useNavigate()
-  const storedUser = JSON.parse(localStorage.getItem('userInfo') || '{}')
+  const storedUser = JSON.parse(sessionStorage.getItem('userInfo') || '{}')
 
   const [username, setUsername] = useState(storedUser.username || '')
   const [phoneNumber, setPhoneNumber] = useState(storedUser.phoneNumber || '')

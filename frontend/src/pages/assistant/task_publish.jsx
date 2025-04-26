@@ -18,7 +18,7 @@ const TaskPublish = () => {
   const [message, setMessage] = useState('')
 
   useEffect(() => {
-    const phone = localStorage.getItem('phone')
+    const phone = sessionStorage.getItem('phone')
     if (phone) {
       axios.get('/api/users/phone', { params: { phoneNumber: phone } })
         .then(res => {

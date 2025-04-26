@@ -11,7 +11,7 @@ const TaskDetail = () => {
   const [editForm, setEditForm] = useState({})
   const [showSubmissionsModal, setShowSubmissionsModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
-  const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}')
+  const userInfo = JSON.parse(sessionStorage.getItem('userInfo') || '{}')
   const navigate = useNavigate()
   useEffect(() => {
     fetchTasks()

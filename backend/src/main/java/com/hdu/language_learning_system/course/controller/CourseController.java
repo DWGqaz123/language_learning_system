@@ -173,4 +173,12 @@ public class CourseController {
         List<CourseListDTO> list = courseService.getAllCourses();
         return ApiResponse.success(list);
     }
+
+
+    //查询学员完整排课记录
+    @GetMapping("/schedule-records/{studentId}")
+    public ApiResponse<List<StudentScheduleRecordFullDTO>> getStudentScheduleRecordsWithScheduleInfo(@PathVariable Integer studentId) {
+        List<StudentScheduleRecordFullDTO> result = courseService.getStudentScheduleRecordsWithScheduleInfo(studentId);
+        return ApiResponse.success(result);
+    }
 }

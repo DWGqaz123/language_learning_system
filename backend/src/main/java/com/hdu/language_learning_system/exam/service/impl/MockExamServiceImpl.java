@@ -173,6 +173,7 @@ public class MockExamServiceImpl implements MockExamService {
             dto.setCompletedTime(record.getCompletedTime());
             dto.setTeacherComment(record.getTeacherComment());
             dto.setAssistantComment(record.getAssistantComment());
+            dto.setExamStatus(record.getExamStatus());
             return dto;
         }).toList();
     }
@@ -294,7 +295,6 @@ public class MockExamServiceImpl implements MockExamService {
 
             // 设置成绩并保存
             record.setObjectiveScore(score);
-            record.setExamStatus("graded");
             studentExamRecordRepository.save(record);
 
         } catch (Exception e) {
@@ -316,6 +316,7 @@ public class MockExamServiceImpl implements MockExamService {
         Integer objScore = record.getObjectiveScore() != null ? record.getObjectiveScore() : 0;
         Integer subjScore = dto.getSubjectiveScore() != null ? dto.getSubjectiveScore() : 0;
         record.setTotalScore(objScore + subjScore);
+        record.setExamStatus("graded");
         studentExamRecordRepository.save(record);
     }
 

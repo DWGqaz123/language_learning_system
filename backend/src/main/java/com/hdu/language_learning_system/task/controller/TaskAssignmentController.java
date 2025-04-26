@@ -63,4 +63,14 @@ public class TaskAssignmentController {
         TaskStatsDTO stats = taskAssignmentService.getStudentTaskStats(studentId);
         return ApiResponse.success(stats);
     }
+
+    // 查询某个学员在某个任务下的提交记录
+    @GetMapping("/student/{studentId}/task/{taskId}")
+    public ApiResponse<StudentTaskSubmissionDTO> getStudentTaskSubmission(
+            @PathVariable Integer studentId,
+            @PathVariable Integer taskId) {
+
+        StudentTaskSubmissionDTO dto = taskAssignmentService.getStudentTaskSubmission(taskId, studentId);
+        return ApiResponse.success("查询成功", dto);
+    }
 }

@@ -49,16 +49,22 @@ const ExamList = () => {
   const handleDelete = async (examId) => {
     if (!window.confirm('确定要删除该考试吗？')) return
     try {
-      await axios.delete(`/api/mock-exams/${examId}`)
-      alert('删除成功')
-      fetchExams()
+      const res = await axios.delete(`/api/mock-exams/${examId}`)
+      const { code, message } = res.data
+  
+      if (code === 200) {
+        alert('删除成功')
+        fetchExams()
+      } else {
+        if (message.includes('无法')) {
+          alert('无法删除：考试已有关联学生记录')
+        } else {
+          alert('删除失败：' + message)
+        }
+      }
     } catch (err) {
       const msg = err.response?.data?.message || '未知错误'
-      if (msg.includes('已有')) {
-        alert('无法删除：考试已有关联学生记录')
-      } else {
-        alert('删除失败: ' + msg)
-      }
+      alert('删除请求失败: ' + msg)
     }
   }
 

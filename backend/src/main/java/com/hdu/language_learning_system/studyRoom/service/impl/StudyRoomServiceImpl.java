@@ -233,7 +233,7 @@ public class StudyRoomServiceImpl implements StudyRoomService {
         }).toList();
     }
 
-    //签到签退自习室
+    // 签到签退自习室
     @Override
     @Transactional
     public void signStudyRoom(SignDTO dto) {
@@ -252,18 +252,24 @@ public class StudyRoomServiceImpl implements StudyRoomService {
         }
 
         Timestamp now = new Timestamp(System.currentTimeMillis());
+
         if ("signIn".equals(dto.getAction())) {
             if (reservation.getSignInTime() != null) {
-                throw new RuntimeException("已签到");
+                throw new RuntimeException("已签到，不能重复签到");
             }
             reservation.setSignInTime(now);
         } else if ("signOut".equals(dto.getAction())) {
             if (reservation.getSignOutTime() != null) {
-                throw new RuntimeException("已签退");
+                throw new RuntimeException("已签退，不能重复签退");
             }
             reservation.setSignOutTime(now);
         } else {
             throw new RuntimeException("非法操作类型");
+        }
+
+        // 签到和签退都完成后，更新预约状态为“已签退”
+        if (reservation.getSignInTime() != null && reservation.getSignOutTime() != null) {
+            reservation.setReviewStatus("已签退");
         }
 
         studyRoomReservationRepository.save(reservation);

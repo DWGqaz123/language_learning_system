@@ -41,7 +41,7 @@ public class User {
     private Timestamp updatedAt;
 
     // Role实体外键映射
-    @ManyToOne(fetch = FetchType.EAGER) //懒加载，提升性能
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", referencedColumnName = "role_id")
     @JsonIgnore
     private Role role;

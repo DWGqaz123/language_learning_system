@@ -9,6 +9,7 @@ import com.hdu.language_learning_system.task.repository.TaskAssignmentRepository
 import com.hdu.language_learning_system.task.repository.TaskRepository;
 import com.hdu.language_learning_system.task.service.*;
 import com.hdu.language_learning_system.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import jakarta.annotation.Resource;
 
@@ -22,7 +23,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 @Service
 public class TaskAssignmentServiceImpl implements TaskAssignmentService {
 
@@ -83,7 +83,7 @@ public class TaskAssignmentServiceImpl implements TaskAssignmentService {
 
         taskAssignmentRepository.save(assignment);
     }
-    //助教查看某学员的任务提交
+    //查看某学员的任务提交
     @Override
     public List<TaskSubmissionDTO> getSubmissionsByStudentId(Integer studentId) {
         List<TaskAssignment> assignments = taskAssignmentRepository.findByStudent_UserId(studentId);
@@ -108,7 +108,7 @@ public class TaskAssignmentServiceImpl implements TaskAssignmentService {
         return result;
     }
 
-    //助教查看某个任务的所以提交记录
+    //查看某个任务的所有提交记录
     @Override
     public List<TaskSubmissionDTO> getSubmissionsByTaskId(Integer taskId) {
         List<TaskAssignment> assignments = taskAssignmentRepository.findByTask_TaskId(taskId);
@@ -189,6 +189,24 @@ public class TaskAssignmentServiceImpl implements TaskAssignmentService {
         dto.setCompletedTasks(completed);
         dto.setIncompleteTasks(incomplete);
         dto.setAverageScore(avgScore);
+
+        return dto;
+    }
+
+    //查看某学员某任务的提交记录
+    @Override
+    public StudentTaskSubmissionDTO getStudentTaskSubmission(Integer taskId, Integer studentId) {
+        TaskAssignment assignment = taskAssignmentRepository
+                .findByTask_TaskIdAndStudent_UserId(taskId, studentId)
+                .orElseThrow(() -> new RuntimeException("未找到该学员在此任务下的提交记录"));
+
+        StudentTaskSubmissionDTO dto = new StudentTaskSubmissionDTO();
+        dto.setTaskId(assignment.getTask().getTaskId());
+        dto.setStudentId(assignment.getStudent().getUserId());
+        dto.setSubmitText(assignment.getSubmitText());
+        dto.setSubmitTime(assignment.getSubmitTime());
+        dto.setScore(assignment.getScore());
+        dto.setGradeComment(assignment.getGradeComment());
 
         return dto;
     }

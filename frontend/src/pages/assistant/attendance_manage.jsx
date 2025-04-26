@@ -16,7 +16,7 @@ const AttendanceManage = () => {
 
   useEffect(() => {
     // 直接从 localStorage 读取当前用户
-    const userInfo = JSON.parse(localStorage.getItem('userInfo'))
+    const userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
     if (userInfo) {
       setCurrentUserId(userInfo.userId)
     }

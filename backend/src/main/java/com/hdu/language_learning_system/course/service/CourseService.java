@@ -45,4 +45,8 @@ public interface CourseService {
     void removeClassStudent(ClassStudentOperationDTO dto);
 
     List<ClassStudentInfoDTO> getClassStudentList(Integer courseId);
+
+    List<StudentScheduleRecordSimpleDTO> getStudentScheduleRecords(Integer studentId);
+
+    List<StudentScheduleRecordFullDTO> getStudentScheduleRecordsWithScheduleInfo(Integer studentId);
 }

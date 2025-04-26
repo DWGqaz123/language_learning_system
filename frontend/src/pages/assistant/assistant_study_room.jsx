@@ -4,7 +4,7 @@ import './assistant.css'
 import { Link } from 'react-router-dom'
 
 const AssistantStudyRoom = () => {
-  const phone = localStorage.getItem('phone') || ''
+  const phone = sessionStorage.getItem('phone') || ''
   const [userInfo, setUserInfo] = useState(null)
 
   useEffect(() => {
@@ -39,7 +39,8 @@ const AssistantStudyRoom = () => {
           <li><Link to="/assistant/assistant-study-room" className="active">自习室管理</Link></li>
           <li><Link to="/assistant/assistant-resource">资源管理</Link></li>
           <li><Link to="/assistant/vanalytics">学习分析</Link></li>
-          <li><Link to="/" onClick={() => localStorage.clear()}>退出系统</Link></li>
+          <li><Link to="/assistant/assistant-notification">通知中心</Link></li>
+          <li><Link to="/" onClick={() => sessionStorage.clear()}>退出系统</Link></li>
         </ul>
       </aside>
 
