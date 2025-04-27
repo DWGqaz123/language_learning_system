@@ -1,0 +1,88 @@
+.resource-category-wrapper {
+    padding: 20px;
+  }
+  
+  .resource-category-top-bar {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .back-button {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  
+  .resource-category-actions {
+    margin-left: 150px;
+    
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .resource-category-actions input {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+  
+  .add-button,
+  .save-button,
+  .cancel-button {
+    background-color: #3b82f6;
+    color: white;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .cancel-button {
+    background-color: #999;
+  }
+  
+  .resource-category-list {
+    margin-top: 20px;
+  }
+  
+  .category-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .category-table th,
+  .category-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .edit-button,
+  .delete-button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    font-size: 13px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .edit-button {
+    background-color: #34d399;
+    color: white;
+  }
+  
+  .delete-button {
+    background-color: #f87171;
+    color: white;
+  }
+
+  .resource-category-list{
+    margin-left: 150px;
+  }

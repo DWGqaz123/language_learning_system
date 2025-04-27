@@ -1,0 +1,66 @@
+.resource-list-wrapper {
+    padding: 20px;
+  }
+  
+  .back-button {
+    padding: 6px 14px;
+    background-color: #3b82f6;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+  
+  .back-button:hover {
+    background-color: #2563eb;
+  }
+  
+  .page-title {
+    margin-bottom: 20px;
+  }
+  
+  .resource-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .resource-table th,
+  .resource-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .resource-table th {
+    background-color: #f0f4f8;
+  }
+  
+  .action-button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    font-size: 13px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .action-button.edit {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .action-button.delete {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .action-button:hover {
+    opacity: 0.9;
+  }
+  
+  .no-data-text {
+    text-align: center;
+    margin-top: 30px;
+    color: #777;
+  }

@@ -21,4 +21,8 @@ public interface ResourceService {
     List<TeachingResourceListDTO> getPublishedResources(Integer categoryId);
 
     String downloadTeachingResource(Integer resourceId);
+
+    void updateTeachingResource(TeachingResourceUpdateDTO dto);
+
+    void deleteTeachingResource(Integer resourceId);
 }

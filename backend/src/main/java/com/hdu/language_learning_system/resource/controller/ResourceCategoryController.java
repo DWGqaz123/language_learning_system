@@ -116,4 +116,18 @@ public class ResourceCategoryController {
             return ApiResponse.error("下载失败：" + e.getMessage());
         }
     }
+
+    //更新资源
+    @PutMapping("/resources")
+    public ApiResponse<String> updateTeachingResource(@RequestBody TeachingResourceUpdateDTO dto) {
+        resourceService.updateTeachingResource(dto);
+        return ApiResponse.success("资源更新成功");
+    }
+
+    //删除资源
+    @DeleteMapping("/resources/{resourceId}")
+    public ApiResponse<String> deleteTeachingResource(@PathVariable Integer resourceId) {
+        resourceService.deleteTeachingResource(resourceId);
+        return ApiResponse.success("资源删除成功");
+    }
 }

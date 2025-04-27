@@ -12,6 +12,11 @@ import RoleManagement from './pages/admin/role_management'
 import AdminStudyRoom from './pages/admin/admin_study_room'
 import AdminStudyRoomList from './pages/admin/admin_study_room_list'
 import AdminStudyRoomReview from './pages/admin/admin_study_room_review'
+import AdminResource from './pages/admin/admin_resource'
+import AdminResourceCategory from './pages/admin/admin_resource_category'
+import AdminResourceList from './pages/admin/admin_resource_list'
+import AdminResourceAudit from './pages/admin/admin_resource_audit'
+
 
 //助教
 import AssistantUserPage from './pages/assistant/assistant_user'
@@ -61,7 +66,7 @@ import TeacherUpdateInfo from './pages/teacher/teacher_update_info'
 import TeacherUser from './pages/teacher/teacher_user'
 import TeacherCourse from './pages/teacher/teacher_course'
 import TeacherScheduleManage from './pages/teacher/teacher_schedule_manage'
-import TeacherCourseList from './pages/teacher/teacher_course_list' 
+import TeacherCourseList from './pages/teacher/teacher_course_list'
 import TeacherFeedback from './pages/teacher/teacher_feedback'
 import TeacherTask from './pages/teacher/teacher_task'
 import TeacherExam from './pages/teacher/teacher_exam'
@@ -89,6 +94,11 @@ function App() {
         <Route path="/admin/admin-study-room" element={<AdminStudyRoom />} />
         <Route path="/admin/admin-study-room-list" element={<AdminStudyRoomList />} />
         <Route path="/admin/admin-study-room-review" element={<AdminStudyRoomReview />} />
+        <Route path="/admin/admin-resource" element={<AdminResource />} />
+        <Route path="/admin/admin-resource-category" element={<AdminResourceCategory />} />
+        <Route path="/admin/admin-resource-list" element={<AdminResourceList />} />
+        <Route path="/admin/admin-resource-audit" element={<AdminResourceAudit />} />
+
 
         {/* 助教模块 */}
         <Route path="/assistant/assistant-user" element={<AssistantUserPage />} />

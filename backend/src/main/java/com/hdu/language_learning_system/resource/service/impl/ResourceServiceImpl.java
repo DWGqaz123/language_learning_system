@@ -183,4 +183,37 @@ public class ResourceServiceImpl implements ResourceService {
 
         return resource.getResourceContent(); // 假设是资源的 URL 或内容链接
     }
+
+    //更新教学资源
+    @Override
+    @Transactional
+    public void updateTeachingResource(TeachingResourceUpdateDTO dto) {
+        TeachingResource resource = teachingResourceRepository.findById(dto.getResourceId())
+                .orElseThrow(() -> new RuntimeException("资源不存在"));
+
+        // 更新基本信息
+        resource.setResourceName(dto.getResourceName());
+        resource.setResourceType(dto.getResourceType());
+        resource.setResourceContent(dto.getResourceContent());
+
+        // 更新分类
+        if (dto.getCategoryId() != null) {
+            ResourceCategory category = categoryRepository.findById(dto.getCategoryId())
+                    .orElseThrow(() -> new RuntimeException("资源分类不存在"));
+            resource.setCategory(category);
+        }
+
+        teachingResourceRepository.save(resource);
+    }
+
+    //删除教学资源
+    @Override
+    @Transactional
+    public void deleteTeachingResource(Integer resourceId) {
+        if (!teachingResourceRepository.existsById(resourceId)) {
+            throw new RuntimeException("资源不存在");
+        }
+        teachingResourceRepository.deleteById(resourceId);
+    }
+
 }
