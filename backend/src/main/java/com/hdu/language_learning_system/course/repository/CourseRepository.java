@@ -1,6 +1,7 @@
 package com.hdu.language_learning_system.course.repository;
 
 import com.hdu.language_learning_system.course.entity.Course;
+import com.hdu.language_learning_system.course.entity.StudentScheduleRecord;
 import com.hdu.language_learning_system.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

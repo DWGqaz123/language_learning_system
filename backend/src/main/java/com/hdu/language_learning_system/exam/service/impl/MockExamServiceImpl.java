@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -320,7 +321,7 @@ public class MockExamServiceImpl implements MockExamService {
         studentExamRecordRepository.save(record);
     }
 
-    //查看学员答卷详情
+    // 查看学员答卷详情
     @Override
     public StudentExamDetailDTO getStudentExamDetail(Integer examId, Integer studentId) {
         StudentExamRecord record = studentExamRecordRepository
@@ -344,6 +345,30 @@ public class MockExamServiceImpl implements MockExamService {
         dto.setTeacherComment(record.getTeacherComment());
         dto.setAssistantComment(record.getAssistantComment());
         dto.setCompletedTime(record.getCompletedTime());
+
+        // ✅ 额外：提取主观题内容
+        String paperContentJson = paper.getPaperContent();
+        if (paperContentJson != null) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            try {
+                List<QuestionDTO> questions = objectMapper.readValue(
+                        paperContentJson,
+                        new TypeReference<List<QuestionDTO>>() {}
+                );
+
+                // 只保留主观题（type = subjective）
+                List<QuestionDTO> subjectiveQuestions = questions.stream()
+                        .filter(q -> "subjective".equalsIgnoreCase(q.getType()))
+                        .collect(Collectors.toList());
+
+                // 转回 JSON 字符串返回
+                String subjectiveQuestionsJson = objectMapper.writeValueAsString(subjectiveQuestions);
+                dto.setSubjectiveQuestionsJson(subjectiveQuestionsJson);
+
+            } catch (Exception e) {
+                throw new RuntimeException("解析试卷内容失败：" + e.getMessage(), e);
+            }
+        }
 
         return dto;
     }
@@ -504,5 +529,32 @@ public class MockExamServiceImpl implements MockExamService {
             dto.setExamTime(record.getExam().getExamTime());
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    //查看所有带批改试卷
+    @Override
+    public List<UnGradedExamRecordDTO> getUnGradedSubjectiveExamRecords() {
+        // 查询考试记录中状态为 "submitted" 的
+        List<StudentExamRecord> records = studentExamRecordRepository.findByExamStatus("submitted");
+
+        List<UnGradedExamRecordDTO> result = new ArrayList<>();
+        for (StudentExamRecord r : records) {
+            UnGradedExamRecordDTO dto = new UnGradedExamRecordDTO();
+
+            dto.setStudentId(r.getStudent().getUserId());
+            dto.setStudentName(r.getStudent().getUsername());
+            dto.setExamId(r.getExam().getExamId());
+            dto.setExamName(r.getExam().getExamName());
+            dto.setExamTime(r.getExam().getExamTime());
+            dto.setAnswersJson(r.getAnswersJson());
+
+            // 试卷内容
+            if (r.getExam().getStandardPaper() != null) {
+                dto.setPaperContentJson(r.getExam().getStandardPaper().getPaperContent());
+            }
+
+            result.add(dto);
+        }
+        return result;
     }
 }

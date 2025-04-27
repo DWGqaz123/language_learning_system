@@ -1,0 +1,103 @@
+.teacher-exam-mark-wrapper {
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  
+  .teacher-exam-mark-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-left: 150px;
+  }
+  
+  .teacher-exam-mark-card {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 16px;
+    border-radius: 8px;
+    width: 280px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .teacher-exam-mark-card p {
+    margin: 8px 0;
+  }
+  
+  .teacher-exam-mark-grade-button {
+    margin-top: 10px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .teacher-exam-mark-no-data {
+    color: #999;
+    margin-top: 20px;
+  }
+  
+  .teacher-exam-mark-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .teacher-exam-mark-modal-box {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .teacher-exam-mark-input {
+    width: 100%;
+    margin: 10px 0;
+    padding: 8px;
+    font-size: 16px;
+  }
+  
+  .teacher-exam-mark-textarea {
+    width: 100%;
+    height: 80px;
+    margin: 10px 0;
+    padding: 8px;
+    font-size: 16px;
+  }
+  
+  .teacher-exam-mark-modal-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .teacher-exam-mark-modal-buttons button {
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .subjective-question-list {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .subjective-question {
+    background-color: #eef4fb;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+  }

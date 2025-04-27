@@ -49,4 +49,6 @@ public interface CourseService {
     List<StudentScheduleRecordSimpleDTO> getStudentScheduleRecords(Integer studentId);
 
     List<StudentScheduleRecordFullDTO> getStudentScheduleRecordsWithScheduleInfo(Integer studentId);
+
+    List<StudentScheduleRecordDTO> getUnEvaluatedRecordsByTeacherId(Integer teacherId);
 }

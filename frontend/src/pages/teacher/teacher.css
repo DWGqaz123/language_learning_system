@@ -1,0 +1,99 @@
+/* 教师模块专用 teacher.css */
+
+.teacher-layout {
+    display: flex;
+    height: 100vh;
+    background-color: #f5f7fa;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+  }
+  
+  .teacher-layout .sider {
+    width: 220px;
+    background-color: #2c3e50; /* 教师主题深蓝 */
+    color: #ecf0f1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-right: 1px solid #eee;
+    padding-top: 20px;
+  }
+  
+  .teacher-layout .avatar .circle {
+    width: 64px;
+    height: 64px;
+    line-height: 64px;
+    border-radius: 50%;
+    background-color: #3498db; /* 教师模块圆圈主色 */
+    color: #fff;
+    font-size: 24px;
+    margin: 0 auto 8px;
+  }
+  
+  
+  .teacher-layout .menu {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+  }
+  
+  .teacher-layout .menu li {
+    padding: 12px 20px;
+    font-size: 16px;
+  }
+  
+  .teacher-layout .menu li a {
+    color: #ecf0f1;
+    text-decoration: none;
+  }
+  
+  .teacher-layout .menu li.active, 
+  .teacher-layout .menu li:hover {
+    background-color: #2980b9;
+  }
+
+  .teacher-schedule-section 
+  .calendar-header {
+    background-color: #3d5976;
+  }
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .header {
+    background-color: #fff;
+    padding: 16px 24px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .content {
+    padding: 24px;
+    flex: 1;
+    overflow-y: auto;
+  }
+  
+  h2 {
+    margin-top: 0;
+  }
+  
+  .card-grid {
+    display: flex;
+    gap: 24px;
+    margin-top: 20px;
+    flex-wrap: wrap; /* 适配小屏时自动换行 */
+  }
+  
+  .card {
+    background-color: #fff;
+    padding: 20px;
+    flex: 1 1 300px; /* 卡片最小宽度300px */
+    border-radius: 8px;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+  }
+  
+  .card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }

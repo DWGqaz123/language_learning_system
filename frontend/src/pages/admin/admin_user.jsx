@@ -22,7 +22,7 @@ const AdminUser = () => {
   }, [phone])
 
   return (
-    <div className="layout">
+    <div className="admin-layout">
       {/* 侧边栏 */}
       <aside className="sider">
         <div className="avatar">
@@ -32,10 +32,10 @@ const AdminUser = () => {
           <div className="label">账号: {userInfo ? userInfo.phoneNumber : '...'}</div>
         </div>
         <ul className="menu">
-          <li className="active">用户管理</li>
-          <li>自习室管理</li>
-          <li>资源管理</li>
-          <li>退出系统</li>
+          <li className="active"><Link to="/admin/admin-user">用户管理</Link></li>
+          <li><Link to="/admin/admin-study-room">自习室管理</Link></li>
+          <li><Link to="/admin/admin-resource">资源管理</Link></li>
+          <li><Link to="/" onClick={() => sessionStorage.clear()}>退出系统</Link></li>
         </ul>
       </aside>
 

@@ -1,0 +1,14 @@
+.teacher-analytics-wrapper {
+    padding: 30px;
+  }
+  
+  .teacher-analytics-wrapper-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .teacher-analytics-wrapper-desc {
+    font-size: 18px;
+    color: #777;
+  }

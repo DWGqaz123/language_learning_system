@@ -9,6 +9,9 @@ import AdminUser from './pages/admin/admin_user'
 import ReviewUpdate from './pages/admin/review_update_request'
 import RegisterEmployee from './pages/admin/register_employee'
 import RoleManagement from './pages/admin/role_management'
+import AdminStudyRoom from './pages/admin/admin_study_room'
+import AdminStudyRoomList from './pages/admin/admin_study_room_list'
+import AdminStudyRoomReview from './pages/admin/admin_study_room_review'
 
 //助教
 import AssistantUserPage from './pages/assistant/assistant_user'
@@ -44,7 +47,7 @@ import StudentTask from './pages/student/student_task'
 import TaskList from './pages/student/task_list'
 import StudentExam from './pages/student/student_exam';
 import StudentExamArrange from './pages/student/student_exam_arrange';
-import StudentStartExam from './pages/student/student_start_exam'   ;
+import StudentStartExam from './pages/student/student_start_exam';
 import StudentExamReport from './pages/student/student_exam_report';
 import StudentStudyRoom from './pages/student/student_study_room'
 import StudentStudyRoomList from './pages/student/student_study_room_list'
@@ -53,6 +56,21 @@ import StudentResource from './pages/student/student_resource'
 import StudentResourceList from './pages/student/student_resource_list'
 import StudentAnalytics from './pages/student/student_analytics'
 import StudentNotification from './pages/student/student_notification'
+import TeacherUpdateInfo from './pages/teacher/teacher_update_info'
+//教师
+import TeacherUser from './pages/teacher/teacher_user'
+import TeacherCourse from './pages/teacher/teacher_course'
+import TeacherScheduleManage from './pages/teacher/teacher_schedule_manage'
+import TeacherCourseList from './pages/teacher/teacher_course_list' 
+import TeacherFeedback from './pages/teacher/teacher_feedback'
+import TeacherTask from './pages/teacher/teacher_task'
+import TeacherExam from './pages/teacher/teacher_exam'
+import TeacherExamMark from './pages/teacher/teacher_exam_mark'
+import TeacherStudyRoom from './pages/teacher/teacher_study_room'
+import TeacherResourceManage from './pages/teacher/teacher_resource'
+import TeacherAnalyticsManage from './pages/teacher/teacher_analytics'
+import TeacherNotificationManage from './pages/teacher/teacher_notification'
+
 
 function App() {
   return (
@@ -68,6 +86,9 @@ function App() {
         <Route path="/admin/review-update-request" element={<ReviewUpdate />} />
         <Route path="/admin/register-employee" element={<RegisterEmployee />} />
         <Route path="/admin/role-management" element={<RoleManagement />} />
+        <Route path="/admin/admin-study-room" element={<AdminStudyRoom />} />
+        <Route path="/admin/admin-study-room-list" element={<AdminStudyRoomList />} />
+        <Route path="/admin/admin-study-room-review" element={<AdminStudyRoomReview />} />
 
         {/* 助教模块 */}
         <Route path="/assistant/assistant-user" element={<AssistantUserPage />} />
@@ -91,7 +112,7 @@ function App() {
         <Route path="/assistant/assistant-resource" element={<AssistantResource />} />
         <Route path="/assistant/assistant-analytics" element={<AssistantAnalytics />} />
         <Route path="/assistant/assistant-notification" element={<AssistantNotification />} />
-        
+
         {/* 学员模块 */}
         <Route path="/student/student-user" element={<StudentUser />} />
         <Route path="/student/update-info" element={<StudentUpdateInfo />} />
@@ -112,6 +133,21 @@ function App() {
         <Route path="/student/student-resource-list" element={<StudentResourceList />} />
         <Route path="/student/student-analytics" element={<StudentAnalytics />} />
         <Route path="/student/student-notification" element={<StudentNotification />} />
+
+        {/* 教师模块 */}
+        <Route path="/teacher/teacher-user" element={<TeacherUser />} />
+        <Route path="/teacher/teacher-update-info" element={<TeacherUpdateInfo />} />
+        <Route path="/teacher/teacher-course" element={<TeacherCourse />} />
+        <Route path="/teacher/teacher-course-list" element={<TeacherCourseList />} />
+        <Route path="/teacher/teacher-schedule-manage" element={<TeacherScheduleManage />} />
+        <Route path="/teacher/teacher-feedback" element={<TeacherFeedback />} />
+        <Route path="/teacher/teacher-task" element={<TeacherTask />} />
+        <Route path="/teacher/teacher-exam" element={<TeacherExam />} />
+        <Route path="/teacher/teacher-exam-mark" element={<TeacherExamMark />} />
+        <Route path="/teacher/teacher-study-room" element={<TeacherStudyRoom />} />
+        <Route path="/teacher/teacher-resource" element={<TeacherResourceManage />} />
+        <Route path="/teacher/teacher-analytics" element={<TeacherAnalyticsManage />} />
+        <Route path="/teacher/teacher-notification" element={<TeacherNotificationManage />} />
       </Routes>
     </Router>
   )

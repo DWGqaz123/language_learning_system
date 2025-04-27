@@ -36,7 +36,7 @@ const StudentResource = () => {
         <section className="content">
           <div className="card-grid">
             <div className="card">
-              <h3>查看资源课表</h3>
+              <h3>查看资源列表</h3>
               <p>浏览平台发布的各类学习资源，下载使用。</p>
               <Link to="/student/student-resource-list">立即进入</Link>
             </div>

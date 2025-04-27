@@ -181,4 +181,11 @@ public class CourseController {
         List<StudentScheduleRecordFullDTO> result = courseService.getStudentScheduleRecordsWithScheduleInfo(studentId);
         return ApiResponse.success(result);
     }
+
+    // 查询教师未评价学员列表
+    @GetMapping("/un-evaluated/{teacherId}")
+    public ApiResponse<List<StudentScheduleRecordDTO>> getUnEvaluatedRecords(@PathVariable Integer teacherId) {
+        List<StudentScheduleRecordDTO> result = courseService.getUnEvaluatedRecordsByTeacherId(teacherId);
+        return ApiResponse.success("查询成功", result);
+    }
 }

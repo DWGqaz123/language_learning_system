@@ -30,4 +30,7 @@ public interface StudyRoomService {
 
     StudyRoomUsageStatisticsDTO getStudentUsageStatistics(Integer studentId);
 
+    void updateStudyRoom(StudyRoomDTO dto);
+    void deleteStudyRoom(Integer roomId);
+
 }

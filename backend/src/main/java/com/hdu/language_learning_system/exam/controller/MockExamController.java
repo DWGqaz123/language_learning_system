@@ -171,4 +171,11 @@ public class MockExamController {
         List<StudentExamRecordDTO> records = mockExamService.getRecordsByExamId(examId);
         return ResponseEntity.ok(ApiResponse.success(records));
     }
+
+    //查询所有待批改试卷
+    @GetMapping("/teacher/ungraded-subjective-records")
+    public ApiResponse<List<UnGradedExamRecordDTO>> getUnGradedSubjectiveExamRecords() {
+        List<UnGradedExamRecordDTO> records = mockExamService.getUnGradedSubjectiveExamRecords();
+        return ApiResponse.success(records);
+    }
 }

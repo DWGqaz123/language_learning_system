@@ -175,6 +175,14 @@ public class StudyRoomServiceImpl implements StudyRoomService {
         dto.setReviewStatus(reservation.getReviewStatus());
         dto.setRoomName(reservation.getRoom().getRoomName());
         dto.setStudentName(reservation.getStudent().getUsername());
+
+        // ✨ 新增：补充自习室详细信息
+        if (reservation.getRoom() != null) {
+            dto.setRoomName(reservation.getRoom().getRoomName());
+            dto.setLocation(reservation.getRoom().getLocation());
+            dto.setCapacity(reservation.getRoom().getCapacity());
+        }
+
         return dto;
     }
 
@@ -337,4 +345,28 @@ public class StudyRoomServiceImpl implements StudyRoomService {
 
         return dto;
     }
+    // 更新自习室信息
+    @Override
+    @Transactional
+    public void updateStudyRoom(StudyRoomDTO dto) {
+        StudyRoom room = studyRoomRepository.findById(dto.getRoomId())
+                .orElseThrow(() -> new RuntimeException("自习室不存在"));
+
+        room.setRoomName(dto.getRoomName());
+        room.setCapacity(dto.getCapacity());
+        room.setLocation(dto.getLocation());
+
+        studyRoomRepository.save(room);
+    }
+
+    // 删除自习室
+    @Override
+    @Transactional
+    public void deleteStudyRoom(Integer roomId) {
+        StudyRoom room = studyRoomRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("自习室不存在"));
+
+        studyRoomRepository.delete(room);
+    }
+
 }

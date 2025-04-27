@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import '../assistant/update_info.css'
 
-const StudentUpdateInfo = () => {
+const TeacherUpdateInfo = () => {
   const navigate = useNavigate()
   const storedUser = JSON.parse(sessionStorage.getItem('userInfo') || '{}')
 
@@ -43,7 +43,7 @@ const StudentUpdateInfo = () => {
   return (
     <div className="update-wrapper">
       <div className="update-card">
-        <button className="back-button" onClick={() => navigate('/student/student-user')}>← 返回</button>
+        <button className="back-button" onClick={() => navigate('/teacher/teacher-user')}>← 返回</button>
         <h2>修改个人信息</h2>
         <p className="gray">用户ID：{storedUser.userId}</p>
 
@@ -75,4 +75,4 @@ const StudentUpdateInfo = () => {
   )
 }
 
-export default StudentUpdateInfo
+export default TeacherUpdateInfo

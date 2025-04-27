@@ -33,4 +33,6 @@ public interface MockExamService {
     void updateMockExam(MockExamUpdateDTO dto);
 
     List<StudentExamRecordDTO> getRecordsByExamId(Integer examId);
+
+    List<UnGradedExamRecordDTO> getUnGradedSubjectiveExamRecords();
 }

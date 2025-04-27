@@ -1,0 +1,122 @@
+.teacher-feedback-wrapper {
+    padding: 20px;
+  }
+  
+  .teacher-feedback-wrapper .back-button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+  
+  .teacher-feedback-wrapper .back-button:hover {
+    background-color: #0069d9;
+  }
+  
+  .teacher-feedback-wrapper .title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .teacher-feedback-wrapper .record-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .teacher-feedback-wrapper .record-card {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    width: calc(33% - 20px);
+    min-width: 280px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+  
+  .teacher-feedback-wrapper .record-card p {
+    margin: 6px 0;
+    font-size: 14px;
+    color: #555;
+  }
+  
+  .teacher-feedback-wrapper .evaluate-button {
+    margin-top: 10px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .teacher-feedback-wrapper .evaluate-button:hover {
+    background-color: #218838;
+  }
+  
+  .teacher-feedback-wrapper .no-data {
+    font-style: italic;
+    color: #888;
+    margin-top: 20px;
+  }
+  
+  /* Modal 弹窗 */
+  .teacher-feedback-wrapper .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .teacher-feedback-wrapper .modal-box {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+  }
+  
+  .teacher-feedback-wrapper .modal-box h3 {
+    margin-bottom: 15px;
+    font-size: 20px;
+    color: #333;
+  }
+  
+  .teacher-feedback-wrapper .modal-box textarea {
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: none;
+    margin-bottom: 15px;
+  }
+  
+  .teacher-feedback-wrapper .modal-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .teacher-feedback-wrapper .modal-buttons button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 6px 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .teacher-feedback-wrapper .modal-buttons button:hover {
+    background-color: #0069d9;
+  }

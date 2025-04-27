@@ -12,4 +12,5 @@ public interface StudentExamRecordRepository extends JpaRepository<StudentExamRe
     List<StudentExamRecord> findByExam_ExamId(Integer examId);
     Optional<StudentExamRecord> findByStudent_UserIdAndExam_ExamId(Integer studentId, Integer examId);
 
+    List<StudentExamRecord> findByExamStatus(String examStatus);
 }

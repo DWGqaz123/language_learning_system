@@ -631,4 +631,26 @@ public class CourseServiceImpl implements CourseService {
             return dto;
         }).collect(Collectors.toList());
     }
+
+    //查询待评价学员记录
+    @Override
+    public List<StudentScheduleRecordDTO> getUnEvaluatedRecordsByTeacherId(Integer teacherId) {
+        List<StudentScheduleRecord> records = studentScheduleRecordRepository.findUnEvaluatedRecordsByTeacherId(teacherId);
+
+        return records.stream().map(r -> {
+            StudentScheduleRecordDTO dto = new StudentScheduleRecordDTO();
+            dto.setSsrId(r.getSsrId());
+            dto.setStudentId(r.getStudent().getUserId());
+            dto.setStudentName(r.getStudent().getUsername());
+            dto.setScheduleId(r.getSchedule().getScheduleId());
+            dto.setClassTime(r.getSchedule().getClassTime());
+            dto.setCourseName(r.getCourse().getCourseName());
+
+            // 新增返回字段
+            dto.setAttendStatus(r.getAttendStatus());
+            dto.setLeaveReason(r.getLeaveReason());
+
+            return dto;
+        }).collect(Collectors.toList());
+    }
 }

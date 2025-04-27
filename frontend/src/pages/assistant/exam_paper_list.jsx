@@ -109,7 +109,7 @@ const ExamPaperList = () => {
 
       {/* 编辑试卷弹窗 */}
       {showEditModal && editPaper && (
-        <div className="modal-overlay">
+        <div className="paper-modal-overlay">
           <div className="modal-box large">
             <h3>编辑试卷</h3>
             <div className="form-group">

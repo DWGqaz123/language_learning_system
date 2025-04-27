@@ -142,4 +142,18 @@ public class StudyRoomController {
             return ApiResponse.error("查询失败：" + e.getMessage());
         }
     }
+
+    // 更新自习室
+    @PutMapping("/update")
+    public ApiResponse<Void> updateStudyRoom(@RequestBody StudyRoomDTO dto) {
+        studyRoomService.updateStudyRoom(dto);
+        return ApiResponse.success("自习室更新成功", null);
+    }
+
+    // 删除自习室
+    @DeleteMapping("/delete/{roomId}")
+    public ApiResponse<Void> deleteStudyRoom(@PathVariable Integer roomId) {
+        studyRoomService.deleteStudyRoom(roomId);
+        return ApiResponse.success("自习室删除成功", null);
+    }
 }

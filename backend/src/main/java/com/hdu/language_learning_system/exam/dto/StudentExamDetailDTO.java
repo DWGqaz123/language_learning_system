@@ -19,4 +19,5 @@ public class StudentExamDetailDTO {
     private String teacherComment;
     private String assistantComment;
     private Timestamp completedTime;
+    private String subjectiveQuestionsJson;
 }

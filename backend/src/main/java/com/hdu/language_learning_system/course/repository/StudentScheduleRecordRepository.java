@@ -53,4 +53,9 @@ public interface StudentScheduleRecordRepository extends JpaRepository<StudentSc
     List<StudentScheduleRecord> findBySchedule_ScheduleIdAndAttendStatus(Integer scheduleId, String attendStatus);
 
 
+    @Query("SELECT r FROM StudentScheduleRecord r " +
+            "WHERE r.schedule.teacher.userId = :teacherId " +
+            "AND r.PerformanceEval IS NULL")
+    List<StudentScheduleRecord> findUnEvaluatedRecordsByTeacherId(Integer teacherId);
+
 }
