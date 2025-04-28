@@ -1,0 +1,95 @@
+.dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+    padding: 24px;
+    background-color: #f9f9f9;
+    min-height: calc(60vh - 150px); /* 给足高度 */
+  }
+  
+  .progress-card,
+  .stats-card,
+  .exam-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    width: 360px;
+    height: 360px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .progress-card:hover,
+  .stats-card:hover,
+  .exam-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+  
+  .progress-card h3,
+  .stats-card h3,
+  .exam-card h3 {
+    font-size: 20px;
+    margin-bottom: 0px;
+    color: #333;
+  }
+  
+  .progress-circle {
+    width: 200px;
+    height: 200px;
+    margin-bottom: 16px;
+  }
+  
+  .bar-chart {
+    width: 100%;
+    height: 200px;
+    margin-bottom: 16px;
+    margin-top: 20px;
+  }
+  
+  .trend-line {
+    width: 100%;
+    height: 200px;
+    margin-bottom: 16px;
+    margin-top: 20px;
+  }
+  
+  p {
+    font-size: 16px;
+    color: #666;
+    margin-top: 20px;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  /* 适配响应式 */
+  @media (max-width: 768px) {
+    .dashboard {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .progress-card,
+    .stats-card,
+    .exam-card {
+      width: 90%;
+    }
+  }
+
+  .stats-card {
+    display: flex;
+    flex-direction:column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .chart-label {
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+  }

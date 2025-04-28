@@ -65,4 +65,17 @@ public class Role {
     public void setUsers(Set<User> users) {
         this.users = users;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Role that = (Role) o;
+        return roleId != null && roleId.equals(that.roleId);
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(roleId);
+    }
 }

@@ -58,6 +58,16 @@ public class AnalysisController {
         }
     }
 
+    @GetMapping("/mock-exams/score-trend/{studentId}")
+    public ApiResponse<List<ExamScoreTrendDTO>> getExamScoreTrend(@PathVariable Integer studentId) {
+        try {
+            List<ExamScoreTrendDTO> trend = analysisService.getExamScoreTrend(studentId);
+            return ApiResponse.success(trend);
+        } catch (Exception e) {
+            return ApiResponse.error("获取考试趋势失败：" + e.getMessage());
+        }
+    }
+
     // 更新助教点评
     @PutMapping("/update-comment")
     public ResponseEntity<ApiResponse<Void>> updateAssistantComment(@RequestBody PerformanceCommentDTO dto) {

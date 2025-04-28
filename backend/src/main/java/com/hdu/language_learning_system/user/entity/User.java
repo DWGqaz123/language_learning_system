@@ -60,4 +60,16 @@ public class User {
     // 暂存用户修改请求
     @Column(name = "pending_update", columnDefinition = "TEXT")
     private String pendingUpdateJson;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User that = (User) o;
+        return userId != null && userId.equals(that.userId);
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(userId);
+    }
 }

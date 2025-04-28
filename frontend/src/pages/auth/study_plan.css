@@ -1,0 +1,73 @@
+.plan-section {
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin-bottom: 40px;
+  }
+  
+  .plan-section h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .upcoming-classes, .pending-tasks, .goal-setting {
+    margin-top: 30px;
+  }
+  
+  .class-list, .task-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+  }
+  
+  .class-list li, .task-list li {
+    background: #f5f5f5;
+    margin-bottom: 8px;
+    padding: 10px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .class-time, .class-name {
+    font-size: 14px;
+  }
+  
+  .due-date {
+    font-size: 12px;
+    color: #888;
+    margin-left: 10px;
+  }
+  
+  .goal-progress {
+    margin-top: 10px;
+  }
+  
+  .progress-bar {
+    background: #e0e0e0;
+    border-radius: 10px;
+    height: 20px;
+    margin: 10px 0;
+  }
+  
+  .progress {
+    background: #4caf50;
+    height: 100%;
+    border-radius: 10px 0 0 10px;
+  }
+  
+  .edit-goal {
+    background: #4caf50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .edit-goal:hover {
+    background: #43a047;
+  }

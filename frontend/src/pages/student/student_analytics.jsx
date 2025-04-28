@@ -1,111 +1,74 @@
 import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
-import { Pie } from 'react-chartjs-2'
-import axios from 'axios'
 import './student_analytics.css'
+
+// 引入学习分析子模块组件
+import DashBoard from '../auth/dash_board'
+import CoursePerformance from '../auth/course_performance'
+import TaskExamAnalysis from '../auth/task_exam_analysis'
+import LearningReports from '../auth/learning_reports'
+import StudyPlan from '../auth/study_plan'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
 const StudentAnalytics = () => {
-  const storedUser = JSON.parse(sessionStorage.getItem('userInfo') || '{}')
-  const userId = storedUser.userId
-
-  const [courseProgress, setCourseProgress] = useState(null)
-  const [attendanceStats, setAttendanceStats] = useState(null)
-  const [taskStats, setTaskStats] = useState(null)
-  const [mockExamStats, setMockExamStats] = useState(null)
-  const [studyRoomStats, setStudyRoomStats] = useState(null)
+  const [userInfo, setUserInfo] = useState({})
 
   useEffect(() => {
-    fetchData()
+    const storedUser = JSON.parse(sessionStorage.getItem('userInfo') || '{}')
+    setUserInfo(storedUser)
   }, [])
 
-  const fetchData = async () => {
-    try {
-      const [cpRes, atRes, tsRes, meRes, srRes] = await Promise.all([
-        axios.get(`/api/analysis/course-progress?studentId=${userId}`),
-        axios.get(`/api/analysis/attendance-stats?studentId=${userId}`),
-        axios.get(`/api/analysis/task-statistics/${userId}`),
-        axios.get(`/api/analysis/mock-exams/statistics/${userId}`),
-        axios.get(`/api/study-rooms/usage-statistics/${userId}`)
-      ])
-      setCourseProgress(cpRes.data.data)
-      setAttendanceStats(atRes.data.data)
-      setTaskStats(tsRes.data.data)
-      setMockExamStats(meRes.data.data)
-      setStudyRoomStats(srRes.data.data)
-    } catch (err) {
-      alert('加载数据失败: ' + (err.response?.data?.message || '未知错误'))
-    }
-  }
-
-  if (!courseProgress || !attendanceStats || !taskStats || !mockExamStats || !studyRoomStats) {
-    return <div className="layout"><main className="main"><p className="loading">加载中...</p></main></div>
-  }
-
-  const attendanceData = {
-    labels: ['出勤', '请假', '缺勤'],
-    datasets: [
-      {
-        data: [
-          attendanceStats.attendCount,
-          attendanceStats.leaveCount,
-          attendanceStats.absentCount
-        ],
-        backgroundColor: ['#4caf50', '#ff9800', '#f44336'],
-        borderWidth: 1
-      }
-    ]
-  }
-
   return (
-    <div className="layout">
+    <div className="student-layout">
+      {/* 左侧导航栏 */}
+      <aside className="sider">
+        <div className="avatar">
+          <div className="circle">学</div>
+          <div className="label">学员: {userInfo.username || '...'}</div>
+          <div className="label">用户ID: {userInfo.userId || '...'}</div>
+          <div className="label">账号: {userInfo.phoneNumber || '...'}</div>
+        </div>
+        <ul className="menu">
+          <li><Link to="/student/student-user">个人中心</Link></li>
+          <li><Link to="/student/student-course">课程管理</Link></li>
+          <li><Link to="/student/student-task">课后任务管理</Link></li>
+          <li><Link to="/student/student-exam">模拟考试管理</Link></li>
+          <li><Link to="/student/student-study-room">自习室管理</Link></li>
+          <li><Link to="/student/student-resource">资源管理</Link></li>
+          <li className="active"><Link to="/student/student-analytics">学习分析</Link></li>
+          <li><Link to="/student/student-notification">通知中心</Link></li>
+          <li><Link to="/" onClick={() => sessionStorage.clear()}>退出系统</Link></li>
+        </ul>
+      </aside>
+
+      {/* 主内容区 */}
       <main className="main">
         <header className="header">
           <h2>语言学习机构后台管理系统</h2>
-          <h2>欢迎您，{storedUser.username || '学员'}！</h2>
+          <h2>欢迎您，{userInfo.username || '学员'}！</h2>
         </header>
 
         <section className="content">
-          <div className="analytics-grid">
-            <div className="card">
-              <h3>课程进度</h3>
-              <p>总课时：{courseProgress.totalHours}</p>
-              <p>剩余课时：{courseProgress.remainingHours}</p>
-              <div className="progress-bar">
-                <div className="progress-fill" style={{ width: `${courseProgress.completedPercentage}%` }}>
-                  {courseProgress.completedPercentage}%
-                </div>
-              </div>
-            </div>
+          {/* 学习分析模块内容开始 */}
 
-            <div className="card">
-              <h3>考勤统计</h3>
-              <Pie data={attendanceData} />
-            </div>
+          {/* 1. 学习概览仪表盘 */}
+          <DashBoard />
 
-            <div className="card">
-              <h3>课后任务完成率</h3>
-              <p>总任务数：{taskStats.totalTasks}</p>
-              <p>已完成：{taskStats.submittedTasks}</p>
-              <p>完成率：{taskStats.completionRate.toFixed(1)}%</p>
-              <p>平均得分：{taskStats.averageScore != null ? taskStats.averageScore.toFixed(1) : '暂无'}</p>
-            </div>
-
-            <div className="card">
-              <h3>模拟考试情况</h3>
-              <p>考试次数：{mockExamStats.examCount}</p>
-              <p>平均分：{mockExamStats.averageScore}</p>
-            </div>
-
-            <div className="card">
-              <h3>自习室使用情况</h3>
-              <p>累计使用：{studyRoomStats.totalUsageCount} 次</p>
-              <p>上午使用：{studyRoomStats.morningCount} 次</p>
-              <p>下午使用：{studyRoomStats.afternoonCount} 次</p>
-              <p>晚上使用：{studyRoomStats.eveningCount} 次</p>
-            </div>
+          {/* 2. 课程表现分析 + 任务与考试分析 两栏布局 */}
+          <div className="analysis-columns">
+            <CoursePerformance />
+            <TaskExamAnalysis />
           </div>
+
+          {/* 3. 学习报告与建议 */}
+          <LearningReports />
+
+          {/* 4. 学习计划与目标 */}
+          {/* <StudyPlan /> */}
+
+          {/* 学习分析模块内容结束 */}
         </section>
       </main>
     </div>

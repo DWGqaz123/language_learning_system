@@ -30,4 +30,16 @@ public class Course {
     private Integer totalHours;
 
     private Integer remainingHours;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Course that = (Course) o;
+        return courseId != null && courseId.equals(that.courseId);
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(courseId);
+    }
 }

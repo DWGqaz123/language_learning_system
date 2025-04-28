@@ -21,10 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -68,38 +65,62 @@ public class AnalysisServiceImpl implements AnalysisService {
     }
     @Override
     public CourseProgressDTO getCourseProgress(Integer studentId) {
-        User student = userRepository.findById(studentId)
-                .orElseThrow(() -> new RuntimeException("学员不存在"));
+        try {
+            if (studentId == null) {
+                throw new RuntimeException("studentId不能为空");
+            }
 
-        Set<Course> allCourses = new HashSet<>();
+            User student = userRepository.findById(studentId)
+                    .orElseThrow(() -> new RuntimeException("学员不存在，ID：" + studentId));
 
-        // 添加 1对1 课程
-        List<Course> personalCourses = courseRepository.findByStudent(student);
-        allCourses.addAll(personalCourses);
+            Set<Course> allCourses = new HashSet<>();
 
-        // 添加班级课程
-        List<StudentScheduleRecord> records = studentScheduleRecordRepository.findByStudent(student);
-        for (StudentScheduleRecord record : records) {
-            allCourses.add(record.getCourse());
+            // 添加 1对1 课程
+            List<Course> personalCourses = courseRepository.findByStudent(student);
+            if (personalCourses != null && !personalCourses.isEmpty()) {
+                allCourses.addAll(new ArrayList<>(personalCourses));
+            }
+
+            // 添加班级课程
+            List<StudentScheduleRecord> records = studentScheduleRecordRepository.findByStudent(student);
+            if (records != null && !records.isEmpty()) {
+                for (StudentScheduleRecord record : records) {
+                    if (record != null && record.getCourse() != null) {
+                        allCourses.add(record.getCourse());
+                    }
+                }
+            }
+
+            int total = 0;
+            int remaining = 0;
+            for (Course c : allCourses) {
+                if (c != null) {
+                    if (c.getTotalHours() != null) {
+                        total += c.getTotalHours();
+                    }
+                    if (c.getRemainingHours() != null) {
+                        remaining += c.getRemainingHours();
+                    }
+                }
+            }
+
+            int completed = total - remaining; // ✅ 计算完成课时
+
+            int progress = (total == 0) ? 0 : (int) Math.round((1.0 * completed / total) * 100);
+
+            CourseProgressDTO dto = new CourseProgressDTO();
+            dto.setStudentId(studentId);
+            dto.setTotalHours(total);
+            dto.setRemainingHours(remaining);
+            dto.setCompletedHours(completed); // ✅ 补充这行
+            dto.setCompletedPercentage(progress);
+
+            return dto;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("获取课程进度失败：" + (e.getMessage() != null ? e.getMessage() : "系统内部异常"));
         }
-
-        int total = 0;
-        int remaining = 0;
-        for (Course c : allCourses) {
-            if (c.getTotalHours() != null) total += c.getTotalHours();
-            if (c.getRemainingHours() != null) remaining += c.getRemainingHours();
-        }
-
-        int progress = (total == 0) ? 0 : (int) Math.round((1.0 * (total - remaining) / total) * 100);
-
-        CourseProgressDTO dto = new CourseProgressDTO();
-        dto.setTotalHours(total);
-        dto.setRemainingHours(remaining);
-        dto.setCompletedPercentage(progress);
-
-        return dto;
     }
-
     //课程考勤统计
     @Override
     public AttendanceStatsDTO getAttendanceStats(Integer studentId) {
@@ -155,26 +176,57 @@ public class AnalysisServiceImpl implements AnalysisService {
         return dto;
     }
 
-    //模拟考试统计
+    //模拟考试统计总体
     @Override
     public StudentMockExamStatSimpleDTO getMockExamStatByStudentId(Integer studentId) {
+        try {
+            List<StudentExamRecord> records = studentExamRecordRepository.findByStudent_UserId(studentId);
+
+            if (records == null || records.isEmpty()) {
+                // 如果找不到记录，也要返回一个空对象，防止后续空指针
+                StudentMockExamStatSimpleDTO dto = new StudentMockExamStatSimpleDTO();
+                dto.setStudentId(studentId);
+                dto.setExamCount(0);
+                dto.setAverageScore(0.0);
+                return dto;
+            }
+
+            int count = records.size();
+            double average = records.stream()
+                    .mapToDouble(r -> r.getTotalScore() != null ? r.getTotalScore() : 0)
+                    .average()
+                    .orElse(0.0);
+
+            StudentMockExamStatSimpleDTO dto = new StudentMockExamStatSimpleDTO();
+            dto.setStudentId(studentId);
+            dto.setExamCount(count);
+            dto.setAverageScore(Math.round(average * 10.0) / 10.0);
+
+            return dto;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("查询模拟考试统计失败：" + (e.getMessage() != null ? e.getMessage() : "未知错误"));
+        }
+    }
+    //模拟考试统计具体
+
+    @Override
+    public List<ExamScoreTrendDTO> getExamScoreTrend(Integer studentId) {
         List<StudentExamRecord> records = studentExamRecordRepository.findByStudent_UserId(studentId);
 
-        int count = records.size();
-        double average = count == 0 ? 0.0 :
-                records.stream()
-                        .mapToDouble(StudentExamRecord::getTotalScore)
-                        .average()
-                        .orElse(0.0);
+        List<ExamScoreTrendDTO> result = new ArrayList<>();
 
-        StudentMockExamStatSimpleDTO dto = new StudentMockExamStatSimpleDTO();
-        dto.setStudentId(studentId);
-        dto.setExamCount(count);
-        dto.setAverageScore(Math.round(average * 10.0) / 10.0); // 保留1位小数
+        for (StudentExamRecord record : records) {
+            if (record.getExam() != null && record.getTotalScore() != null) {
+                ExamScoreTrendDTO dto = new ExamScoreTrendDTO();
+                dto.setExamName(record.getExam().getExamName());
+                dto.setScore(record.getTotalScore());
+                result.add(dto);
+            }
+        }
 
-        return dto;
+        return result;
     }
-
 
     //更新助教点评
     @Override

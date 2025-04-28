@@ -346,9 +346,6 @@ public class CourseServiceImpl implements CourseService {
     public List<StudentAttendancePerformanceDTO> getStudentAttendancePerformance(Integer studentId) {
         User user = userRepository.findById(studentId)
                 .orElseThrow(() -> new RuntimeException("用户不存在"));
-        if (!"学员".equals(user.getRole().getRoleName())) {
-            throw new RuntimeException("只有学员才能查看自己的出勤与课堂表现");
-        }
 
         List<StudentScheduleRecord> records = studentScheduleRecordRepository.findByStudentId(studentId);
         List<StudentAttendancePerformanceDTO> result = new ArrayList<>();

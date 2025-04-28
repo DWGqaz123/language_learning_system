@@ -22,4 +22,6 @@ public interface AnalysisService {
 
     // 查询某个学员的所有报告
     List<StudentPerformanceReportDTO> getReportsByStudentId(Integer studentId);
+
+    List<ExamScoreTrendDTO> getExamScoreTrend(Integer studentId);
 }
