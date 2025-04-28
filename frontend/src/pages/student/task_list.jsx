@@ -99,7 +99,7 @@ const TaskList = () => {
     if (submitText.trim()) formData.append('submitText', submitText.trim())
 
     try {
-      await axios.post('/api/task/submit', formData, {
+      await axios.post('/api/task-assignments/submit', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
       alert('任务提交成功')

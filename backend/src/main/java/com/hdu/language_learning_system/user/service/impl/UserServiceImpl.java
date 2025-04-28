@@ -256,6 +256,7 @@ public class UserServiceImpl implements UserService {
         dto.setAccountStatus(user.getAccountStatus());
         dto.setDescription(user.getDescription());
         dto.setLessonHours(user.getLessonHours());
+        dto.setCreatedAt(user.getCreatedAt());
         return dto;
     }
 }

@@ -1,6 +1,7 @@
 package com.hdu.language_learning_system.analysis.service;
 
 import com.hdu.language_learning_system.analysis.dto.*;
+import com.hdu.language_learning_system.common.ApiResponse;
 
 import java.util.List;
 
@@ -24,4 +25,6 @@ public interface AnalysisService {
     List<StudentPerformanceReportDTO> getReportsByStudentId(Integer studentId);
 
     List<ExamScoreTrendDTO> getExamScoreTrend(Integer studentId);
+
+    ApiResponse<StudentPerformanceReportDTO> getLatestReportByStudentId(Integer studentId);
 }

@@ -115,4 +115,8 @@ public class AnalysisController {
         return ApiResponse.success(list);
     }
 
+    @GetMapping("/latest-report")
+    public ApiResponse<StudentPerformanceReportDTO> getLatestReport(@RequestParam Integer studentId) {
+        return analysisService.getLatestReportByStudentId(studentId);
+    }
 }

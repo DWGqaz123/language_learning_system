@@ -6,4 +6,5 @@ import lombok.Data;
 public class GenerateReportRequestDTO {
     private Integer studentId;
     private Integer overallScore; // 由助教给出
+    private String assistantComment;
 }

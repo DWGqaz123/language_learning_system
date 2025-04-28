@@ -3,14 +3,14 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: 24px;
-    padding: 24px;
+    padding: 15px;
     background-color: #f9f9f9;
     min-height: calc(60vh - 150px); /* 给足高度 */
   }
-  
-  .progress-card,
-  .stats-card,
-  .exam-card {
+
+  .dashboard .progress-card,
+  .dashboard .stats-card,
+  .dashboard .exam-card {
     background: #fff;
     border-radius: 16px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -57,7 +57,7 @@
     margin-top: 20px;
   }
   
-  p {
+  .dashboard p {
     font-size: 16px;
     color: #666;
     margin-top: 20px;

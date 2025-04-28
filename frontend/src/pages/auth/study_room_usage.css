@@ -1,16 +1,16 @@
-/* course_performance.css */
+/* study_room_usage.css */
 
-.course-performance {
+.study-room-usage {
     padding: 20px;
   }
   
-  .course-performance h3 {
+  .study-room-usage h3 {
     font-size: 22px;
     font-weight: bold;
     margin-bottom: 20px;
   }
   
-  .attendance-section {
+  .usage-chart-section {
     background: #ffffff;
     padding: 20px;
     border-radius: 12px;
@@ -21,18 +21,12 @@
     height: 420px;
   }
   
-  .attendance-chart {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .attendance-summary {
+  .usage-summary {
     margin-top: 20px;
     font-size: 16px;
     text-align: center;
   }
   
-  .attendance-summary p {
+  .usage-summary p {
     margin: 6px 0;
   }

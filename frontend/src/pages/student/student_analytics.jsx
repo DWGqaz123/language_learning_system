@@ -6,9 +6,8 @@ import './student_analytics.css'
 // 引入学习分析子模块组件
 import DashBoard from '../auth/dash_board'
 import CoursePerformance from '../auth/course_performance'
-import TaskExamAnalysis from '../auth/task_exam_analysis'
 import LearningReports from '../auth/learning_reports'
-import StudyPlan from '../auth/study_plan'
+import StudyRoomUsage from '../auth/study_room_usage'  // ⬅️ 加入新组件
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
@@ -38,7 +37,6 @@ const StudentAnalytics = () => {
           <li><Link to="/student/student-study-room">自习室管理</Link></li>
           <li><Link to="/student/student-resource">资源管理</Link></li>
           <li className="active"><Link to="/student/student-analytics">学习分析</Link></li>
-          <li><Link to="/student/student-notification">通知中心</Link></li>
           <li><Link to="/" onClick={() => sessionStorage.clear()}>退出系统</Link></li>
         </ul>
       </aside>
@@ -56,17 +54,14 @@ const StudentAnalytics = () => {
           {/* 1. 学习概览仪表盘 */}
           <DashBoard />
 
-          {/* 2. 课程表现分析 + 任务与考试分析 两栏布局 */}
+          {/* 2. 课程表现分析 + 自习室使用分析（并排两栏） */}
           <div className="analysis-columns">
             <CoursePerformance />
-            <TaskExamAnalysis />
+            <StudyRoomUsage />  {/* ✅ 这里补上 */}
           </div>
 
           {/* 3. 学习报告与建议 */}
           <LearningReports />
-
-          {/* 4. 学习计划与目标 */}
-          {/* <StudyPlan /> */}
 
           {/* 学习分析模块内容结束 */}
         </section>

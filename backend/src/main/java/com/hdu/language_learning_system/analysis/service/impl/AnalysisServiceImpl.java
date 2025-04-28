@@ -3,6 +3,7 @@ package com.hdu.language_learning_system.analysis.service.impl;
 import com.hdu.language_learning_system.analysis.dto.*;
 import com.hdu.language_learning_system.analysis.entity.StudentPerformanceReport;
 import com.hdu.language_learning_system.analysis.repository.StudentPerformanceReportRepository;
+import com.hdu.language_learning_system.common.ApiResponse;
 import com.hdu.language_learning_system.course.entity.Course;
 import com.hdu.language_learning_system.course.entity.StudentScheduleRecord;
 import com.hdu.language_learning_system.course.repository.CourseRepository;
@@ -273,7 +274,7 @@ public class AnalysisServiceImpl implements AnalysisService {
         int total = records.size(), attend = 0, absent = 0, leave = 0;
         for (StudentScheduleRecord r : records) {
             String status = r.getAttendStatus();
-            if (status == null) continue; // 防止null
+            if (status == null) continue;
             switch (status) {
                 case "出勤" -> attend++;
                 case "缺勤" -> absent++;
@@ -319,7 +320,7 @@ public class AnalysisServiceImpl implements AnalysisService {
 
             totalUsage++;
             String slot = r.getTimeSlot();
-            if (slot == null) continue; // 防止null
+            if (slot == null) continue;
             switch (slot) {
                 case "上午" -> morning++;
                 case "下午" -> afternoon++;
@@ -329,7 +330,7 @@ public class AnalysisServiceImpl implements AnalysisService {
         String studyRoomSummary = String.format("共使用 %d 次自习室，上午 %d 次，下午 %d 次，晚上 %d 次。",
                 totalUsage, morning, afternoon, evening);
 
-        // ---------- 构建报告 ----------
+        // ---------- 构建并保存报告 ----------
         StudentPerformanceReport report = new StudentPerformanceReport();
         report.setStudent(student);
         report.setAttendanceSummary(attendanceSummary);
@@ -337,12 +338,10 @@ public class AnalysisServiceImpl implements AnalysisService {
         report.setExamSummary(examSummary);
         report.setStudyRoomSummary(studyRoomSummary);
 
-        // 设置综合评分（可允许为空，数据库字段请确认允许null，否则赋默认值0）
-        if (request.getOverallScore() != null) {
-            report.setOverallScore(request.getOverallScore());
-        } else {
-            report.setOverallScore(0); // 或者根据需求选择抛异常
-        }
+        report.setOverallScore(request.getOverallScore() != null ? request.getOverallScore() : 0);
+
+        // ✅ 新增保存助教点评 assistant_comment
+        report.setAssistantComment(request.getAssistantComment());
 
         report.setGeneratedTime(new Timestamp(System.currentTimeMillis()));
 
@@ -355,5 +354,31 @@ public class AnalysisServiceImpl implements AnalysisService {
         List<StudentPerformanceReport> reports = studentPerformanceReportRepository.findByStudent_UserId(studentId);
 
         return reports.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    //查看学员最新报告
+    // AnalysisServiceImpl.java
+    @Override
+    public ApiResponse<StudentPerformanceReportDTO> getLatestReportByStudentId(Integer studentId) {
+        List<StudentPerformanceReport> reports = studentPerformanceReportRepository.findByStudent_UserIdOrderByGeneratedTimeDesc(studentId);
+
+        if (reports.isEmpty()) {
+            return ApiResponse.error("未找到学习报告");
+        }
+
+        StudentPerformanceReport latestReport = reports.get(0);
+
+        StudentPerformanceReportDTO dto = new StudentPerformanceReportDTO();
+        dto.setReportId(latestReport.getReportId());
+        dto.setStudentId(latestReport.getStudent().getUserId());
+        dto.setAttendanceSummary(latestReport.getAttendanceSummary());
+        dto.setTaskSummary(latestReport.getTaskSummary());
+        dto.setExamSummary(latestReport.getExamSummary());
+        dto.setStudyRoomSummary(latestReport.getStudyRoomSummary());
+        dto.setOverallScore(latestReport.getOverallScore());
+        dto.setAssistantComment(latestReport.getAssistantComment());
+        dto.setGeneratedTime(latestReport.getGeneratedTime());
+
+        return ApiResponse.success(dto);
     }
 }

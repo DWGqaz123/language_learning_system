@@ -16,5 +16,5 @@ public interface StudentPerformanceReportRepository extends JpaRepository<Studen
     void updateAssistantComment(String comment, Integer reportId);
 
     List<StudentPerformanceReport> findByStudent_UserId(Integer studentId);
-
+    List<StudentPerformanceReport> findByStudent_UserIdOrderByGeneratedTimeDesc(Integer studentId);
 }
