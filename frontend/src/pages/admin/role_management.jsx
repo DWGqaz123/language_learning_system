@@ -58,7 +58,7 @@ const RoleManagement = () => {
 
   return (
     <div className="role-wrapper">
-      <button className="back-button" onClick={() => navigate('/admin/admin-user')}>← 返回</button>
+      <button className="back-button" onClick={() => navigate('/admin/admin-user')}>返回</button>
       <h2 className='title'>用户列表查看</h2>
 
       <div className="search-section">

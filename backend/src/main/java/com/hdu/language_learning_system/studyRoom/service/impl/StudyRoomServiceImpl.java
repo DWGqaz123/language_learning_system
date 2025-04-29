@@ -329,7 +329,7 @@ public class StudyRoomServiceImpl implements StudyRoomService {
         int morning = 0, afternoon = 0, evening = 0;
 
         for (StudyRoomReservation record : records) {
-            if (!"通过".equals(record.getReviewStatus())) continue;
+            if (!"已签退".equals(record.getReviewStatus())) continue;
             if (record.getSignInTime() == null && record.getSignOutTime() == null) continue;
 
             total++;

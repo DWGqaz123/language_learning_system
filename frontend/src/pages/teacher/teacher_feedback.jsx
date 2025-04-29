@@ -31,7 +31,7 @@ const TeacherFeedbackManage = () => {
       return
     }
     try {
-      await axios.post('/api/courses/evaluate-performance', {
+      await axios.post('/api/courses/update-performance-eval', {
         scheduleId: selectedRecord.scheduleId,
         studentId: selectedRecord.studentId,
         performanceEval: evaluation

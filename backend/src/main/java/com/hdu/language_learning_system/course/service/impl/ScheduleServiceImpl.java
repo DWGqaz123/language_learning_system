@@ -154,7 +154,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         scheduleRepository.save(schedule);
 
         // 更新后的课表，也应生成对应课堂记录
-        courseService.generateStudentRecords(schedule.getScheduleId());
+//        courseService.generateStudentRecords(schedule.getScheduleId());
     }
 
     //删除课表

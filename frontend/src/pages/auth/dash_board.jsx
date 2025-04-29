@@ -142,7 +142,6 @@ const DashBoard = () => {
                                 <XAxis />
                                 <YAxis />
                                 <Tooltip />
-                                {/* 不添加 <Legend />，直接去掉 */}
                                 <Line type="monotone" dataKey="score" stroke="#82ca9d" strokeWidth={2} />
                             </LineChart>
                         </ResponsiveContainer>
