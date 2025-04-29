@@ -44,6 +44,8 @@ public class UserServiceImpl implements UserService {
         dto.setDescription(user.getDescription());
         dto.setCreatedAt(user.getCreatedAt());
         dto.setUpdatedAt(user.getUpdatedAt());
+        dto.setLessonHours(user.getLessonHours());
+        dto.setPassword(user.getPassword());
 
         if (user.getRole() != null) {
             dto.setRoleId(user.getRole().getRoleId());
@@ -224,6 +226,7 @@ public class UserServiceImpl implements UserService {
             dto.setUsername(user.getUsername());
             dto.setPhoneNumber(user.getPhoneNumber());
             dto.setRoleName(user.getRole().getRoleName());
+            dto.setPassword(user.getPassword());
             dto.setPendingUpdateJson(user.getPendingUpdateJson());
             return dto;
         }).collect(Collectors.toList());

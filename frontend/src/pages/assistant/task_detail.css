@@ -98,7 +98,6 @@
 .submission-table {
   width: 100%;
   overflow-x: auto;
-  display: block; /* 表格包裹容器 */
 }
 
 .submission-table th,

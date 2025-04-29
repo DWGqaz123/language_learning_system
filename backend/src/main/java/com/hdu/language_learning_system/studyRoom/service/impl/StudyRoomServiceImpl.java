@@ -200,6 +200,8 @@ public class StudyRoomServiceImpl implements StudyRoomService {
             dto.setReservationDate(r.getReservationDate());
             dto.setTimeSlot(r.getTimeSlot());
             dto.setReviewStatus(r.getReviewStatus());
+            dto.setSignInTime(r.getSignInTime());
+            dto.setSignOutTime(r.getSignOutTime());
             result.add(dto);
         }
 
@@ -266,11 +268,13 @@ public class StudyRoomServiceImpl implements StudyRoomService {
                 throw new RuntimeException("已签到，不能重复签到");
             }
             reservation.setSignInTime(now);
+            studyRoomReservationRepository.saveAndFlush(reservation); // ⭐️ 强制立即保存
         } else if ("signOut".equals(dto.getAction())) {
             if (reservation.getSignOutTime() != null) {
                 throw new RuntimeException("已签退，不能重复签退");
             }
             reservation.setSignOutTime(now);
+            studyRoomReservationRepository.saveAndFlush(reservation); // ⭐️ 强制立即保存
         } else {
             throw new RuntimeException("非法操作类型");
         }
@@ -278,9 +282,8 @@ public class StudyRoomServiceImpl implements StudyRoomService {
         // 签到和签退都完成后，更新预约状态为“已签退”
         if (reservation.getSignInTime() != null && reservation.getSignOutTime() != null) {
             reservation.setReviewStatus("已签退");
+            studyRoomReservationRepository.saveAndFlush(reservation); // ⭐️ 再次强制保存
         }
-
-        studyRoomReservationRepository.save(reservation);
     }
 
     //自习室使用统计

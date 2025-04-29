@@ -1,3 +1,4 @@
+// LoginPage.jsx
 import React, { useState } from 'react'
 import axios from 'axios'
 
@@ -23,19 +24,17 @@ const LoginPage = () => {
         const { userId, username, phoneNumber, roleName, accountStatus } = response.data
 
         if (!accountStatus) {
-          // 未激活，跳转激活页并携带手机号
           sessionStorage.setItem('pendingPhone', phoneNumber)
           sessionStorage.setItem('pendingUserId', userId)
           window.location.href = '/activate-account'
           return
         }
 
-        // 已激活，正常登录流程
-        sessionStorage.setItem('phone', response.data.phoneNumber)
-        sessionStorage.setItem('username', response.data.username)
-        sessionStorage.setItem('userId', response.data.userId)
-        sessionStorage.setItem('userInfo', JSON.stringify(response.data))  
-        sessionStorage.setItem('roleName', response.data.roleName)
+        sessionStorage.setItem('phone', phoneNumber)
+        sessionStorage.setItem('username', username)
+        sessionStorage.setItem('userId', userId)
+        sessionStorage.setItem('userInfo', JSON.stringify(response.data))
+        sessionStorage.setItem('roleName', roleName)
 
         switch (roleName) {
           case 'student':
@@ -64,7 +63,7 @@ const LoginPage = () => {
   }
 
   return (
-    <div style={styles.wrapper}>
+    <div style={styles.page}>
       <div style={styles.card}>
         <h2 style={styles.title}>登录语言学习机构系统</h2>
         <input
@@ -91,13 +90,16 @@ const LoginPage = () => {
 }
 
 const styles = {
-  wrapper: {
-    height: '100%',
-    width: '100%',
-    background: 'linear-gradient(to right, #6dd5ed, #2193b0)',
+  page: {
     display: 'flex',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+    minHeight: '100vh',
+    width: '100%',
+    background: 'linear-gradient(to right, #6dd5ed, #2193b0)',
+    padding: '20px', // 避免小屏幕内容贴边
+    boxSizing: 'border-box',
   },
   card: {
     width: '100%',

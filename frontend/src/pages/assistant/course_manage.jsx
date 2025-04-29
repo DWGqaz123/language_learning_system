@@ -146,19 +146,61 @@ const CourseManage = () => {
                 <div className="modal-overlay">
                     <div className="modal_course">
                         <h3>{editMode ? '编辑课程' : '创建课程'}</h3>
-                        <input name="courseName" placeholder="课程名称" value={form.courseName} onChange={handleInputChange} />
-                        <select name="courseType" value={form.courseType} onChange={handleInputChange}>
+
+                        <input
+                            name="courseName"
+                            placeholder="课程名称"
+                            value={form.courseName}
+                            onChange={handleInputChange}
+                        />
+
+                        <select
+                            name="courseType"
+                            value={form.courseType}
+                            onChange={handleInputChange}
+                        >
                             <option value="班级">班级</option>
                             <option value="1对1">1对1</option>
                         </select>
-                        <input name="courseContent" placeholder="课程内容" value={form.courseContent} onChange={handleInputChange} />
-                        <input name="classGroupCode" placeholder="班级编号（班级课）" value={form.classGroupCode} onChange={handleInputChange} />
-                        <input name="totalHours" type="number" placeholder="总课时" value={form.totalHours} onChange={handleInputChange} />
-                        {form.courseType === '1对1' && (
-                            <input name="studentId" placeholder="1对1学生ID" value={form.studentId} onChange={handleInputChange} />
+
+                        <input
+                            name="courseContent"
+                            placeholder="课程内容"
+                            value={form.courseContent}
+                            onChange={handleInputChange}
+                        />
+
+                        {/* ✅ 只有在选择“班级”时，才显示班级编号输入框 */}
+                        {form.courseType === '班级' && (
+                            <input
+                                name="classGroupCode"
+                                placeholder="班级编号（班级课）"
+                                value={form.classGroupCode}
+                                onChange={handleInputChange}
+                            />
                         )}
+
+                        <input
+                            name="totalHours"
+                            type="number"
+                            placeholder="总课时"
+                            value={form.totalHours}
+                            onChange={handleInputChange}
+                        />
+
+                        {/* ✅ 只有在选择“1对1”时，才显示学生ID输入框 */}
+                        {form.courseType === '1对1' && (
+                            <input
+                                name="studentId"
+                                placeholder="1对1学生ID"
+                                value={form.studentId}
+                                onChange={handleInputChange}
+                            />
+                        )}
+
                         {error && <p className="error">{error}</p>}
                         {success && <p className="success">{success}</p>}
+
                         <div className="modal-buttons">
                             <button onClick={handleSubmit}>提交</button>
                             <button onClick={() => setShowModal(false)}>取消</button>

@@ -8,5 +8,6 @@ public class PendingUpdateUserDTO {
     private String username;
     private String phoneNumber;
     private String roleName;
+    private String password;
     private String pendingUpdateJson; // 原始JSON内容（前端可以选择是否解析）
 }

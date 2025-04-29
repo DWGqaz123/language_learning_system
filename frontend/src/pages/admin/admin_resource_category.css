@@ -86,3 +86,90 @@
   .resource-category-list{
     margin-left: 150px;
   }
+
+/* 模态框外层遮罩层 */
+.resource-category-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4); /* 半透明黑色背景 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  /* 模态框本体 */
+  .resource-category-modal {
+    background: #fff;
+    padding: 30px 25px;
+    width: 400px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    animation: modalFadeIn 0.3s ease;
+    box-sizing: border-box;
+  }
+  
+  /* 模态框输入框 */
+  .resource-category-modal input {
+    width: 100%;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+  }
+  
+  /* 按钮区域 */
+  .resource-category-modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  
+  /* 保存按钮 */
+  .resource-category-modal .save-button {
+    background-color: #2196f3;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    font-size: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .resource-category-modal .save-button:hover {
+    background-color: #1976d2;
+  }
+  
+  /* 取消按钮 */
+  .resource-category-modal .cancel-button {
+    background-color: #f5f5f5;
+    color: #333;
+    border: none;
+    padding: 10px 18px;
+    font-size: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .resource-category-modal .cancel-button:hover {
+    background-color: #e0e0e0;
+  }
+  
+  /* 弹窗动画效果 */
+  @keyframes modalFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }

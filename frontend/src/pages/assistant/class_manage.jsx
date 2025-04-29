@@ -56,10 +56,12 @@ const ClassManage = () => {
   const handleRemove = async (courseId, studentId) => {
     if (!window.confirm('确认移除该学员？')) return
     try {
-        await axios.post(`/api/courses/remove-class-student`, {
-            courseId,
-            studentId
-          })
+      await axios.delete('/api/courses/remove-class-student', {
+        data: {
+          courseId,
+          studentIds: [studentId]  // ❗ 这里包成数组
+        }
+      })
       fetchCourses()
     } catch (err) {
       alert(err.response?.data?.message || '移除失败')

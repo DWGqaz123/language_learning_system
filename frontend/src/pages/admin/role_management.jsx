@@ -78,7 +78,12 @@ const RoleManagement = () => {
             <th>用户名</th>
             <th>手机号</th>
             <th>角色</th>
-            <th>操作</th>
+            <th>账号状态</th>
+            <th>简介</th>
+            <th>注册时间</th>
+            <th>更新时间</th>
+            <th>课时数</th>
+            <th>角色更改</th>
           </tr>
         </thead>
         <tbody>
@@ -88,6 +93,11 @@ const RoleManagement = () => {
               <td>{user.username}</td>
               <td>{user.phoneNumber}</td>
               <td>{user.roleName}</td>
+              <td>{user.accountStatus ? '启用' : '禁用'}</td>
+              <td>{user.description || '-'}</td>
+              <td>{user.createdAt ? new Date(user.createdAt).toLocaleString() : '-'}</td>
+              <td>{user.updatedAt ? new Date(user.updatedAt).toLocaleString() : '-'}</td>
+              <td>{user.lessonHours ?? '-'}</td>
               <td>
                 <select
                   defaultValue={user.roleId}
@@ -100,7 +110,9 @@ const RoleManagement = () => {
                 </select>
               </td>
             </tr>
-          )) : <tr><td colSpan="5">未找到用户</td></tr>}
+          )) : (
+            <tr><td colSpan="10">未找到用户</td></tr>
+          )}
         </tbody>
       </table>
 

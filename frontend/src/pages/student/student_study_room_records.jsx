@@ -1,3 +1,4 @@
+// StudentStudyRoomRecords.jsx
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
@@ -35,8 +36,8 @@ const StudentStudyRoomRecords = () => {
           timeSlot: record.timeSlot
         }
       })
+      await fetchRecords()
       alert('取消预约成功')
-      fetchRecords()
     } catch (err) {
       alert('取消失败: ' + (err.response?.data?.message || '未知错误'))
     }
@@ -52,13 +53,23 @@ const StudentStudyRoomRecords = () => {
         studentId: userId,
         reservationDate: record.reservationDate,
         timeSlot: record.timeSlot,
-        action: action
+        action: action,
+        timestamp: new Date().toISOString()  // ⭐️ 加上当前时间戳，后端需要
       })
+
+      await fetchRecords()  // ⭐️ 签到/签退后立即刷新页面数据
       alert(action === 'signIn' ? '签到成功' : '签退成功')
-      fetchRecords()
     } catch (err) {
       alert((action === 'signIn' ? '签到失败：' : '签退失败：') + (err.response?.data?.message || '未知错误'))
     }
+  }
+
+  const canSignIn = (record) => {
+    return record.reviewStatus === '通过' && (!record.signInTime || record.signInTime.trim() === '')
+  }
+
+  const canSignOut = (record) => {
+    return record.reviewStatus === '通过' && record.signInTime && (!record.signOutTime || record.signOutTime.trim() === '')
   }
 
   return (
@@ -79,10 +90,10 @@ const StudentStudyRoomRecords = () => {
               {record.reviewStatus === '待审核' && (
                 <button className="cancel-btn" onClick={() => handleCancel(record)}>取消预约</button>
               )}
-              {record.reviewStatus === '通过' && !record.signInTime && (
+              {canSignIn(record) && (
                 <button className="sign-btn" onClick={() => handleSign(record, 'signIn')}>签到</button>
               )}
-              {record.reviewStatus === '通过' && record.signInTime && !record.signOutTime && (
+              {canSignOut(record) && (
                 <button className="sign-btn" onClick={() => handleSign(record, 'signOut')}>签退</button>
               )}
             </div>

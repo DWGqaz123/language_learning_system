@@ -1,8 +1,8 @@
 .schedule-wrapper {
     padding: 20px;
-    background-color: #f7f9fc;
-    min-height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    height: 100%;
+    background-color: #f5f6fa;
   }
   
   .back-button {

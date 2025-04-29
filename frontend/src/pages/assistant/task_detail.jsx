@@ -39,7 +39,7 @@ const TaskDetail = () => {
 
   const handleGrade = async () => {
     try {
-      await axios.post('/api/tasks/grade', {
+      await axios.post('/api/task-assignments/grade', {
         ...gradingForm,
         graderId: userInfo.userId,
         score: Number(gradingForm.score),

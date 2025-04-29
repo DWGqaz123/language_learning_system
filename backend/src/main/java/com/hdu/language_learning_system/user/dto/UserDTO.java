@@ -16,4 +16,5 @@ public class UserDTO {
     private Timestamp updatedAt;
     private Integer roleId;
     private Integer lessonHours;
+    private String password;
 }

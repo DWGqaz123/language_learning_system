@@ -37,6 +37,7 @@ const StudentAnalytics = () => {
           <li><Link to="/student/student-study-room">自习室管理</Link></li>
           <li><Link to="/student/student-resource">资源管理</Link></li>
           <li className="active"><Link to="/student/student-analytics">学习分析</Link></li>
+          <li><Link to="/student/student-notification">通知中心</Link></li>
           <li><Link to="/" onClick={() => sessionStorage.clear()}>退出系统</Link></li>
         </ul>
       </aside>

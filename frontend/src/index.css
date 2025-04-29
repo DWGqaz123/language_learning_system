@@ -44,8 +44,8 @@ a {
 body, html, #root {
   margin: 0;
   padding: 0;
-  height: 100%;
   width: 100%;
+  min-height: 100vh;
 }
 
 body {
@@ -92,3 +92,4 @@ button:focus-visible {
     background-color: #3933eb;
   }
 }
+

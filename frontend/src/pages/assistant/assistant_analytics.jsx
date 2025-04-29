@@ -10,10 +10,17 @@ const AssistantAnalytics = () => {
   const [selectedStudentId, setSelectedStudentId] = useState(null);
   const [reports, setReports] = useState([]);
   const [studentInfo, setStudentInfo] = useState(null);
+  const [studyRoomStats, setStudyRoomStats] = useState(null);
+  const [examTrend, setExamTrend] = useState([]);
   const [commentInputs, setCommentInputs] = useState({
     assistantComment: '',
     overallScore: ''
   });
+
+  const [courseProgress, setCourseProgress] = useState(null);
+  const [attendanceStats, setAttendanceStats] = useState(null);
+  const [taskStats, setTaskStats] = useState(null);
+  const [examStats, setExamStats] = useState(null);
 
   useEffect(() => {
     if (phone) {
@@ -46,15 +53,35 @@ const AssistantAnalytics = () => {
       setStudentInfo(userRes.data.data || {});
       setCommentInputs({ assistantComment: '', overallScore: '' });
       fetchStudentReports(studentId);
+
+      // 并发调用所有学习数据接口
+      const [cpRes, attRes, taskRes, examRes] = await Promise.all([
+        axios.get(`/api/analysis/course-progress?studentId=${studentId}`),
+        axios.get(`/api/analysis/attendance-stats?studentId=${studentId}`),
+        axios.get(`/api/analysis/task-statistics/${studentId}`),
+        axios.get(`/api/analysis/mock-exams/statistics/${studentId}`)
+      ]);
+      const [studyRoomRes, trendRes] = await Promise.all([
+        axios.get(`/api/study-rooms/usage-statistics/${studentId}`),
+        axios.get(`/api/analysis/mock-exams/score-trend/${studentId}`)
+      ]);
+
+      setStudyRoomStats(studyRoomRes.data.data || null);
+      setExamTrend(trendRes.data.data || []);
+
+      setCourseProgress(cpRes.data.data || null);
+      setAttendanceStats(attRes.data.data || null);
+      setTaskStats(taskRes.data.data || null);
+      setExamStats(examRes.data.data || null);
     } catch (err) {
-      alert('获取学员信息失败: ' + (err.response?.data?.message || '未知错误'));
+      alert('获取学员信息或学习数据失败: ' + (err.response?.data?.message || '未知错误'));
     }
   };
 
   const fetchStudentReports = async (studentId) => {
     try {
       const res = await axios.get(`/api/analysis/student-reports?studentId=${studentId}`);
-      const sortedReports = (res.data.data || []).sort((a, b) => new Date(b.generatedTime) - new Date(a.generatedTime)); // 时间倒序排列
+      const sortedReports = (res.data.data || []).sort((a, b) => new Date(b.generatedTime) - new Date(a.generatedTime));
       setReports(sortedReports);
     } catch (err) {
       console.error('获取学员报告失败:', err);
@@ -125,7 +152,6 @@ const AssistantAnalytics = () => {
 
         <section className="content">
           <div className="analytics-layout">
-            {/* 左侧学员列表 */}
             <div className="a-student-list">
               {students.map(s => (
                 <div
@@ -142,16 +168,45 @@ const AssistantAnalytics = () => {
               ))}
             </div>
 
-            {/* 右侧学员报告区 */}
             <div className="report-section">
               {studentInfo && (
                 <div className="student-summary">
                   <p><strong>姓名：</strong>{studentInfo.username || '-'}</p>
                   <p><strong>注册天数：</strong>{calculateRegisterDays(studentInfo.createdAt)}</p>
+                  <p><strong>课程进度：</strong>
+                    {courseProgress
+                      ? `${courseProgress.completedHours}/${courseProgress.totalHours} 已完成（${courseProgress.completedPercentage}%）`
+                      : '加载中...'}</p>
+                  <p><strong>考勤统计：</strong>
+                    {attendanceStats
+                      ? `出勤 ${attendanceStats.attendCount} 次，缺勤 ${attendanceStats.absentCount} 次，请假 ${attendanceStats.leaveCount} 次`
+                      : '加载中...'}</p>
+                  <p><strong>任务表现：</strong>
+                    {taskStats
+                      ? `完成率 ${taskStats.completionRate?.toFixed(1)}%，平均分 ${taskStats.averageScore?.toFixed(1) ?? '暂无'}`
+                      : '加载中...'}</p>
+                  <p><strong>模拟考试：</strong>
+                    {examStats
+                      ? `考试 ${examStats.examCount} 次，平均分 ${examStats.averageScore?.toFixed(1)}`
+                      : '加载中...'}</p>
+                  <p><strong>考试成绩趋势：</strong></p>
+                  <ul>
+                    {examTrend.length > 0
+                      ? examTrend.map((item, idx) => (
+                        <li key={idx}>{item.examName}：{item.score} 分</li>
+                      ))
+                      : <li>暂无成绩记录</li>}
+                  </ul>
+                  <p><strong>自习室统计：</strong>
+                    {studyRoomStats
+                      ? `总计使用 ${studyRoomStats.totalUsageCount} 次，其中 上午 ${studyRoomStats.morningCount} 次，下午 ${studyRoomStats.afternoonCount} 次，晚上 ${studyRoomStats.eveningCount} 次`
+                      : '加载中...'}
+                  </p>
+
+
                 </div>
               )}
 
-              {/* 输入助教点评和分数 */}
               {selectedStudentId && (
                 <div className="comment-section">
                   <textarea
@@ -174,21 +229,21 @@ const AssistantAnalytics = () => {
                 </div>
               )}
 
-              {/* 历史报告列表 */}
-              {reports.length > 0 ? (
-                reports.map(report => (
-                  <div key={report.reportId} className="report-box">
-                    <p><strong>生成时间：</strong>{report.generatedTime?.slice(0, 10) || '-'}</p>
-                    <p><strong>综合评分：</strong>{report.overallScore ?? '-'} 分</p>
-                    <p><strong>助教点评：</strong>{report.assistantComment || '-'}</p>
-                    <p><strong>出勤总结：</strong>{report.attendanceSummary || '-'}</p>
-                    <p><strong>任务总结：</strong>{report.taskSummary || '-'}</p>
-                    <p><strong>考试总结：</strong>{report.examSummary || '-'}</p>
-                    <p><strong>自习室总结：</strong>{report.studyRoomSummary || '-'}</p>
-                  </div>
-                ))
-              ) : (
-                <p>暂无学习表现报告。</p>
+              {reports.length > 0 && (
+                <div className="history-report-section">
+                  <h3>历史学习报告</h3>
+                  {reports.map(report => (
+                    <div key={report.reportId} className="report-box">
+                      <p><strong>生成时间：</strong>{report.generatedTime?.slice(0, 10) || '-'}</p>
+                      <p><strong>综合评分：</strong>{report.overallScore ?? '-'} 分</p>
+                      <p><strong>助教点评：</strong>{report.assistantComment || '-'}</p>
+                      <p><strong>出勤总结：</strong>{report.attendanceSummary || '-'}</p>
+                      <p><strong>任务总结：</strong>{report.taskSummary || '-'}</p>
+                      <p><strong>考试总结：</strong>{report.examSummary || '-'}</p>
+                      <p><strong>自习室总结：</strong>{report.studyRoomSummary || '-'}</p>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
           </div>

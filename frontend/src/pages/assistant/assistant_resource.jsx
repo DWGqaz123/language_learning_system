@@ -102,7 +102,7 @@ const AssistantResource = () => {
                 value={uploadForm.resourceName}
                 onChange={e => setUploadForm(prev => ({ ...prev, resourceName: e.target.value }))}
               />
-              <label>资源名称：</label>
+              <label>资源格式：</label>
               <input
                 value={uploadForm.resourceType}
                 onChange={e => setUploadForm(prev => ({ ...prev, resourceType: e.target.value }))}
