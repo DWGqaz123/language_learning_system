@@ -188,4 +188,20 @@ public class CourseController {
         List<StudentScheduleRecordDTO> result = courseService.getUnEvaluatedRecordsByTeacherId(teacherId);
         return ApiResponse.success("查询成功", result);
     }
+
+    //学员评价教师
+    @PostMapping("/submit-teacher-feedback")
+    public ApiResponse<String> submitTeacherFeedback(@RequestBody TeacherFeedbackSimpleDTO dto) {
+        try {
+            courseService.submitTeacherFeedback(dto.getStudentId(), dto);
+            return ApiResponse.success("提交成功");
+        } catch (Exception e) {
+            return ApiResponse.error("提交失败：" + e.getMessage());
+        }
+    }
+    //教师评价计算
+    @GetMapping("/teacher-feedback-average")
+    public ApiResponse<Double> getTeacherFeedbackAverage(@RequestParam Integer scheduleId) {
+        return courseService.getTeacherFeedbackAverage(scheduleId);
+    }
 }

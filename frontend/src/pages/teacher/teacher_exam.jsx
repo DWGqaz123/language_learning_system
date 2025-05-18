@@ -43,6 +43,11 @@ const TeacherExam = () => {
               <p>批改学生提交的模拟考试答卷，录入成绩。</p>
               <Link to="/teacher/teacher-exam-mark">立即进入</Link>
             </div>
+            <div className="card">
+              <h3>试卷审核</h3>
+              <p>审核新录入的考试试卷，核对题目和答案。</p>
+              <Link to="/teacher/teacher-exam-audit">立即进入</Link>
+            </div>
           </div>
         </section>
       </main>

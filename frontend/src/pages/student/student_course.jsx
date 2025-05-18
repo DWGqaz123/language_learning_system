@@ -99,7 +99,7 @@ const StudentCourse = () => {
                     <div className="card-grid">
                         <div className="card">
                             <h3>查看个人课表</h3>
-                            <p>浏览您未来的课表安排。</p>
+                            <p>浏览您的课表，进行请假和教师评价。</p>
                             <Link to="/student/student-schedule-manage">立即进入</Link>
                         </div>
                         <div className="card">

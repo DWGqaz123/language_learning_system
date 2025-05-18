@@ -10,6 +10,7 @@ import com.hdu.language_learning_system.course.repository.CourseRepository;
 import com.hdu.language_learning_system.course.repository.StudentScheduleRecordRepository;
 import com.hdu.language_learning_system.exam.entity.StudentExamRecord;
 import com.hdu.language_learning_system.exam.repository.StudentExamRecordRepository;
+import com.hdu.language_learning_system.studyRoom.dto.StudyRoomUsageStatisticsDTO;
 import com.hdu.language_learning_system.studyRoom.entity.StudyRoomReservation;
 import com.hdu.language_learning_system.studyRoom.repository.StudyRoomReservationRepository;
 import com.hdu.language_learning_system.task.entity.TaskAssignment;
@@ -381,4 +382,57 @@ public class AnalysisServiceImpl implements AnalysisService {
 
         return ApiResponse.success(dto);
     }
+
+    private StudyRoomUsageStatisticsDTO getStudentUsageStatistics(Integer studentId) {
+        List<StudyRoomReservation> records = studyRoomReservationRepository.findByStudent_UserId(studentId);
+
+        int total = 0;
+        int morning = 0, afternoon = 0, evening = 0;
+
+        for (StudyRoomReservation record : records) {
+            if (!"通过".equals(record.getReviewStatus())) continue;
+            if (record.getSignInTime() == null && record.getSignOutTime() == null) continue;
+
+            total++;
+            switch (record.getTimeSlot()) {
+                case "上午" -> morning++;
+                case "下午" -> afternoon++;
+                case "晚上" -> evening++;
+            }
+        }
+
+        StudyRoomUsageStatisticsDTO dto = new StudyRoomUsageStatisticsDTO();
+        dto.setTotalUsageCount(total);
+        dto.setMorningCount(morning);
+        dto.setAfternoonCount(afternoon);
+        dto.setEveningCount(evening);
+
+        return dto;
+    }
+
+    @Override
+    public WeeklyAnalysisDTO getWeeklyAnalysis(Integer studentId) {
+        WeeklyAnalysisDTO dto = new WeeklyAnalysisDTO();
+        dto.setStudentId(studentId);
+        dto.setCourseProgress(getCourseProgress(studentId));
+        dto.setAttendanceStats(getAttendanceStats(studentId));
+        dto.setTaskStats(getTaskStatistics(studentId));
+        dto.setExamStats(getMockExamStatByStudentId(studentId));
+        dto.setStudyRoomStats(getStudentUsageStatistics(studentId));
+        return dto;
+    }
+
+    @Override
+    public StageAnalysisDTO getStageAnalysis(Integer studentId) {
+        StageAnalysisDTO dto = new StageAnalysisDTO();
+        dto.setStudentId(studentId);
+        dto.setCourseProgress(getCourseProgress(studentId));
+        dto.setAttendanceStats(getAttendanceStats(studentId));
+        dto.setTaskStats(getTaskStatistics(studentId));
+        dto.setExamStats(getMockExamStatByStudentId(studentId));
+        dto.setStudyRoomStats(getStudentUsageStatistics(studentId));
+        dto.setExamScoreTrend(getExamScoreTrend(studentId));
+        return dto;
+    }
+
 }

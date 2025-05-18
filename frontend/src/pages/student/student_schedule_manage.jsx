@@ -12,6 +12,8 @@ const StudentScheduleManage = () => {
   const [showLeaveModal, setShowLeaveModal] = useState(false)
   const [selectedRecord, setSelectedRecord] = useState(null)
   const [leaveReason, setLeaveReason] = useState('')
+  const [feedbackModal, setFeedbackModal] = useState(false)
+  const [feedbackScore, setFeedbackScore] = useState('')
 
   useEffect(() => {
     fetchScheduleRecords()
@@ -50,6 +52,31 @@ const StudentScheduleManage = () => {
     }
   }
 
+  const openFeedbackModal = (record) => {
+    setSelectedRecord(record)
+    setFeedbackScore('')
+    setFeedbackModal(true)
+  }
+
+  const submitFeedback = async () => {
+    if (!feedbackScore || isNaN(feedbackScore) || feedbackScore < 0 || feedbackScore > 100) {
+      alert('请输入有效的评分（0-100）')
+      return
+    }
+    try {
+      await axios.post('/api/courses/submit-teacher-feedback', {
+        scheduleId: selectedRecord.scheduleId,
+         studentId: userId,
+        feedbackScore: parseFloat(feedbackScore)
+      })
+      alert('评价提交成功')
+      setFeedbackModal(false)
+      fetchScheduleRecords()
+    } catch (err) {
+      alert('评价失败: ' + (err.response?.data?.message || '未知错误'))
+    }
+  }
+
   return (
     <div className="schedule-wrapper">
         <button className="back-button" onClick={() => navigate('/student/student-course')}>返回</button>
@@ -82,7 +109,14 @@ const StudentScheduleManage = () => {
                     {record.attendStatus === '未开始' && (
                       <button className="action-button" onClick={() => openLeaveModal(record)}>申请请假</button>
                     )}
-                    {record.attendStatus !== '未开始' && <span className="disabled-text">不可请假</span>}
+                    {record.attendStatus !== '未开始' && (
+                      <>
+                        <span className="disabled-text">不可请假</span>
+                        {record.teacherFeedbackScore == null && (
+                          <button className="action-button" onClick={() => openFeedbackModal(record)}>评价教师</button>
+                        )}
+                      </>
+                    )}
                   </td>
                 </tr>
               ))
@@ -106,6 +140,27 @@ const StudentScheduleManage = () => {
             <div className="modal-buttons">
               <button onClick={submitLeaveRequest}>提交申请</button>
               <button onClick={() => setShowLeaveModal(false)}>取消</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 教师评价弹窗 */}
+      {feedbackModal && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <h3>教师评分（0-100）</h3>
+            <input
+              type="number"
+              value={feedbackScore}
+              onChange={(e) => setFeedbackScore(e.target.value)}
+              placeholder="请输入评分"
+              min="0"
+              max="100"
+            />
+            <div className="modal-buttons">
+              <button onClick={submitFeedback}>提交评价</button>
+              <button onClick={() => setFeedbackModal(false)}>取消</button>
             </div>
           </div>
         </div>

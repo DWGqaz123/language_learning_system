@@ -21,6 +21,7 @@ const AssistantAnalytics = () => {
   const [attendanceStats, setAttendanceStats] = useState(null);
   const [taskStats, setTaskStats] = useState(null);
   const [examStats, setExamStats] = useState(null);
+  const [analysisType, setAnalysisType] = useState('weekly'); // 'weekly' or 'stage'
 
   useEffect(() => {
     if (phone) {
@@ -52,27 +53,20 @@ const AssistantAnalytics = () => {
       const userRes = await axios.get(`/api/users/get-by-id?userId=${studentId}`);
       setStudentInfo(userRes.data.data || {});
       setCommentInputs({ assistantComment: '', overallScore: '' });
-      fetchStudentReports(studentId);
 
-      // 并发调用所有学习数据接口
-      const [cpRes, attRes, taskRes, examRes] = await Promise.all([
-        axios.get(`/api/analysis/course-progress?studentId=${studentId}`),
-        axios.get(`/api/analysis/attendance-stats?studentId=${studentId}`),
-        axios.get(`/api/analysis/task-statistics/${studentId}`),
-        axios.get(`/api/analysis/mock-exams/statistics/${studentId}`)
-      ]);
-      const [studyRoomRes, trendRes] = await Promise.all([
-        axios.get(`/api/study-rooms/usage-statistics/${studentId}`),
-        axios.get(`/api/analysis/mock-exams/score-trend/${studentId}`)
-      ]);
+      const analysisRes = await axios.get(
+        analysisType === 'weekly'
+          ? `/api/analysis/weekly-report?studentId=${studentId}`
+          : `/api/analysis/stage-report?studentId=${studentId}`
+      );
 
-      setStudyRoomStats(studyRoomRes.data.data || null);
-      setExamTrend(trendRes.data.data || []);
-
-      setCourseProgress(cpRes.data.data || null);
-      setAttendanceStats(attRes.data.data || null);
-      setTaskStats(taskRes.data.data || null);
-      setExamStats(examRes.data.data || null);
+      const data = analysisRes.data.data;
+      setCourseProgress(data.courseProgress);
+      setAttendanceStats(data.attendanceStats);
+      setTaskStats(data.taskStats);
+      setExamStats(data.examStats);
+      setStudyRoomStats(data.studyRoomStats || null);
+      setExamTrend(data.examScoreTrend || []);
     } catch (err) {
       alert('获取学员信息或学习数据失败: ' + (err.response?.data?.message || '未知错误'));
     }
@@ -169,41 +163,48 @@ const AssistantAnalytics = () => {
             </div>
 
             <div className="report-section">
+              <div className="toggle-buttons">
+                <button
+                  className={analysisType === 'weekly' ? 'active' : ''}
+                  onClick={() => {
+                    setAnalysisType('weekly');
+                    if (selectedStudentId) handleSelectStudent(selectedStudentId);
+                  }}
+                >
+                  本周学习分析
+                </button>
+                <button
+                  className={analysisType === 'stage' ? 'active' : ''}
+                  onClick={() => {
+                    setAnalysisType('stage');
+                    if (selectedStudentId) handleSelectStudent(selectedStudentId);
+                  }}
+                >
+                  阶段性学习分析
+                </button>
+              </div>
+
               {studentInfo && (
                 <div className="student-summary">
                   <p><strong>姓名：</strong>{studentInfo.username || '-'}</p>
                   <p><strong>注册天数：</strong>{calculateRegisterDays(studentInfo.createdAt)}</p>
-                  <p><strong>课程进度：</strong>
-                    {courseProgress
-                      ? `${courseProgress.completedHours}/${courseProgress.totalHours} 已完成（${courseProgress.completedPercentage}%）`
-                      : '加载中...'}</p>
-                  <p><strong>考勤统计：</strong>
-                    {attendanceStats
-                      ? `出勤 ${attendanceStats.attendCount} 次，缺勤 ${attendanceStats.absentCount} 次，请假 ${attendanceStats.leaveCount} 次`
-                      : '加载中...'}</p>
-                  <p><strong>任务表现：</strong>
-                    {taskStats
-                      ? `完成率 ${taskStats.completionRate?.toFixed(1)}%，平均分 ${taskStats.averageScore?.toFixed(1) ?? '暂无'}`
-                      : '加载中...'}</p>
-                  <p><strong>模拟考试：</strong>
-                    {examStats
-                      ? `考试 ${examStats.examCount} 次，平均分 ${examStats.averageScore?.toFixed(1)}`
-                      : '加载中...'}</p>
-                  <p><strong>考试成绩趋势：</strong></p>
-                  <ul>
-                    {examTrend.length > 0
-                      ? examTrend.map((item, idx) => (
-                        <li key={idx}>{item.examName}：{item.score} 分</li>
-                      ))
-                      : <li>暂无成绩记录</li>}
-                  </ul>
-                  <p><strong>自习室统计：</strong>
-                    {studyRoomStats
-                      ? `总计使用 ${studyRoomStats.totalUsageCount} 次，其中 上午 ${studyRoomStats.morningCount} 次，下午 ${studyRoomStats.afternoonCount} 次，晚上 ${studyRoomStats.eveningCount} 次`
-                      : '加载中...'}
-                  </p>
-
-
+                  <p><strong>课程进度：</strong>{courseProgress ? `${courseProgress.completedHours}/${courseProgress.totalHours} 已完成（${courseProgress.completedPercentage}%）` : '加载中...'}</p>
+                  <p><strong>{analysisType === 'weekly' ? '本周考勤统计' : '考勤统计'}：</strong>{attendanceStats ? `出勤 ${attendanceStats.attendCount} 次，缺勤 ${attendanceStats.absentCount} 次，请假 ${attendanceStats.leaveCount} 次` : '加载中...'}</p>
+                  <p><strong>{analysisType === 'weekly' ? '本周任务表现' : '任务表现'}：</strong>{taskStats ? `完成率 ${taskStats.completionRate?.toFixed(1)}%，平均分 ${taskStats.averageScore?.toFixed(1) ?? '暂无'}` : '加载中...'}</p>
+                  {analysisType === 'stage' && (
+                    <p><strong>模拟考试：</strong>{examStats ? `考试 ${examStats.examCount} 次，平均分 ${examStats.averageScore?.toFixed(1)}` : '加载中...'}</p>
+                  )}
+                  {analysisType === 'stage' && examTrend.length > 0 && (
+                    <>
+                      <p><strong>考试成绩趋势：</strong></p>
+                      <ul>
+                        {examTrend.map((item, idx) => (
+                          <li key={idx}>{item.examName}：{item.score} 分</li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+                  <p><strong>{analysisType === 'weekly' ? '本周自习室统计' : '自习室统计'}：</strong>{studyRoomStats ? `总计使用 ${studyRoomStats.totalUsageCount} 次，其中 上午 ${studyRoomStats.morningCount} 次，下午 ${studyRoomStats.afternoonCount} 次，晚上 ${studyRoomStats.eveningCount} 次` : '加载中...'}</p>
                 </div>
               )}
 
@@ -254,3 +255,4 @@ const AssistantAnalytics = () => {
 };
 
 export default AssistantAnalytics;
+

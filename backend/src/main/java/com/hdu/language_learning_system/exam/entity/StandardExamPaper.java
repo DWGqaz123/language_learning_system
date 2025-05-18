@@ -2,7 +2,7 @@ package com.hdu.language_learning_system.exam.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
+import com.hdu.language_learning_system.user.entity.User;
 import java.sql.Timestamp;
 
 @Entity
@@ -29,4 +29,15 @@ public class StandardExamPaper {
 
     @Column(name = "created_time")
     private Timestamp createdTime;
+
+    @Column(name = "audit_status")
+    private String auditStatus; // 待审核、已通过、已驳回
+
+    @Column(name = "audit_comment")
+    private String auditComment;
+
+    @ManyToOne
+    @JoinColumn(name = "audited_by")
+    private User auditedBy;
+
 }

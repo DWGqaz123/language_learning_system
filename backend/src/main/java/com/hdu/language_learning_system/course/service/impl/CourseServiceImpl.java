@@ -1,5 +1,6 @@
 package com.hdu.language_learning_system.course.service.impl;
 
+import com.hdu.language_learning_system.common.ApiResponse;
 import com.hdu.language_learning_system.course.dto.*;
 import com.hdu.language_learning_system.course.entity.ClassStudent;
 import com.hdu.language_learning_system.course.entity.Course;
@@ -649,5 +650,31 @@ public class CourseServiceImpl implements CourseService {
 
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    //学员评价教师
+    @Override
+    @Transactional
+    public void submitTeacherFeedback(Integer studentId, TeacherFeedbackSimpleDTO dto) {
+        StudentScheduleRecord record = studentScheduleRecordRepository
+                .findByStudent_UserIdAndSchedule_ScheduleId(studentId, dto.getScheduleId())
+                .orElseThrow(() -> new RuntimeException("未找到该上课记录"));
+
+        if (record.getTeacherFeedbackScore() != null) {
+            throw new RuntimeException("你已评价过该教师");
+        }
+
+        record.setTeacherFeedbackScore(dto.getFeedbackScore());
+        studentScheduleRecordRepository.save(record);
+    }
+
+    //计算教师课表均分
+    @Override
+    public ApiResponse<Double> getTeacherFeedbackAverage(Integer scheduleId) {
+        Double avg = studentScheduleRecordRepository.findAverageTeacherFeedbackByScheduleId(scheduleId);
+        if (avg == null) {
+            return ApiResponse.error("暂无学员评价记录");
+        }
+        return ApiResponse.success(avg);
     }
 }

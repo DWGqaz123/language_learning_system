@@ -53,4 +53,19 @@ public class StandardExamPaperController {
     public ResponseEntity<ApiResponse<StandardExamPaperDTO>> getExamPaper(@PathVariable Integer paperId) {
         return ResponseEntity.ok(ApiResponse.success(standardExamPaperService.getStandardExamPaperById(paperId)));
     }
+
+    //查询待审核试卷列表
+    @GetMapping("/pending-papers")
+    public ApiResponse<List<StandardExamPaperDTO>> getPendingPapers() {
+        List<StandardExamPaperDTO> papers = standardExamPaperService.getPendingPapers();
+        return ApiResponse.success(papers);
+    }
+
+    //审核试卷
+    @PostMapping("/audit")
+    public ApiResponse<String> auditPaper(@RequestBody ExamPaperAuditDTO dto) {
+        standardExamPaperService.auditPaper(dto);
+        return ApiResponse.success("审核完成");
+    }
+
 }

@@ -114,9 +114,25 @@ public class AnalysisController {
         List<StudentPerformanceReportDTO> list = analysisService.getReportsByStudentId(studentId);
         return ApiResponse.success(list);
     }
-
+    //获取最新的学员报告
     @GetMapping("/latest-report")
     public ApiResponse<StudentPerformanceReportDTO> getLatestReport(@RequestParam Integer studentId) {
         return analysisService.getLatestReportByStudentId(studentId);
     }
+
+
+    // 获取学员的周分析报告
+    @GetMapping("/weekly-report")
+    public ApiResponse<WeeklyAnalysisDTO> getWeeklyAnalysis(@RequestParam Integer studentId) {
+        WeeklyAnalysisDTO dto = analysisService.getWeeklyAnalysis(studentId);
+        return ApiResponse.success(dto);
+    }
+
+    // 获取学员的阶段性分析报告
+    @GetMapping("/stage-report")
+    public ApiResponse<StageAnalysisDTO> getStageAnalysis(@RequestParam Integer studentId) {
+        StageAnalysisDTO dto = analysisService.getStageAnalysis(studentId);
+        return ApiResponse.success(dto);
+    }
+
 }

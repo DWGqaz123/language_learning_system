@@ -1,5 +1,6 @@
 package com.hdu.language_learning_system.course.service;
 
+import com.hdu.language_learning_system.common.ApiResponse;
 import com.hdu.language_learning_system.course.dto.*;
 
 import java.util.List;
@@ -51,4 +52,7 @@ public interface CourseService {
     List<StudentScheduleRecordFullDTO> getStudentScheduleRecordsWithScheduleInfo(Integer studentId);
 
     List<StudentScheduleRecordDTO> getUnEvaluatedRecordsByTeacherId(Integer teacherId);
+    void submitTeacherFeedback(Integer studentId, TeacherFeedbackSimpleDTO dto);
+
+    ApiResponse<Double> getTeacherFeedbackAverage(Integer scheduleId);
 }

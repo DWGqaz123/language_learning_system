@@ -40,5 +40,7 @@ public class StudentScheduleRecord {
     @Column(name = "review_comment")
     private String reviewComment;  // 审核意见，由助教填写
 
+    @Column(name = "teacher_feedback_score")
+    private Integer teacherFeedbackScore; // 学员对教师的综合评价（如：1~5 分）
 
 }

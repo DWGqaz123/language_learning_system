@@ -12,4 +12,7 @@ public class StandardExamPaperDTO {
     private String paperContentJson;
     private String objectiveAnswersJson;
     private Timestamp createdTime;
+    private String auditStatus;
+    private String auditComment;
+    private String auditedByName; // 教师姓名
 }

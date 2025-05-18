@@ -4,6 +4,8 @@ import com.hdu.language_learning_system.exam.repository.*;
 import com.hdu.language_learning_system.exam.dto.*;
 import com.hdu.language_learning_system.exam.entity.*;
 import com.hdu.language_learning_system.exam.service.StandardExamPaperService;
+import com.hdu.language_learning_system.user.entity.User;
+import com.hdu.language_learning_system.user.repository.UserRepository;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,9 @@ public class StandardExamPaperServiceImpl implements StandardExamPaperService {
 
     @Resource
     private StandardExamPaperRepository standardExamPaperRepository;
+
+    @Resource
+    private UserRepository userRepository;
 
     //添加新试卷
     @Override
@@ -92,5 +97,43 @@ public class StandardExamPaperServiceImpl implements StandardExamPaperService {
 
         return dto;
     }
+    //审核新试卷
+    @Override
+    public List<StandardExamPaperDTO> getPendingPapers() {
+        List<StandardExamPaper> papers = standardExamPaperRepository.findByAuditStatus("待审核");
+        return papers.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
 
+    private StandardExamPaperDTO convertToDTO(StandardExamPaper paper) {
+        StandardExamPaperDTO dto = new StandardExamPaperDTO();
+        dto.setPaperId(paper.getPaperId());
+        dto.setPaperName(paper.getPaperName());
+        dto.setExamType(paper.getExamType());
+        dto.setCreatedTime(paper.getCreatedTime());
+        dto.setAuditStatus(paper.getAuditStatus());
+        dto.setAuditComment(paper.getAuditComment());
+
+        if (paper.getAuditedBy() != null) {
+            dto.setAuditedByName(paper.getAuditedBy().getUsername());
+        }
+
+        dto.setPaperContentJson(paper.getPaperContent()); // ✅ 添加题目内容
+        dto.setObjectiveAnswersJson(paper.getObjectiveAnswersJson()); // ✅ 添加客观题答案
+
+        return dto;
+    }
+    @Override
+    public void auditPaper(ExamPaperAuditDTO dto) {
+        StandardExamPaper paper = standardExamPaperRepository.findById(dto.getPaperId())
+                .orElseThrow(() -> new RuntimeException("试卷不存在"));
+
+        paper.setAuditStatus(dto.getAuditStatus());
+        paper.setAuditComment(dto.getAuditComment());
+
+        User teacher = userRepository.findById(dto.getTeacherId())
+                .orElseThrow(() -> new RuntimeException("教师不存在"));
+        paper.setAuditedBy(teacher);
+
+        standardExamPaperRepository.save(paper);
+    }
 }

@@ -58,4 +58,8 @@ public interface StudentScheduleRecordRepository extends JpaRepository<StudentSc
             "AND r.PerformanceEval IS NULL")
     List<StudentScheduleRecord> findUnEvaluatedRecordsByTeacherId(Integer teacherId);
 
+    Optional<StudentScheduleRecord> findByStudent_UserIdAndSchedule_ScheduleId(Integer studentId, Integer scheduleId);
+
+    @Query("SELECT AVG(s.teacherFeedbackScore) FROM StudentScheduleRecord s WHERE s.schedule.scheduleId = :scheduleId AND s.teacherFeedbackScore IS NOT NULL")
+    Double findAverageTeacherFeedbackByScheduleId(@Param("scheduleId") Integer scheduleId);
 }

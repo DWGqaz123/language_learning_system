@@ -75,7 +75,7 @@ import TeacherStudyRoom from './pages/teacher/teacher_study_room'
 import TeacherResourceManage from './pages/teacher/teacher_resource'
 import TeacherAnalyticsManage from './pages/teacher/teacher_analytics'
 import TeacherNotificationManage from './pages/teacher/teacher_notification'
-
+import TeacherExamAudit from './pages/teacher/teacher_exam_audit' 
 
 function App() {
   return (
@@ -158,6 +158,7 @@ function App() {
         <Route path="/teacher/teacher-resource" element={<TeacherResourceManage />} />
         <Route path="/teacher/teacher-analytics" element={<TeacherAnalyticsManage />} />
         <Route path="/teacher/teacher-notification" element={<TeacherNotificationManage />} />
+        <Route path="/teacher/teacher-exam-audit" element={<TeacherExamAudit />} />
       </Routes>
     </Router>
   )

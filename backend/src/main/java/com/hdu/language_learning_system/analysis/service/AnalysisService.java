@@ -27,4 +27,8 @@ public interface AnalysisService {
     List<ExamScoreTrendDTO> getExamScoreTrend(Integer studentId);
 
     ApiResponse<StudentPerformanceReportDTO> getLatestReportByStudentId(Integer studentId);
+
+    WeeklyAnalysisDTO getWeeklyAnalysis(Integer studentId);
+    StageAnalysisDTO getStageAnalysis(Integer studentId);
 }
+
